@@ -13,7 +13,7 @@ conan profile detect
 Then configure the build :
 ```
 mkdir build
-conan install . --output-folder=build --build=missing
+conan install . --output-folder=build --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
 ```
 Then configure some more and compile
 ```
