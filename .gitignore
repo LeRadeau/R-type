@@ -1,0 +1,43 @@
+# General C++ build artifacts
+*.o
+*.obj
+*.lo
+*.slo
+*.d
+*.Plo
+*.a
+*.lib
+*.la
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+compile_commands.json
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+
+# SFML-specific files (if any are generated)
+sfml-app.log
+
+# IDE files
+.cache/
+.idea/
+.vscode/
+*.code-workspace
+
+# macOS files
+.DS_Store
+
+# Windows files
+Thumbs.db
+Desktop.ini
+
+# Miscellaneous
+*.log
+*.tmp
