@@ -26,6 +26,14 @@ jobs:
         pip install conan
         echo "$(python3 -m site --user-base)/bin" >> $GITHUB_PATH
 
+    - name: Install SFML 2.6
+      run: |
+        wget https://github.com/SFML/SFML/releases/download/2.6.0/SFML-2.6.0-linux-gcc-64-bit.tar.gz
+        tar -xzf SFML-2.6.0-linux-gcc-64-bit.tar.gz
+        sudo cp -r SFML-2.6.0/include/* /usr/include
+        sudo cp -r SFML-2.6.0/lib/* /usr/lib
+        sudo ldconfig
+
     - name: Configure Conan
       run: |
         conan profile detect
