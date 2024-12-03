@@ -15,17 +15,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Étape 1 : Télécharger le code source
     - name: Check out the code
       uses: actions/checkout@v3
 
+    # Étape 2 : Ajouter le dépôt Conan Center
+    - name: Configure Conan Repository
+      run: |
+        conan remote add conancenter https://center.conan.io || true
+
+    # Étape 3 : Installer les dépendances système
     - name: Install dependencies 
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3 python3-pip cmake make g++ pkg-config clang-tidy clang-format libsfml-dev
+        sudo apt-get install -y python3 python3-pip cmake make g++ pkg-config clang-tidy clang-format
         pip install --upgrade pip
         pip install conan
         echo "$(python3 -m site --user-base)/bin" >> $GITHUB_PATH
-    
+
+    # Étape 4 : Linter le code avec clang-tidy
     - name: Run clang-tidy
       run: |
         mkdir build
@@ -34,19 +42,20 @@ jobs:
         cd ..
         clang-tidy $(find . -name '*.cpp') -- -p=build
 
-    - name: Configure Conan
+    # Étape 5 : Installer les dépendances Conan
+    - name: Install dependencies with Conan
       run: |
-        conan profile detect
         mkdir build
         conan install . --output-folder=build --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
 
-
+    # Étape 6 : Configurer et compiler avec CMake
     - name: Configure and Build with CMake
       run: |
         cd build
         cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
         cmake --build .
 
+    # Étape 7 (optionnelle) : Exécuter les tests
     # - name: Run tests
     #   run: |
     #     cd build
