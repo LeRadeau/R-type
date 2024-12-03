@@ -32,17 +32,18 @@ jobs:
         mkdir -p build
         conan install . --output-folder=build --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
 
+    - name: Configure with CMake
+      run: |
+        cd build
+        cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
     - name: Lint the code with clang-tidy
       run: |
-        cd build
-        cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-        cd ..
         clang-tidy -p build $(find . -name '*.cpp')
 
-    - name: Configure and Build with CMake
+    - name: Build the project with CMake
       run: |
         cd build
-        cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
         cmake --build .
 
     # - name: Run tests with Catch2
