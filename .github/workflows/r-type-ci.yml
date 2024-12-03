@@ -29,12 +29,11 @@ jobs:
     - name: Configure Conan
       run: |
         conan profile detect
-        mkdir build
+        mkdir -p build
         conan install . --output-folder=build --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
 
     - name: Lint the code with clang-tidy
       run: |
-        mkdir build
         cd build
         cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
         cd ..
