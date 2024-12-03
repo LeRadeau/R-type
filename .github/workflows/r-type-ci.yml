@@ -36,6 +36,16 @@ jobs:
         sudo cp -r SFML-2.6.0/lib/* /usr/lib
         sudo ldconfig
 
+    - name: Install Catch2
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y wget
+        wget https://github.com/catchorg/Catch2/releases/download/v3.3.2/catch2-3.3.2.tar.gz
+        tar -xzf catch2-3.3.2.tar.gz
+        cd catch2-3.3.2
+        cmake -Bbuild -H. -DBUILD_TESTING=OFF
+        sudo cmake --build build --target install
+
     - name: Configure Conan
       run: |
         conan profile detect
