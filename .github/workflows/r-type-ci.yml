@@ -39,7 +39,7 @@ jobs:
 
     - name: Lint the code with clang-tidy
       run: |
-        clang-tidy -p build $(find . -name '*.cpp')
+        clang-tidy -p build $(find . -name '*.cpp') -fix -header-filter=.* -quiet
 
     - name: Build the project with CMake
       run: |
