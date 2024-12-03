@@ -18,10 +18,10 @@ jobs:
     - name: Check out the code
       uses: actions/checkout@v3
 
-    - name: Install Python, Conan, and Build Tools
+    - name: Install Python, Conan, Build Tools, and SFML
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3 python3-pip cmake make g++ pkg-config clang-tidy
+        sudo apt-get install -y python3 python3-pip cmake make g++ pkg-config clang-tidy libsfml-dev
         pip install --upgrade pip
         pip install conan
         echo "$(python3 -m site --user-base)/bin" >> $GITHUB_PATH
