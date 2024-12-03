@@ -28,6 +28,8 @@ jobs:
 
     - name: Install SFML 2.6
       run: |
+        sudo apt-get update
+        sudo apt-get install -y wget
         wget https://github.com/SFML/SFML/releases/download/2.6.0/SFML-2.6.0-linux-gcc-64-bit.tar.gz
         tar -xzf SFML-2.6.0-linux-gcc-64-bit.tar.gz
         sudo cp -r SFML-2.6.0/include/* /usr/include
