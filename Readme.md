@@ -21,3 +21,10 @@ $ cd build
 $ cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
 $ cmake --build .
 ```
+If on windows instead:
+```
+$ cd build
+# assuming Visual Studio 15 2017 is your VS version and that it matches your default profile
+$ cmake .. -G "Visual Studio 15 2017" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
+$ cmake --build . --config Release
+```
