@@ -17,3 +17,8 @@
 - Manipulent les composants des entités pour appliquer des actions ou des règles 
   (exemple : mouvement, collision, rendu).
 - **Dossier associé :** `Systems/`
+
+## Compilation
+Pour compiler le projet avec **SFML**, utilisez la commande suivante :
+
+g++ test.cpp -lsfml-graphics -lsfml-window -lsfml-system
