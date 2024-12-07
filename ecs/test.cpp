@@ -39,26 +39,23 @@ int main() {
     entityManager.addComponent<PositionComponent>(player, "position", 100.0f, 100.0f);
     entityManager.addComponent<VelocityComponent>(player, "velocity", 10.0f, 0.0f, 600);
     entityManager.addComponent<RenderableComponent>(player, "renderable", playerTexture, 0.7);
+    entityManager.addComponent<BoundingBoxComponent>(player, "boundingBox", 50.0f, 50.0f);
     entityManager.addComponent<InputComponent>(player, "input");
 
-    Entity enemy = entityManager.createEntity();
-    entityManager.addComponent<PositionComponent>(enemy, "position", 300.0f, 100.0f);
-    entityManager.addComponent<VelocityComponent>(enemy, "velocity", 10.0f, 0.0f, 400);
-    entityManager.addComponent<RenderableComponent>(enemy, "renderable", enemytext, 0.5);
-    entityManager.addComponent<DestinationComponent>(enemy, "destination", 300.0f, 100.0f, 500.0f, 500.0f);
 
     Entity enemy2 = entityManager.createEntity();
     entityManager.addComponent<PositionComponent>(enemy2, "position", 500.0f, 100.0f);
     entityManager.addComponent<VelocityComponent>(enemy2, "velocity", 10.0f, 0.0f, 600);
     entityManager.addComponent<RenderableComponent>(enemy2, "renderable", enemytext, 0.5);
+    entityManager.addComponent<BoundingBoxComponent>(enemy2, "boundingBox", 50.0f, 50.0f);
     entityManager.addComponent<DestinationComponent>(enemy2, "destination", 500.0f, 100.0f, 1000.0f, 1000.0f);
 
     Entity enemy3 = entityManager.createEntity();
     entityManager.addComponent<PositionComponent>(enemy3, "position", 700.0f, 100.0f);
     entityManager.addComponent<VelocityComponent>(enemy3, "velocity", 10.0f, 0.0f, 1800);
     entityManager.addComponent<RenderableComponent>(enemy3, "renderable", enemytext, 0.5);
+    entityManager.addComponent<BoundingBoxComponent>(enemy3, "boundingBox", 50.0f, 50.0f);
     entityManager.addComponent<DestinationComponent>(enemy3, "destination", 700.0f, 100.0f, 0.0f, 800.0f);
-
     
     for (int i = 9; i > 0; i--) {
         createParallaxLayer(entityManager, "../parallax/city 1/" + std::to_string(i) + ".png", (i * 1.2) * 50.0f, 1.0f);
@@ -66,6 +63,7 @@ int main() {
 
     InputSystem inputSystem(window);
     MovementSystem movementSystem;
+    CollisionSystem collisionSystem;
     RenderSystem renderSystem(window);
     ParallaxSystem parallaxSystem;
 
@@ -78,6 +76,7 @@ int main() {
         inputSystem.processInput(entityManager);
         movementSystem.update(entityManager, dt);
         parallaxSystem.update(entityManager, dt);
+        collisionSystem.update(entityManager);
         renderSystem.render(entityManager);
         window.display();
     }

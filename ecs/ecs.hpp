@@ -15,6 +15,8 @@
 // Physics
 #include "./Components/Physics/VelocityComponent.hpp"
 #include "./Components/Physics/DestinationComponent.hpp"
+#include "./Components/Physics/BoundingBoxComponent.hpp"
+
 
 // Renders
 #include "./Components/Renders/RenderableComponent.hpp"
@@ -32,6 +34,9 @@
 
 // Transforms Sytems
 #include "./Systems/Transforms/MovementSystem.hpp"
+
+// Physics Sytems
+#include "./Systems/Physics/CollisionsSystem.hpp"
 
 // Renders Sytems
 #include "./Systems/Renders/ParallaxSystem.hpp"
