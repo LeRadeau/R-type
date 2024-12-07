@@ -40,6 +40,9 @@ int main() {
     entityManager.addComponent<VelocityComponent>(player, "velocity", 10.0f, 0.0f, 600);
     entityManager.addComponent<RenderableComponent>(player, "renderable", playerTexture, 0.7);
     entityManager.addComponent<BoundingBoxComponent>(player, "boundingBox", 50.0f, 50.0f);
+    entityManager.addComponent<HealthComponent>(player, "health", 100);
+    entityManager.addComponent<TagComponent>(player, "tag", "player");
+    entityManager.addComponent<TimeCooldownComponent>(player, "cooldown", 5.0f);
     entityManager.addComponent<InputComponent>(player, "input");
 
 
@@ -48,6 +51,8 @@ int main() {
     entityManager.addComponent<VelocityComponent>(enemy2, "velocity", 10.0f, 0.0f, 600);
     entityManager.addComponent<RenderableComponent>(enemy2, "renderable", enemytext, 0.5);
     entityManager.addComponent<BoundingBoxComponent>(enemy2, "boundingBox", 50.0f, 50.0f);
+    entityManager.addComponent<HealthComponent>(enemy2, "health", 100);
+    entityManager.addComponent<TagComponent>(enemy2, "tag", "enemy");
     entityManager.addComponent<DestinationComponent>(enemy2, "destination", 500.0f, 100.0f, 1000.0f, 1000.0f);
 
     Entity enemy3 = entityManager.createEntity();
@@ -55,6 +60,8 @@ int main() {
     entityManager.addComponent<VelocityComponent>(enemy3, "velocity", 10.0f, 0.0f, 1800);
     entityManager.addComponent<RenderableComponent>(enemy3, "renderable", enemytext, 0.5);
     entityManager.addComponent<BoundingBoxComponent>(enemy3, "boundingBox", 50.0f, 50.0f);
+    entityManager.addComponent<HealthComponent>(enemy3, "health", 100);
+    entityManager.addComponent<TagComponent>(enemy3, "tag", "enemy");
     entityManager.addComponent<DestinationComponent>(enemy3, "destination", 700.0f, 100.0f, 0.0f, 800.0f);
     
     for (int i = 9; i > 0; i--) {
@@ -76,7 +83,7 @@ int main() {
         inputSystem.processInput(entityManager);
         movementSystem.update(entityManager, dt);
         parallaxSystem.update(entityManager, dt);
-        collisionSystem.update(entityManager);
+        collisionSystem.update(entityManager, dt);
         renderSystem.render(entityManager);
         window.display();
     }

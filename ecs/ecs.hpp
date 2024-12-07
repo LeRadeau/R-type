@@ -9,6 +9,12 @@
 
 /* ------------------------------------ Components ------------------------------------ */
 
+//General
+#include "./Components/General/HealthComponent.hpp"
+#include "./Components/General/TagComponent.hpp"
+#include "./Components/General/TimeCooldownComponent.hpp"
+
+
 // Transforms
 #include "./Components/Transforms/PositionComponent.hpp"
 
