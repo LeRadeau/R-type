@@ -9,52 +9,42 @@
 // Physics Components
 #include "../../Components/Physics/BoundingBoxComponent.hpp"
 
-// General Components
-#include "../../Components/General/HealthComponent.hpp"
+#include <vector>
 
-#include <iostream>
-
-class CollisionSystem {
+class CollisionSystem
+{
 public:
-    void update(EntityManager& em, float dt) {
-        auto entities = em.getEntitiesWithComponent<BoundingBoxComponent>("boundingBox");
-
-        for (size_t i = 0; i < entities.size(); ++i) {
-            for (size_t j = 0; j < entities.size(); ++j) {
-                if (i == j) continue;
-
-                auto tagA = em.getComponent<TagComponent>(entities[i], "tag");
-                auto tagB = em.getComponent<TagComponent>(entities[j], "tag");
-                auto boxA = em.getComponent<BoundingBoxComponent>(entities[i], "boundingBox");
-                auto posA = em.getComponent<PositionComponent>(entities[i], "position");
-                auto boxB = em.getComponent<BoundingBoxComponent>(entities[j], "boundingBox");
-                auto posB = em.getComponent<PositionComponent>(entities[j], "position");
-                auto cooldownA = em.getComponent<TimeCooldownComponent>(entities[i], "cooldown");
-
-                if (tagA && tagB && boxA && posA && boxB && posB && cooldownA) {
-                    // Vérifie si le cooldown est actif
-                    if (cooldownA->elapsedTime < cooldownA->cooldownTime) {
-                        cooldownA->elapsedTime += dt;
+    void update(EntityManager &em, float dt)
+    {
+        auto collisionEntities = em.getEntitiesWithComponent<CollisionComponent>("collision");
+        for (Entity EntityA : collisionEntities) {
+            auto colA = em.getComponent<CollisionComponent>(EntityA, "collision");
+            auto boxA = em.getComponent<BoundingBoxComponent>(EntityA, "boundingBox");
+            auto posA = em.getComponent<PositionComponent>(EntityA, "position");
+            if (colA && boxA && posA) {
+                for (Entity EntityB : collisionEntities) {
+                    if (EntityB == EntityA) {
                         continue;
                     }
-
-                    // Collision entre player et enemy
-                    if (tagA->tag == "player" && tagB->tag == "enemy") {
+                    auto colB = em.getComponent<CollisionComponent>(EntityB, "collision");
+                    auto boxB = em.getComponent<BoundingBoxComponent>(EntityB, "boundingBox");
+                    auto posB = em.getComponent<PositionComponent>(EntityB, "position");
+                    if (colB && boxB && posB) {
                         if (posA->x < posB->x + boxB->width &&
                             posA->x + boxA->width > posB->x &&
                             posA->y < posB->y + boxB->height &&
                             posA->y + boxA->height > posB->y) {
-                            std::cout << "Collision detected between entities " << entities[i] << " and " << entities[j] << std::endl;
-                            auto healthA = em.getComponent<HealthComponent>(entities[i], "health");
-                            if (healthA) {
-                                healthA->health -= 25;
-                                cooldownA->elapsedTime = 0; // Réinitialise le cooldown
-                                std::cout << "Player health: " << healthA->health << std::endl;
-                            }
+                                colA->hasCollision = true;
+                                colA->collidingEntities.push_back(EntityB);
+                                colB->hasCollision = true;
+                                colB->collidingEntities.push_back(EntityA);
+                                std::cout << "Entity " << EntityA << " collided with: " << EntityB << std::endl;
+
                         }
                     }
                 }
             }
         }
     }
+private:
 };

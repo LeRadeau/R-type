@@ -19,31 +19,31 @@
 class MovementSystem {
 public:
     void update(EntityManager& em, float dt) {
-        // Process entities with InputComponent for movement
         auto inputEntities = em.getEntitiesWithComponent<InputComponent>("input");
         for (Entity e : inputEntities) {
             auto position = em.getComponent<PositionComponent>(e, "position");
             auto velocity = em.getComponent<VelocityComponent>(e, "velocity");
             auto input = em.getComponent<InputComponent>(e, "input");
 
-            if (position && velocity) {
+            if (position && velocity && input) {
                 velocity->vx = 0.0f;
                 velocity->vy = 0.0f;
-                if (input->moveUp)      velocity->vy = -velocity->speed;
-                if (input->moveDown)    velocity->vy = velocity->speed;
-                if (input->moveLeft)    velocity->vx = -velocity->speed;
-                if (input->moveRight)   velocity->vx = velocity->speed;
+
+                if (input->keyStates[sf::Keyboard::Up]) velocity->vy = -velocity->speed; // Haut
+                if (input->keyStates[sf::Keyboard::Down]) velocity->vy = velocity->speed;  // Bas
+                if (input->keyStates[sf::Keyboard::Left]) velocity->vx = -velocity->speed; // Gauche
+                if (input->keyStates[sf::Keyboard::Right]) velocity->vx = velocity->speed;  // Droite
 
                 if (velocity->vx != 0 && velocity->vy != 0) {
                     velocity->vx *= 0.7071f;
                     velocity->vy *= 0.7071f;
                 }
+
                 position->x += velocity->vx * dt;
                 position->y += velocity->vy * dt;
             }
         }
 
-        // Process entities with DestinationComponent for movement
         auto destinationEntities = em.getEntitiesWithComponent<DestinationComponent>("destination");
         for (Entity e : destinationEntities) {
             auto position = em.getComponent<PositionComponent>(e, "position");
@@ -51,28 +51,26 @@ public:
             auto destination = em.getComponent<DestinationComponent>(e, "destination");
 
             if (position && velocity && destination) {
+                float dx, dy, angle;
+
                 if (destination->todes) {
-                    float dx = destination->desx - position->x;
-                    float dy = destination->desy - position->y;
-                    float angle = std::atan2(dy, dx);
-                    velocity->vx = velocity->speed * std::cos(angle);
-                    velocity->vy = velocity->speed * std::sin(angle);
-
-                    if (std::abs(dx) < 5 && std::abs(dy) < 5) {
-                        destination->todes = false;
-                    }
+                    dx = destination->desx - position->x;
+                    dy = destination->desy - position->y;
+                } else {
+                    dx = destination->depx - position->x;
+                    dy = destination->depy - position->y;
                 }
-                else {
-                    float dx = destination->depx - position->x;
-                    float dy = destination->depy - position->y;
-                    float angle = std::atan2(dy, dx);
-                    velocity->vx = velocity->speed * std::cos(angle);
-                    velocity->vy = velocity->speed * std::sin(angle);
 
-                    if (std::abs(dx) < 10 && std::abs(dy) < 10) {
-                        destination->todes = true;
-                    }
+                angle = std::atan2(dy, dx);
+                velocity->vx = velocity->speed * std::cos(angle);
+                velocity->vy = velocity->speed * std::sin(angle);
+
+                if (std::hypot(dx, dy) < 5.0f) {
+                    destination->todes = !destination->todes;
+                    velocity->vx = 0.0f;
+                    velocity->vy = 0.0f;
                 }
+
                 position->x += velocity->vx * dt;
                 position->y += velocity->vy * dt;
             }

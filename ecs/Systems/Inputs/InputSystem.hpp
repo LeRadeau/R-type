@@ -28,11 +28,10 @@ public:
         for (Entity e : entities) {
             auto input = em.getComponent<InputComponent>(e, "input");
             if (input) {
-                input->moveUp = sf::Keyboard::isKeyPressed(sf::Keyboard::Z);
-                input->moveDown = sf::Keyboard::isKeyPressed(sf::Keyboard::S);
-                input->moveLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Q);
-                input->moveRight = sf::Keyboard::isKeyPressed(sf::Keyboard::D);
-                input->spaceBar = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+                for (int key = sf::Keyboard::A; key <= sf::Keyboard::KeyCount; ++key) {
+                    auto keyEnum = static_cast<sf::Keyboard::Key>(key);
+                    input->keyStates[keyEnum] = sf::Keyboard::isKeyPressed(keyEnum);
+                }
             }
         }
     }
