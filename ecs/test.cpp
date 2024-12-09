@@ -85,10 +85,6 @@ int main() {
         parallaxSystem.update(entityManager, dt);
         renderSystem.render(entityManager);
         collisionSystem.update(entityManager, dt);
-        // auto collisions = collisionSystem.detectCollisions(entityManager);
-        // for (const auto& [entityA, entityB] : collisions) {
-        //     std::cout << "Collision detected between entity " << entityA << " and entity " << entityB << std::endl;
-        // }
         window.display();
     }
     return 0;
