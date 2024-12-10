@@ -28,6 +28,7 @@
 
 // Renders
 #include "./Components/Renders/RenderableComponent.hpp"
+#include "./Components/Renders/AnimationComponent.hpp"
 
 // Inputs
 #include "./Components/Inputs/InputComponent.hpp"
@@ -49,3 +50,4 @@
 // Renders Sytems
 #include "./Systems/Renders/ParallaxSystem.hpp"
 #include "./Systems/Renders/RenderSystem.hpp"
+#include "./Systems/Renders/AnimationSystem.hpp"

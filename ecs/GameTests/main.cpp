@@ -1,4 +1,4 @@
-#include "ecs.hpp"
+#include "../../ecs.hpp"
 
 // Je ne sais pas où placer cette fonction. Est-ce un composant ? Si, oui : Je pense qu'il faut le mettre dans les RENDERS COMPONENTS
 void createParallaxLayer(EntityManager& entityManager, const std::string& texturePath, float parallaxSpeed, float scale) {
@@ -24,26 +24,19 @@ int main() {
 
     EntityManager entityManager;
 
-    // sf::Texture playerTexture;
-    // if (!playerTexture.loadFromFile("../test.png")) {
-    //     std::cerr << "Failed to load player texture\n";
-    //     return -1;
-    // }
+    sf::Texture playerTexture;
+    if (!playerTexture.loadFromFile("../test.png")) {
+        std::cerr << "Failed to load player texture\n";
+        return -1;
+    }
     sf::Texture enemytext;
     if (!enemytext.loadFromFile("../test.png")) {
         std::cerr << "Failed to load player texture\n";
         return -1;
     }
 
-    sf::Texture playerTexture;
-    if (!playerTexture.loadFromFile("./GameTests/Rtype/assets/r-typesheet1.gif")) {
-        std::cerr << "Failed to load player texture\n";
-        return -1;
-    }
-
     Entity player = entityManager.createEntity();
     entityManager.addComponent<PositionComponent>(player, "position", 100.0f, 100.0f);
-    entityManager.addComponent<AnimationComponent>(player, "animation", playerTexture, 64, 64, 4, 0.2f); // 4 frames de 64x64 pixels, change toutes les 0.2s
     entityManager.addComponent<VelocityComponent>(player, "velocity", 10.0f, 0.0f, 600);
     entityManager.addComponent<RenderableComponent>(player, "renderable", playerTexture, 0.7);
     entityManager.addComponent<BoundingBoxComponent>(player, "boundingBox", 50.0f, 50.0f);
@@ -80,7 +73,6 @@ int main() {
     CollisionSystem collisionSystem;
     RenderSystem renderSystem(window);
     ParallaxSystem parallaxSystem;
-    AnimationSystem animationSystem;
 
     sf::Clock clock;
 
@@ -90,10 +82,9 @@ int main() {
         window.clear(sf::Color::Black);
         inputSystem.processInput(entityManager);
         movementSystem.update(entityManager, dt);
-        parallaxSystem.update(entityManager, dt);
-        animationSystem.update(entityManager, dt);
-        renderSystem.render(entityManager);
         collisionSystem.update(entityManager, dt);
+        parallaxSystem.update(entityManager, dt);
+        renderSystem.render(entityManager);
         window.display();
     }
     return 0;

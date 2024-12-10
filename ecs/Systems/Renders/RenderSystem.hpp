@@ -37,8 +37,14 @@ public:
         for (Entity e : entities) {
             auto renderable = em.getComponent<RenderableComponent>(e, "renderable");
             auto position = em.getComponent<PositionComponent>(e, "position");
+            auto animation = em.getComponent<AnimationComponent>(e, "animation");
 
             if (renderable && position) {
+                if (animation) {
+                    // Mise à jour de la frame d'animation
+                    renderable->sprite.setTexture(animation->texture);
+                    renderable->sprite.setTextureRect(animation->frameRect);
+                }
                 renderable->sprite.setPosition(position->x, position->y);
                 window.draw(renderable->sprite);
             }
