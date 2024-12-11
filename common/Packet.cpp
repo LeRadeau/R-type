@@ -2,7 +2,7 @@
 #include <cstring>
 
 Packet::Packet(const std::string &senderIp, uint16_t port, int player_id, enum Type type, size_t size, void *data)
-    : m_senderIp(senderIp), m_port(port), m_player_id(player_id), m_type(type), m_size(size), m_data(data)
+    : m_senderIp(senderIp), m_port(port), m_player_id(player_id), m_type(type), m_size(size)
 {
     m_length = sizeof(m_player_id) + sizeof(m_type) + sizeof(m_size) + m_size + 1;
     m_buffer = (char *) malloc(m_length * sizeof(char));
@@ -13,6 +13,11 @@ Packet::Packet(const std::string &senderIp, uint16_t port, int player_id, enum T
     memcpy(m_buffer + sizeof(m_player_id), &m_type, sizeof(m_type));
     memcpy(m_buffer + sizeof(m_player_id) + sizeof(m_type), &m_size, sizeof(m_size));
     memcpy(m_buffer + sizeof(m_player_id) + sizeof(m_type) + sizeof(m_size), m_data, m_size);
+    void *tmp = malloc(m_size);
+    if (tmp == nullptr) {
+        throw std::bad_alloc();
+    }
+    memcpy(tmp, data, m_size);
 }
 
 Packet::Packet(const std::string &senderIp, uint16_t port, const char *buffer, size_t bufferSize)
