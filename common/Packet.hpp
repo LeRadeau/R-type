@@ -35,7 +35,7 @@ class Packet {
     Packet(const std::string &senderIp, uint16_t port, const char *buffer, size_t bufferSize);
     ~Packet();
     const std::string &getSenderIp() const;
-    const uint16_t getPort() const;
+    uint16_t getPort() const;
     const char *getBuffer() const;
     size_t getLength() const;
     int getPlayerId() const;

@@ -1,5 +1,6 @@
 #include "UdpSocket.hpp"
 #include <arpa/inet.h>
+#include <cassert>
 #include <iostream>
 #include <sys/socket.h>
 
@@ -66,6 +67,9 @@ std::vector<Packet> UdpSocket::receive()
         }
 
         // Construct the Packet object
+        if (size == 0) {
+            assert(data == nullptr);
+        }
         packets.emplace_back(senderIp, senderPort, player_id, type, size, data);
 
         // Free temporary memory (packet takes ownership of data)
