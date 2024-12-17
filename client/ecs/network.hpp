@@ -3,7 +3,8 @@
 #include <thread>
 #include <mutex>
 #include <unordered_map>
-#include "ecs.hpp"
+#include "./../../common/Serializer.hpp"
+#include "./../../common/network_types.hpp"
 
 class NetworkManager {
 public:
@@ -22,21 +23,26 @@ public:
     }
 
     void connect(const std::string& username) {
-        sf::Packet connectPacket;
-        connectPacket << "connect" << username;
-        socket.send(connectPacket, serverIp, serverPort);
+        std::string buffer;
+        Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::CONNECT));
+        Serializer::serialize(buffer, username);
+        socket.send(buffer.data(), buffer.size(), serverIp, serverPort);
     }
 
     void goodbye(const std::string& username) {
-        sf::Packet goodbyePacket;
-        goodbyePacket << "goodbye" << username;
-        socket.send(goodbyePacket, serverIp, serverPort);
+        std::string buffer;
+        Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::GOODBYE));
+        Serializer::serialize(buffer, username);
+        socket.send(buffer.data(), buffer.size(), serverIp, serverPort);
     }
 
     void sendPlayerPosition(const std::string& username, const sf::Vector2f& position) {
-        sf::Packet packet;
-        packet << "move" << username << position.x << position.y;
-        socket.send(packet, serverIp, serverPort);
+        std::string buffer;
+        Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::MOVE));
+        Serializer::serialize(buffer, username);
+        Serializer::serialize(buffer, position.x);
+        Serializer::serialize(buffer, position.y);
+        socket.send(buffer.data(), buffer.size(), serverIp, serverPort);
     }
 
     std::unordered_map<std::string, sf::Vector2f> getOtherClients() {
@@ -46,30 +52,29 @@ public:
 
 private:
     void receiveMessages() {
-        sf::Packet packet;
+        char data[1024];
+        std::size_t received;
         sf::IpAddress sender;
         unsigned short senderPort;
 
         while (true) {
-            if (socket.receive(packet, sender, senderPort) == sf::Socket::Done) {
-                std::string messageType;
-                packet >> messageType;
+            if (socket.receive(data, sizeof(data), received, sender, senderPort) == sf::Socket::Done) {
+                const char* ptr = data;
+                auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
 
-                if (messageType == "update_clients") {
+                if (messageType == MessageType::UPDATE_CLIENTS) {
                     std::lock_guard<std::mutex> lock(clientsMutex);
-                    uint32_t clientCount;
-                    packet >> clientCount;
+                    uint32_t clientCount = Serializer::deserialize<uint32_t>(ptr);
                     otherClients.clear();
 
                     for (uint32_t i = 0; i < clientCount; ++i) {
-                        std::string otherUsername;
-                        float x, y;
-                        packet >> otherUsername >> x >> y;
-                        otherClients[otherUsername] = {x, y};
+                        std::string username = Serializer::deserializeString(ptr);
+                        float x = Serializer::deserialize<float>(ptr);
+                        float y = Serializer::deserialize<float>(ptr);
+                        otherClients[username] = {x, y};
                     }
-                } else if (messageType == "error") {
-                    std::string errorMessage;
-                    packet >> errorMessage;
+                } else if (messageType == MessageType::ERROR) {
+                    std::string errorMessage = Serializer::deserializeString(ptr);
                     std::cerr << "Error: " << errorMessage << std::endl;
                 }
             }
