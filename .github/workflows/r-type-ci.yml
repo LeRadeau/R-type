@@ -1,0 +1,52 @@
+name: R-Type CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v3
+
+    - name: Install Python, Conan, and Build Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3 python3-pip cmake make g++ pkg-config clang-tidy
+        pip install --upgrade pip
+        pip install conan
+        echo "$(python3 -m site --user-base)/bin" >> $GITHUB_PATH
+
+    - name: Configure Conan
+      run: |
+        conan profile detect
+        mkdir -p build
+        conan install . --output-folder=build --build=missing -c tools.system.package_manager:mode=install -c tools.system.package_manager:sudo=True
+
+    - name: Configure with CMake
+      run: |
+        cd build
+        cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+    - name: Lint the code with clang-tidy
+      run: |
+        clang-tidy -p build $(find . -name '*.cpp') -fix -header-filter=.* -quiet
+
+    - name: Build the project with CMake
+      run: |
+        cd build
+        cmake --build .
+
+    # - name: Run tests with Catch2
+    #   run: |
+    #     cd build
+    #     ctest --output-on-failure
