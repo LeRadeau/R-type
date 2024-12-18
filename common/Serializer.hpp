@@ -13,11 +13,7 @@ public:
     }
 
     // Append string (variable length)
-    static void serialize(std::string& buffer, const std::string& str) {
-        uint32_t size = static_cast<uint32_t>(str.size());
-        serialize(buffer, size);
-        buffer.append(str.data(), size);
-    }
+    static void serialize(std::string& buffer, const std::string& str); 
 
     // Deserialize data
     template <typename T>
@@ -29,12 +25,7 @@ public:
     }
 
     // Deserialize string (variable length)
-    static std::string deserializeString(const char*& data) {
-        uint32_t size = deserialize<uint32_t>(data);
-        std::string str(data, size);
-        data += size;
-        return str;
-    }
+    static std::string deserializeString(const char*& data);
 
     enum class MessageType : uint8_t {
         // CLIENT -> SERVER
