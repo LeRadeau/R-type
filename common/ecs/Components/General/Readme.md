@@ -1,3 +1,0 @@
-Healthcomponent : Gère la vie d’une entité (points de vie, état vivant/mort, etc.).
-TagComponent : Un composant simple permettant d’attribuer une étiquette ou un type à une entité (par exemple, "player", "enemy", "pickup").
-TimeCooldownComponent :  Un composant pour gérer les délais ou durées spécifiques à une entité (par exemple, une explosion qui disparaît après 2 secondes, ou un délai avant une action).
