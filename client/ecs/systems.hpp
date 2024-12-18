@@ -42,7 +42,7 @@ public:
 
 class MovementSystem {
 public:
-    void update(EntityManager& entityManager, NetworkManager& networkManager) {
+    void update(EntityManager& entityManager, NetworkManager& networkManager, float dt) {
         for (auto& entity : entityManager.entities) {
             auto* input = entity->getComponent<InputComponent>();
             auto* position = entity->getComponent<PositionComponent>();
@@ -50,18 +50,35 @@ public:
             
             if (input && position && network) {
                 if (input->moveLeft) 
-                    position->position.x -= 1.0f;
+                    position->position.x -= 200 * dt;
                 if (input->moveRight)
-                    position->position.x += 1.0f;
+                    position->position.x += 200 * dt;
                 if (input->moveUp)
-                    position->position.y -= 1.0f;
+                    position->position.y -= 200 * dt;
                 if (input->moveDown)
-                    position->position.y += 1.0f;
+                    position->position.y += 200 * dt;
                 
                 networkManager.sendPlayerPosition(
                     network->username, 
                     position->position
                 );
+            }
+        }
+    }
+};
+
+class ShootingSystem {
+public:
+    void update(EntityManager& entityManager, NetworkManager& networkManager) {
+        for (auto& entity : entityManager.entities) {
+            auto* input = entity->getComponent<InputComponent>();
+            auto* position = entity->getComponent<PositionComponent>();
+            auto* network = entity->getComponent<NetworkComponent>();
+            
+            if (input && position && network) {
+                if (input->spaceBar) {
+                    networkManager.shoot(network->username, position->position);
+                }
             }
         }
     }

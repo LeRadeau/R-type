@@ -7,5 +7,7 @@ enum class MessageType : uint8_t {
     GOODBYE = 1,
     MOVE = 2,
     UPDATE_CLIENTS = 3,
-    ERROR = 4
+    ERROR = 4,
+    SHOOT = 5,
+    BULLET_INFOS
 };

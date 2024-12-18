@@ -45,6 +45,15 @@ public:
         socket.send(buffer.data(), buffer.size(), serverIp, serverPort);
     }
 
+    void shoot(const std::string& username, const sf::Vector2f& position) {
+        std::string buffer;
+        Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::SHOOT));
+        Serializer::serialize(buffer, username);
+        Serializer::serialize(buffer, position.x);
+        Serializer::serialize(buffer, position.y);
+        socket.send(buffer.data(), buffer.size(), serverIp, serverPort);
+    }
+
     std::unordered_map<std::string, sf::Vector2f> getOtherClients() {
         std::lock_guard<std::mutex> lock(clientsMutex);
         return otherClients;
@@ -74,8 +83,18 @@ private:
                         otherClients[username] = {x, y};
                     }
                 } else if (messageType == MessageType::ERROR) {
+                    std::cout << "ERROR" << std::endl;
                     std::string errorMessage = Serializer::deserializeString(ptr);
                     std::cerr << "Error: " << errorMessage << std::endl;
+                } else if (messageType == MessageType::BULLET_INFOS) {
+                    std::cout << "Received bullet infos" << std::endl;
+                    uint32_t bulletCount = Serializer::deserialize<uint32_t>(ptr);
+                    std::lock_guard<std::mutex> lock(clientsMutex);
+                    for (uint32_t i = 0; i < bulletCount; ++i) {
+                        float x = Serializer::deserialize<float>(ptr);
+                        float y = Serializer::deserialize<float>(ptr);
+                        std::cout << "Bullet at " << x << ", " << y << std::endl;
+                    }
                 }
             }
         }

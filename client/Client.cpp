@@ -39,10 +39,16 @@ int main(int ac, char **av) {
     RenderSystem renderSystem(window);
     MovementSystem movementSystem;
     InputSystem inputSystem;
+    ShootingSystem shootingSystem;
+
+    sf::Clock clock;
+    float dt = 0.0f;
 
     // Game loop
     while (window.isOpen()) {
+        dt = clock.restart().asSeconds();
         sf::Event event;
+
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
@@ -51,8 +57,9 @@ int main(int ac, char **av) {
             }
         }
 
-        movementSystem.update(entityManager, networkManager);
+        movementSystem.update(entityManager, networkManager, dt);
         inputSystem.update(entityManager);
+        shootingSystem.update(entityManager, networkManager);
 
         window.clear();
         renderSystem.update(entityManager);
