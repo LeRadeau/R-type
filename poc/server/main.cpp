@@ -14,7 +14,7 @@ int main()
 {
     EntityManager entityManager;
 
-    NetworkSystem networkSystem;
+    NetworkManager networkSystem;
     networkSystem.bindSocket("127.0.0.1", 8089);
 
     entityManager.createEntity();
@@ -24,5 +24,8 @@ int main()
     auto& player = entityManager.createEntity();
     player.addComponent<InputComponent>();
     player.addComponent<PositionComponent>(10, 19);
-
+    player.addComponent<BindRemoteComponent>();
+    while (1) {
+        networkSystem.receiveMessages(true);
+    }
 }

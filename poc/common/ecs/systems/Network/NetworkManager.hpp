@@ -17,7 +17,15 @@
 #include <unistd.h>
 #endif
 
-class NetworkSystem
+struct Packet {
+    std::string senderIp;
+    uint16_t senderPort;
+    const char *data;
+    const char *ptr;
+    Packet(std::string senderIp, uint16_t senderPort, const char *data) : senderIp(), senderPort(), data(data), ptr(data) {}
+};
+
+class NetworkManager
 {
 private:
     int m_sockfd;
@@ -28,7 +36,7 @@ private:
 #endif
 
 public:
-    NetworkSystem() : m_is_initialized(false)
+    NetworkManager() : m_is_initialized(false)
     {
 #ifdef _WIN32
         if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
@@ -45,7 +53,7 @@ public:
         m_is_initialized = true;
     }
 
-    ~NetworkSystem()
+    ~NetworkManager()
     {
         if (m_is_initialized)
         {
@@ -77,12 +85,12 @@ public:
         sendto(m_sockfd, buffer.data(), buffer.size(), 0, (const struct sockaddr *)&addr, len);
     }
 
-    void receiveMessages()
+    std::vector<Packet> receiveMessages(bool test)
     {
+        std::vector<Packet> packets;
         char data[1024];
         std::size_t received;
         struct sockaddr_in senderAddr;
-        unsigned short senderPort;
         socklen_t senderLen = sizeof(senderAddr);
 
         while (true)
@@ -97,20 +105,44 @@ public:
                 }
                 throw std::runtime_error("Failed to receive data");
             }
-                std::cout << receivedBytes << std::endl;
+            char senderIp[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &senderAddr.sin_addr, senderIp, INET_ADDRSTRLEN);
+            uint16_t senderPort = ntohs(senderAddr.sin_port);
+            std::cout << receivedBytes << std::endl;
+            char *buffer = (char *) malloc(sizeof(char) * receivedBytes + 1);
+            memcpy(buffer, data, receivedBytes);
+            packets.push_back(Packet(std::string(senderIp), senderPort, buffer));
 
-            const char *ptr = data;
-            auto messageType = static_cast<Serializer::MessageType>(Serializer::deserialize<uint8_t>(ptr));
-
-            if (messageType == Serializer::MessageType::INPUT) {
-                
-                std::cout << "PAQUET TYPE INPUT RECU !!\n";
-            } else if (messageType == Serializer::MessageType::ERROR) {
-                std::string errorMessage = Serializer::deserializeString(ptr);
-                std::cerr << "Error: " << errorMessage << std::endl;
+            // if (test) {
+            //     std::cout << "J'envoie le paquet !\n";
+            //         std::string buffer;
+            //         Serializer::serialize(buffer, Serializer::MessageType::CONNECT);
+            //         Serializer::serialize(buffer, Serializer::MessageType::END);
+            //         this->sendTo(buffer, senderIp, senderPort);
+            // }
+            if (test) {
+                std::cout << "J'envoie la Window ID 0!\n";
+                    std::string buffer;
+                    Serializer::serialize(buffer, Serializer::MessageType::ENTITY);
+                    Serializer::serialize(buffer, (uint64_t)0);
+                    Serializer::serialize(buffer, Serializer::MessageType::WINDOW);
+                    Serializer::serialize(buffer, (unsigned int) 1920);
+                    Serializer::serialize(buffer, (unsigned int) 1080);
+                    Serializer::serialize(buffer, Serializer::MessageType::END);
+                    this->sendTo(buffer, senderIp, senderPort);
             }
-            std::cout << "prout\n";
+            if (test) {
+                std::cout << "J'envoie l'entité PLAYER id 1 !\n";
+                    std::string buffer;
+                    Serializer::serialize(buffer, Serializer::MessageType::ENTITY);
+                    Serializer::serialize(buffer, (uint64_t)1);
+                    Serializer::serialize(buffer, Serializer::MessageType::RENDER);
+                    Serializer::serialize(buffer, (std::string) "./haiMad.png");
+                    Serializer::serialize(buffer, Serializer::MessageType::END);
+                    this->sendTo(buffer, senderIp, senderPort);
+            }
         }
+        return packets;
     }
 
 private:

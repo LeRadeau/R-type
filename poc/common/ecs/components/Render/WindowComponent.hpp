@@ -8,7 +8,7 @@ struct WindowComponent : public Component
 {
     unsigned int modeWidth;
     unsigned int modeHeight;
-    std::string WindowName;
+    std::string WindowName; // 32 char max
     
-    WindowComponent(unsigned int modeWidth, unsigned int modeHeight, std::string WindowName) : modeWidth(modeWidth), modeHeight(modeHeight), WindowName(WindowName) {}
+    WindowComponent(unsigned int modeWidth, unsigned int modeHeight, std::string WindowName = "") : modeWidth(modeWidth), modeHeight(modeHeight), WindowName(WindowName) {}
 };

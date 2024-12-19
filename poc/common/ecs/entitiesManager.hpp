@@ -41,6 +41,21 @@ public:
         return *entities.back();
     }
 
+    bool checkIfEntityExist(uint64_t id) {
+        for (auto it = entities.begin(); it != entities.end(); it++) {
+            if ((*it)->getId() == id)
+                return true;
+        }
+        return false;
+    } 
+
+    Entity& findEntity(uint64_t id) {
+        for (auto it = entities.begin(); it != entities.end(); it++) {
+            if ((*it)->getId() == id)
+                return *(*it);
+        }
+    }
+
     void destroyEntity(uint64_t id) {
         entities.erase(
             std::remove_if(entities.begin(), entities.end(),
