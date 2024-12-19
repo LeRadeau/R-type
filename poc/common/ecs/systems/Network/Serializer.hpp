@@ -48,16 +48,5 @@ public:
         POSITION,   // Server to Client
         NEXT,
         END,
-        /*
-            Exemple : Packet receivde for client -> 3 6 1204 1238
-            - Entity avec Id 3
-            - Component type POSITION (6)
-            - Position X: 1204
-            - Position Y: 1238
-            So, if the entity and component are not already create, the Client will create it with positions.
-            If entity and component are already create, only change attribut of positions.
-            Have to create doc To explain all that.
-        */
-    
     };
 };

@@ -1,8 +1,5 @@
 #pragma once
 
-#include "../entitiesManager.hpp"
-#include "../components/Transform/PositionComponent.hpp"
-#include "../components/Input/InputComponent.hpp"
 
 class MovementSystem {
 public:

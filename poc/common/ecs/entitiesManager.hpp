@@ -49,10 +49,10 @@ public:
         return false;
     } 
 
-    Entity& findEntity(uint64_t id) {
+    std::unique_ptr<Entity>& findEntity(uint64_t id) {
         for (auto it = entities.begin(); it != entities.end(); it++) {
             if ((*it)->getId() == id)
-                return *(*it);
+                return (*it);
         }
     }
 
