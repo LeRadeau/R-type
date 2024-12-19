@@ -126,21 +126,45 @@ public:
                     Serializer::serialize(buffer, Serializer::MessageType::ENTITY);
                     Serializer::serialize(buffer, (uint64_t)0);
                     Serializer::serialize(buffer, Serializer::MessageType::WINDOW);
-                    Serializer::serialize(buffer, (unsigned int) 1920);
+                    Serializer::serialize(buffer, (unsigned int) 1000);
                     Serializer::serialize(buffer, (unsigned int) 1080);
-                    Serializer::serialize(buffer, Serializer::MessageType::END);
-                    this->sendTo(buffer, senderIp, senderPort);
-            }
-            if (test) {
-                std::cout << "J'envoie l'entité PLAYER id 1 !\n";
-                    std::string buffer;
+                    Serializer::serialize(buffer, Serializer::MessageType::NEXT);
                     Serializer::serialize(buffer, Serializer::MessageType::ENTITY);
                     Serializer::serialize(buffer, (uint64_t)1);
                     Serializer::serialize(buffer, Serializer::MessageType::RENDER);
                     Serializer::serialize(buffer, (std::string) "./haiMad.png");
+                    Serializer::serialize(buffer, Serializer::MessageType::POSITION);
+                    Serializer::serialize(buffer, (float) 100.0f);
+                    Serializer::serialize(buffer, (float) 150.0f);
+                    Serializer::serialize(buffer, Serializer::MessageType::INPUT);
                     Serializer::serialize(buffer, Serializer::MessageType::END);
                     this->sendTo(buffer, senderIp, senderPort);
             }
+            // if (test) {
+            //     std::cout << "J'envoie l'entité PLAYER id 1 avec un COmponent RENDER!\n";
+            //         std::string buffer;
+            //         Serializer::serialize(buffer, Serializer::MessageType::ENTITY);
+            //         Serializer::serialize(buffer, (uint64_t)1);
+            //         Serializer::serialize(buffer, Serializer::MessageType::RENDER);
+            //         Serializer::serialize(buffer, (std::string) "./haiMad.png");
+            //         Serializer::serialize(buffer, Serializer::MessageType::POSITION);
+            //         Serializer::serialize(buffer, (float) 100.0f);
+            //         Serializer::serialize(buffer, (float) 150.0f);
+            //         Serializer::serialize(buffer, Serializer::MessageType::INPUT);
+            //         Serializer::serialize(buffer, Serializer::MessageType::END);
+            //         this->sendTo(buffer, senderIp, senderPort);
+            // }
+            // if (test) {
+            //     std::cout << "J'envoie l'entité PLAYER id 1 avec un Component avec POS!\n";
+            //         std::string buffer;
+            //         Serializer::serialize(buffer, Serializer::MessageType::ENTITY);
+            //         Serializer::serialize(buffer, (uint64_t)1);
+            //         Serializer::serialize(buffer, Serializer::MessageType::POSITION);
+            //         Serializer::serialize(buffer, (float) 100.0f);
+            //         Serializer::serialize(buffer, (float) 150.0f);
+            //         Serializer::serialize(buffer, Serializer::MessageType::END);
+            //         this->sendTo(buffer, senderIp, senderPort);
+            // }
         }
         return packets;
     }

@@ -14,44 +14,61 @@ class ClientNetworkSystem {
         void dataFromServer(EntityManager& em) {
             std::vector<Packet> packets = networkManager.receiveMessages(false);
             for (Packet packet : packets) {
-                Serializer::MessageType messageType = static_cast<Serializer::MessageType>(Serializer::deserialize<uint8_t>(packet.data));
-                if (messageType == Serializer::MessageType::CONNECT) {
-                    // ECS connection good
-                    std::cout << "Connected to server successful" << std::endl;
-                }
-
-                // Creation of modification of entity
-                if (messageType == Serializer::MessageType::ENTITY) {
-
-                    uint64_t entityNbr = static_cast<uint64_t>(Serializer::deserialize<uint64_t>(packet.data));
-                    if (em.checkIfEntityExist(entityNbr)) {
-                        // Créer l'entité avec son ID
-                        std::cout << "entité trouvé\n";
-                    } else {
-                        // On est sensé le crée
-                        std::cout << "entité pas trouvé, entité crée du coup\n";
-                        continue;
+                Serializer::MessageType messageType = Serializer::MessageType::NOTHING;
+                while (1) {
+                    messageType = static_cast<Serializer::MessageType>(Serializer::deserialize<uint8_t>(packet.data));
+                    if (messageType == Serializer::MessageType::CONNECT) {
+                        // ECS connection good
+                        std::cout << "Connected to server successful" << std::endl;
                     }
-                    Entity& entity = em.findEntity(entityNbr);
+                    // Creation of modification of entity
+                    if (messageType == Serializer::MessageType::ENTITY) {
+                        uint64_t entityNbr = static_cast<uint64_t>(Serializer::deserialize<uint64_t>(packet.data));
+                        if (em.checkIfEntityExist(entityNbr)) {
+                            // Créer l'entité avec son ID
+                            std::cout << "entité trouvé\n";
+                        } else {
+                            // On est sensé le crée
+                            std::cout << "entité pas trouvé, entité crée du coup\n";
+                            continue;
+                        }
+                        Entity& entity = em.findEntity(entityNbr);
+                        while (1) {
+                            messageType = static_cast<Serializer::MessageType>(Serializer::deserialize<Serializer::MessageType>(packet.data));
+                            if (messageType == Serializer::MessageType::END || messageType == Serializer::MessageType::NEXT)
+                                break;
+                            // Component WINDOW - CREATION DE WINDOW
+                            if (messageType == Serializer::MessageType::WINDOW) {
+                                std::cout << "WINDOW\n";
+                                unsigned int modeWidth = static_cast<unsigned int>(Serializer::deserialize<unsigned int>(packet.data));
+                                unsigned int modeHeight = static_cast<unsigned int>(Serializer::deserialize<unsigned int>(packet.data));
+                                std::cout << "modeWidth -> " << modeWidth << " modeHeight -> " << modeHeight << std::endl;
+                                entity.addComponent<WindowComponent>(modeWidth, modeHeight);
+                            }
 
-                    Serializer::MessageType componentType = static_cast<Serializer::MessageType>(Serializer::deserialize<Serializer::MessageType>(packet.data));
-                    
-                    // Component WINDOW - CREATION DE WINDOW
-                    if (componentType == Serializer::MessageType::WINDOW) {
-                        std::cout << "WINDOW\n";
-                        unsigned int modeWidth = static_cast<unsigned int>(Serializer::deserialize<unsigned int>(packet.data));
-                        unsigned int modeHeight = static_cast<unsigned int>(Serializer::deserialize<unsigned int>(packet.data));
-                        std::cout << "modeWidth -> " << modeWidth << " modeHeight -> " << modeHeight << std::endl;
-                        entity.addComponent<WindowComponent>(modeWidth, modeHeight);
+                            // Component WINDOW - CREATION DE WINDOW
+                            if (messageType == Serializer::MessageType::RENDER) {
+                                std::cout << "RENDER\n";
+                                std::string pathImg = Serializer::deserializeString(packet.data);
+                                std::cout << "Pathimg -> " << pathImg << std::endl;
+                                entity.addComponent<RenderComponent>(pathImg, true);
+                            }
+                            if (messageType == Serializer::MessageType::INPUT) {
+                                std::cout << "INPUT\n";
+                                entity.addComponent<InputComponent>();
+                            }
+                            if (messageType == Serializer::MessageType::POSITION) {
+                                std::cout << "POSITION\n";
+                                sf::Vector2f pos;
+                                float x = static_cast<float>(Serializer::deserialize<float>(packet.data));
+                                float y = static_cast<float>(Serializer::deserialize<float>(packet.data));
+                                std::cout << "x -> " << x << " y -> " << y << std::endl;
+                                entity.addComponent<PositionComponent>(x, y);
+                            }
+                        }
                     }
-
-                    // Component WINDOW - CREATION DE WINDOW
-                    if (componentType == Serializer::MessageType::RENDER) {
-                        std::cout << "RENDER\n";
-                        std::string pathImg = Serializer::deserializeString(packet.data);
-                        std::cout << "Pathimg -> " << pathImg << std::endl;
-                        entity.addComponent<RenderComponent>(pathImg, true);
-                    }
+                    if (messageType == Serializer::MessageType::END)
+                        break;
                 }
                 free((void *)packet.ptr);
             }

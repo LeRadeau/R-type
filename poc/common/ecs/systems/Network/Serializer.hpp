@@ -37,6 +37,7 @@ public:
     }
 
     enum class MessageType : uint8_t {
+        NOTHING,
         CONNECT,    // Client to Server
         CONNECTED,  // Server to Client
         ERROR,      // Client and Server

@@ -20,15 +20,15 @@ int main(void)
     bool chechk = false;
 
     RenderSystem rendersystem;
-    // while (!rendersystem.createWindow(entityManager)) {
-    //     sleep(1);
-    //     if (!chechk) {
-    //         clientNetworkSystem.test();
-    //         chechk = true;
-    //     }
-    //     clientNetworkSystem.dataFromServer(entityManager);
-    // }
-    window.addComponent<WindowComponent>(1920, 1080); // On peut créer la window directement avec le serveur, mais pour être plus rapide on peut l'a crée ici.
+    while (!rendersystem.createWindow(entityManager)) {
+        if (!chechk) {
+            clientNetworkSystem.test();
+            chechk = true;
+        }
+        clientNetworkSystem.dataFromServer(entityManager);
+        sleep(1);
+    }
+    // window.addComponent<WindowComponent>(1920, 1080); // On peut créer la window directement avec le serveur, mais pour être plus rapide on peut l'a crée ici.
 
     rendersystem.createWindow(entityManager);
     sf::RenderWindow& win = rendersystem.getWindow();
