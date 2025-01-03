@@ -29,7 +29,7 @@ class Server {
     void handleMove(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr);
     void handleGoodbye(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr);
     void readSocket();
-    void updateClientPositions();
+    void broadcastClients();
     sf::UdpSocket socket_;
     std::unordered_map<std::string, Client> clients_;
 };
