@@ -30,3 +30,8 @@ struct InputComponent : public Component {
     bool moveDown = false;
     bool spaceBar = false;
 };
+
+struct usernameComponent : public Component {
+    std::string username;
+    usernameComponent(const std::string& name) : username(name) {}
+};
