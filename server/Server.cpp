@@ -76,25 +76,26 @@ void Server::readSocket()
             case MessageType::GOODBYE: handleGoodbye(sender, senderPort, ptr); break;
             default: break;
         }
+        broadcastClients();
     }
-    updateClientPositions();
 }
 
-void Server::updateClientPositions()
+void Server::broadcastClients()
 {
-    // Broadcast updated client positions
-    std::string updateBuffer;
-    Serializer::serialize(updateBuffer, static_cast<uint8_t>(MessageType::UPDATE_CLIENTS));
-    Serializer::serialize(updateBuffer, static_cast<uint32_t>(clients_.size()));
+    std::string buffer;
+    Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::UPDATE_CLIENTS));
+    Serializer::serialize(buffer, static_cast<uint32_t>(clients_.size()));
 
-    for (const auto &[username, client] : clients_) {
-        Serializer::serialize(updateBuffer, client.username);
-        Serializer::serialize(updateBuffer, client.position.x);
-        Serializer::serialize(updateBuffer, client.position.y);
+    for (const auto &client : clients_) {
+        Serializer::serialize(buffer, client.second.username);
+        Serializer::serialize(buffer, client.second.position.x);
+        Serializer::serialize(buffer, client.second.position.y);
     }
 
-    for (const auto &[username, client] : clients_) {
-        socket_.send(updateBuffer.data(), updateBuffer.size(), client.ip, client.port);
+    for (const auto &client : clients_) {
+        
+        std::cout << "Broadcasting to " << client.second.username << std::endl;
+        socket_.send(buffer.data(), buffer.size(), client.second.ip, client.second.port);
     }
 }
 
