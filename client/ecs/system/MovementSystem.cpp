@@ -1,6 +1,10 @@
 #include "MovementSystem.hpp"
 #include "Serializer.hpp"
-#include "ecs/components.hpp"
+#include "ecs/component/BulletIdComponent.hpp"
+#include "ecs/component/InputComponent.hpp"
+#include "ecs/component/NetworkComponent.hpp"
+#include "ecs/component/PositionComponent.hpp"
+#include "ecs/component/VelocityComponent.hpp"
 #include "network_types.hpp"
 
 void MovementSystem::update(EntityManager &entityManager, NetworkManager &networkManager, float deltaTime, bool focus)

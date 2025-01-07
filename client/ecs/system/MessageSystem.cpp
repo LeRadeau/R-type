@@ -1,7 +1,13 @@
 #include "MessageSystem.hpp"
 #include <iostream>
 #include "Serializer.hpp"
-#include "ecs/components.hpp"
+#include "ecs/component/BulletIdComponent.hpp"
+#include "ecs/component/EnnemyIdComponent.hpp"
+#include "ecs/component/HealthComponent.hpp"
+#include "ecs/component/PositionComponent.hpp"
+#include "ecs/component/RenderComponent.hpp"
+#include "ecs/component/UsernameComponent.hpp"
+#include "ecs/component/VelocityComponent.hpp"
 #include "network_types.hpp"
 
 void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername)

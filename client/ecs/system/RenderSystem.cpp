@@ -1,5 +1,8 @@
 #include "RenderSystem.hpp"
-#include "ecs/components.hpp"
+#include "ecs/component/HealthComponent.hpp"
+#include "ecs/component/PositionComponent.hpp"
+#include "ecs/component/RenderComponent.hpp"
+#include "ecs/component/UsernameComponent.hpp"
 
 RenderSystem::RenderSystem(sf::RenderWindow &window, const std::string &fontName) : window(window)
 {

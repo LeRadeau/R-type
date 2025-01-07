@@ -1,6 +1,6 @@
 #include "InputSystem.hpp"
 #include <SFML/Window/Keyboard.hpp>
-#include "ecs/components.hpp"
+#include "ecs/component/InputComponent.hpp"
 
 void InputSystem::update(EntityManager &entityManager)
 {

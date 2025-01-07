@@ -3,8 +3,15 @@
 #include "Serializer.hpp"
 #include "ecs/EntityManager.hpp"
 #include "ecs/NetworkManager.hpp"
-#include "ecs/components.hpp"
-#include "ecs/systems.hpp"
+#include "ecs/component/InputComponent.hpp"
+#include "ecs/component/NetworkComponent.hpp"
+#include "ecs/component/PositionComponent.hpp"
+#include "ecs/component/RenderComponent.hpp"
+#include "ecs/component/UsernameComponent.hpp"
+#include "ecs/system/InputSystem.hpp"
+#include "ecs/system/MessageSystem.hpp"
+#include "ecs/system/MovementSystem.hpp"
+#include "ecs/system/RenderSystem.hpp"
 #include "network_types.hpp"
 
 static void sendConnectMessage(NetworkManager &networkManager, const std::string &username)
