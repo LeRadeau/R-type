@@ -2,7 +2,7 @@
 #include <iostream>
 #include "ecs/ecs.hpp"
 #include "ecs/components.hpp"
-#include "ecs/network.hpp"
+#include "ecs/NetworkManager.hpp"
 #include "Serializer.hpp"
 #include "ecs/systems.hpp"
 #include "network_types.hpp"

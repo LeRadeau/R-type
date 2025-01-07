@@ -1,6 +1,6 @@
 #pragma once
 #include "ecs/ecs.hpp"
-#include "ecs/network.hpp"
+#include "ecs/NetworkManager.hpp"
 
 class MovementSystem {
   public:
