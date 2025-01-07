@@ -209,7 +209,7 @@ void Server::loadEnnemies()
     for (int i = 0; i < MAX_ENNEMIES; ++i) {
         Ennemy newEnnemy;
         newEnnemy.id = "ennemy_" + std::to_string(i);
-        newEnnemy.position = {1000, 100 * i};
+        newEnnemy.position = {float(1000), float(100 * i)};
         newEnnemy.velocity = {0, 0};
         newEnnemy.health = 100;
         newEnnemy.shootingCooldown = 1.0f;
