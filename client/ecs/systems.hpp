@@ -9,7 +9,7 @@
 class RenderSystem {
 public:
     RenderSystem(sf::RenderWindow& window) : window(window) {
-        font.loadFromFile("arial.ttf");
+        font.loadFromFile("assets/arial.ttf");
     }
 
     void displayBarInfos(EntityManager& entityManager) {

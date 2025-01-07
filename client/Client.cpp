@@ -30,7 +30,7 @@ int main(int ac, char **av) {
     std::string username = av[2];
 
     sf::Font font;
-    if (!font.loadFromFile("arial.ttf")) {
+    if (!font.loadFromFile("assets/arial.ttf")) {
         std::cerr << "Failed to load font." << std::endl;
         return 1;
     }
