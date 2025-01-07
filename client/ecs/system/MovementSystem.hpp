@@ -1,5 +1,5 @@
 #pragma once
-#include "ecs/ecs.hpp"
+#include "ecs/EntityManager.hpp"
 #include "ecs/NetworkManager.hpp"
 
 class MovementSystem {

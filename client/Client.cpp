@@ -1,27 +1,30 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "ecs/ecs.hpp"
-#include "ecs/components.hpp"
-#include "ecs/NetworkManager.hpp"
 #include "Serializer.hpp"
+#include "ecs/EntityManager.hpp"
+#include "ecs/NetworkManager.hpp"
+#include "ecs/components.hpp"
 #include "ecs/systems.hpp"
 #include "network_types.hpp"
 
-void sendConnectMessage(NetworkManager& networkManager, const std::string& username) {
+static void sendConnectMessage(NetworkManager &networkManager, const std::string &username)
+{
     std::string buffer;
     Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::CONNECT));
     Serializer::serialize(buffer, username);
     networkManager.send(buffer);
 }
 
-void sendGoodbyeMessage(NetworkManager& networkManager, const std::string& username) {
+static void sendGoodbyeMessage(NetworkManager &networkManager, const std::string &username)
+{
     std::string buffer;
     Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::GOODBYE));
     Serializer::serialize(buffer, username);
     networkManager.send(buffer);
 }
 
-int main(int argc, char *const *argv) {
+int main(int argc, char *const *argv)
+{
     if (argc != 3) {
         std::cerr << "Usage: " << argv[0] << " <server_ip> <username>" << std::endl;
         return 1;
@@ -44,8 +47,8 @@ int main(int argc, char *const *argv) {
     EntityManager entityManager;
 
     sendConnectMessage(networkManager, username);
-    
-    auto& playerEntity = entityManager.createEntity();
+
+    auto &playerEntity = entityManager.createEntity();
     playerEntity.addComponent<PositionComponent>(400, 300);
     playerEntity.addComponent<RenderComponent>(30, sf::Color::Green);
     playerEntity.addComponent<NetworkComponent>(username);
