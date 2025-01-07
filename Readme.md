@@ -17,14 +17,15 @@ conan install . --output-folder=build --build=missing -c tools.system.package_ma
 ```
 Then configure some more and compile
 ```
-$ cd build
-$ cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
-$ cmake --build .
+cd build
+cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+cd ..
+cmake --build ./build ; mv build/client/r-type_client . ; mv build/server/r-type_server .
 ```
-If on windows instead:
+Now launch !
 ```
-$ cd build
-# assuming Visual Studio 15 2017 is your VS version and that it matches your default profile
-$ cmake .. -G "Visual Studio 15 2017" -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake"
-$ cmake --build . --config Release
+# start the server :
+./r-type_server
+# start the client(s) :
+./r-type_client <ip> <username>
 ```
