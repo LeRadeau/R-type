@@ -1,4 +1,5 @@
 #include "MessageSystem.hpp"
+#include <iostream>
 #include "Serializer.hpp"
 #include "ecs/components.hpp"
 #include "network_types.hpp"
