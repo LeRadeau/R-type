@@ -8,14 +8,14 @@
 
 void sendConnectMessage(NetworkManager& networkManager, const std::string& username) {
     std::string buffer;
-    Serializer::serialize(buffer, static_cast<uint8_t>(Serializer::MessageType::CONNECT));
+    Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::CONNECT));
     Serializer::serialize(buffer, username);
     networkManager.send(buffer);
 }
 
 void sendGoodbyeMessage(NetworkManager& networkManager, const std::string& username) {
     std::string buffer;
-    Serializer::serialize(buffer, static_cast<uint8_t>(Serializer::MessageType::GOODBYE));
+    Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::GOODBYE));
     Serializer::serialize(buffer, username);
     networkManager.send(buffer);
 }
@@ -35,7 +35,7 @@ int main(int ac, char **av) {
         return 1;
     }
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "ECS UDP Client");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "ECS UDP Client");
     window.setFramerateLimit(60);
 
     NetworkManager networkManager(serverIp, 54000);

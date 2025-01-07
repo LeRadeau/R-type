@@ -44,13 +44,22 @@ public:
         return *entities.back();
     }
 
-    void destroyEntity(uint64_t id) {
-        entities.erase(
-            std::remove_if(entities.begin(), entities.end(),
-                [id](const auto& e) { return e->getId() == id; }),
-            entities.end()
-        );
+    void markForDeletion(uint64_t id) {
+        toBeDeleted.push_back(id);
     }
 
+    void destroyMarkedEntities() {
+        for (uint64_t id : toBeDeleted) {
+            entities.erase(
+                std::remove_if(entities.begin(), entities.end(),
+                    [id](const auto& e) { return e->getId() == id; }),
+                entities.end()
+            );
+        }
+        toBeDeleted.clear();
+    }
     std::vector<std::unique_ptr<Entity>> entities;
+
+private:
+    std::vector<uint64_t> toBeDeleted;
 };
