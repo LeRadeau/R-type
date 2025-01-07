@@ -111,7 +111,7 @@ public:
 
 class MovementSystem {
 public:
-    void update(EntityManager& entityManager, NetworkManager& networkManager, float deltaTime) {
+    void update(EntityManager& entityManager, NetworkManager& networkManager, float deltaTime, bool focus) {
         static float timer = 0.0f;
         static float bulletTimer = 0.0f;
 
@@ -126,7 +126,7 @@ public:
             auto* bulletId = entity->getComponent<BulletId>();
 
             // Movement logic for players
-            if (input && position && network && (input->moveLeft || input->moveRight || input->moveUp || input->moveDown)) {
+            if (input && position && network && (input->moveLeft || input->moveRight || input->moveUp || input->moveDown) && focus) {
                 if (input->moveLeft) 
                     position->position.x -= 200.0f * deltaTime;
                 if (input->moveRight)
@@ -149,7 +149,7 @@ public:
             }
 
             // Shooting logic
-            if (input && position && input->spaceBar && bulletTimer > 0.3f) {
+            if (input && position && input->spaceBar && bulletTimer > 0.3f && focus) {
                 std::string buffer;
                 Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::SHOOT));
                 Serializer::serialize(buffer, network->username);

@@ -71,7 +71,7 @@ int main(int ac, char **av) {
         }
         float deltaTime = deltaClock.restart().asSeconds();
 
-        movementSystem.update(entityManager, networkManager, deltaTime);
+        movementSystem.update(entityManager, networkManager, deltaTime, window.hasFocus());
         inputSystem.update(entityManager);
         messageSystem.update(entityManager, networkManager, username);
 
