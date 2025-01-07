@@ -1,10 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "./ecs/ecs.hpp"
-#include "./ecs/components.hpp"
-#include "./ecs/systems.hpp"
-#include "./ecs/network.hpp"
-#include "./../common/Serializer.hpp"
+#include "ecs/ecs.hpp"
+#include "ecs/components.hpp"
+#include "ecs/network.hpp"
+#include "Serializer.hpp"
+#include "ecs/systems.hpp"
+#include "network_types.hpp"
 
 void sendConnectMessage(NetworkManager& networkManager, const std::string& username) {
     std::string buffer;
@@ -20,14 +21,14 @@ void sendGoodbyeMessage(NetworkManager& networkManager, const std::string& usern
     networkManager.send(buffer);
 }
 
-int main(int ac, char **av) {
-    if (ac != 3) {
-        std::cerr << "Usage: " << av[0] << " <server_ip> <username>" << std::endl;
+int main(int argc, char *const *argv) {
+    if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <server_ip> <username>" << std::endl;
         return 1;
     }
 
-    std::string serverIp = av[1];
-    std::string username = av[2];
+    std::string serverIp = argv[1];
+    std::string username = argv[2];
 
     sf::Font font;
     if (!font.loadFromFile("assets/arial.ttf")) {
