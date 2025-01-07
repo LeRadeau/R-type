@@ -8,6 +8,16 @@ struct PositionComponent : public Component {
     PositionComponent(float x = 0, float y = 0) : position(x, y) {}
 };
 
+struct VelocityComponent : public Component {
+    sf::Vector2f velocity;
+    VelocityComponent(float x = 0, float y = 0) : velocity(x, y) {}
+};
+
+struct HealthComponent : public Component {
+    int health;
+    HealthComponent(int health = 100) : health(health) {}
+};
+
 struct RenderComponent : public Component {
     sf::CircleShape shape;
     sf::Color color;
@@ -29,4 +39,19 @@ struct InputComponent : public Component {
     bool moveUp = false;
     bool moveDown = false;
     bool spaceBar = false;
+};
+
+struct usernameComponent : public Component {
+    std::string username;
+    usernameComponent(const std::string& name) : username(name) {}
+};
+
+struct BulletId : public Component {
+    std::string id;
+    BulletId(const std::string& id) : id(id) {}
+};
+
+struct EnnemyId : public Component {
+    std::string id;
+    EnnemyId(const std::string& id) : id(id) {}
 };

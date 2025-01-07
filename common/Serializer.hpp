@@ -26,15 +26,4 @@ public:
 
     // Deserialize string (variable length)
     static std::string deserializeString(const char*& data);
-
-    enum class MessageType : uint8_t {
-        // CLIENT -> SERVER
-        CONNECT = 0,
-        GOODBYE = 1,
-        MOVE = 2,
-        // SERVER -> CLIENT
-        UPDATE_CLIENTS = 3,
-        // ERROR
-        ERROR = 4
-    };
 };
