@@ -4,11 +4,8 @@
 #include <algorithm>
 #include <unordered_map>
 #include <typeindex>
+#include "ecs/component/AComponent.hpp"
 
-class Component {
-public:
-    virtual ~Component() = default;
-};
 
 class Entity {
 public:
@@ -34,7 +31,7 @@ public:
 private:
     static inline uint64_t nextId = 0;
     uint64_t id;
-    std::unordered_map<std::type_index, std::unique_ptr<Component>> components;
+    std::unordered_map<std::type_index, std::unique_ptr<AComponent>> components;
 };
 
 class EntityManager {

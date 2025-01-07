@@ -16,7 +16,7 @@ void MovementSystem::update(EntityManager &entityManager, NetworkManager &networ
         auto *position = entity->getComponent<PositionComponent>();
         auto *network = entity->getComponent<NetworkComponent>();
         auto *velocity = entity->getComponent<VelocityComponent>();
-        auto *bulletId = entity->getComponent<BulletId>();
+        auto *bulletId = entity->getComponent<BulletIdComponent>();
 
         // Movement logic for players
         if (input && position && network && (input->moveLeft || input->moveRight || input->moveUp || input->moveDown)

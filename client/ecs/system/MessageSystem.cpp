@@ -57,7 +57,7 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
                     Entity *bulletEntity = nullptr;
 
                     for (auto &entity : entityManager.entities) {
-                        auto *bulletId = entity->getComponent<BulletId>();
+                        auto *bulletId = entity->getComponent<BulletIdComponent>();
                         if (bulletId && bulletId->id == id) {
                             bulletEntity = entity.get();
                             break;
@@ -68,7 +68,7 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
                         auto &newEntity = entityManager.createEntity();
                         newEntity.addComponent<PositionComponent>(x, y);
                         newEntity.addComponent<RenderComponent>(5, sf::Color::Red);
-                        newEntity.addComponent<BulletId>(id);
+                        newEntity.addComponent<BulletIdComponent>(id);
                         newEntity.addComponent<VelocityComponent>(vx, vy);
                     }
                 }
@@ -89,7 +89,7 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
                     Entity *ennemyEntity = nullptr;
 
                     for (auto &entity : entityManager.entities) {
-                        auto *ennemyId = entity->getComponent<EnnemyId>();
+                        auto *ennemyId = entity->getComponent<EnnemyIdComponent>();
                         if (ennemyId && ennemyId->id == id) {
                             ennemyEntity = entity.get();
                             break;
@@ -112,7 +112,7 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
                         auto &newEntity = entityManager.createEntity();
                         newEntity.addComponent<PositionComponent>(x, y);
                         newEntity.addComponent<RenderComponent>(20, sf::Color::Red);
-                        newEntity.addComponent<EnnemyId>(id);
+                        newEntity.addComponent<EnnemyIdComponent>(id);
                         newEntity.addComponent<HealthComponent>(health);
                     }
                 }
