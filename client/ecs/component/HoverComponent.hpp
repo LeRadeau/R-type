@@ -1,11 +1,14 @@
 #pragma once
 
+#include <SFML/Graphics/Color.hpp>
 #include "ecs/component/AComponent.hpp"
 
 struct HoverComponent : public AComponent {
-    bool isHover;
-    float opacity;
-    HoverComponent(float opacity = 0.8) : isHover(false), opacity(opacity)
+    sf::Color hoverColor;
+    sf::Color defaultColor;
+
+    HoverComponent(const sf::Color &defaultColor, const sf::Color &hoverColor)
+        : hoverColor(hoverColor), defaultColor(defaultColor)
     {
     }
 };
