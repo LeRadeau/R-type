@@ -1,33 +1,44 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "./ecs/ecs.hpp"
-#include "./ecs/components.hpp"
-#include "./ecs/systems.hpp"
-#include "./ecs/network.hpp"
-#include "./../common/Serializer.hpp"
+#include "Serializer.hpp"
+#include "ecs/EntityManager.hpp"
+#include "ecs/NetworkManager.hpp"
+#include "ecs/component/InputComponent.hpp"
+#include "ecs/component/NetworkComponent.hpp"
+#include "ecs/component/PositionComponent.hpp"
+#include "ecs/component/RenderComponent.hpp"
+#include "ecs/component/UsernameComponent.hpp"
+#include "ecs/system/InputSystem.hpp"
+#include "ecs/system/MessageSystem.hpp"
+#include "ecs/system/MovementSystem.hpp"
+#include "ecs/system/RenderSystem.hpp"
+#include "network_types.hpp"
 
-void sendConnectMessage(NetworkManager& networkManager, const std::string& username) {
+static void sendConnectMessage(NetworkManager &networkManager, const std::string &username)
+{
     std::string buffer;
     Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::CONNECT));
     Serializer::serialize(buffer, username);
     networkManager.send(buffer);
 }
 
-void sendGoodbyeMessage(NetworkManager& networkManager, const std::string& username) {
+static void sendGoodbyeMessage(NetworkManager &networkManager, const std::string &username)
+{
     std::string buffer;
     Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::GOODBYE));
     Serializer::serialize(buffer, username);
     networkManager.send(buffer);
 }
 
-int main(int ac, char **av) {
-    if (ac != 3) {
-        std::cerr << "Usage: " << av[0] << " <server_ip> <username>" << std::endl;
+int main(int argc, char *const *argv)
+{
+    if (argc != 3) {
+        std::cerr << "Usage: " << argv[0] << " <server_ip> <username>" << std::endl;
         return 1;
     }
 
-    std::string serverIp = av[1];
-    std::string username = av[2];
+    std::string serverIp = argv[1];
+    std::string username = argv[2];
 
     sf::Font font;
     if (!font.loadFromFile("assets/arial.ttf")) {
@@ -43,8 +54,8 @@ int main(int ac, char **av) {
     EntityManager entityManager;
 
     sendConnectMessage(networkManager, username);
-    
-    auto& playerEntity = entityManager.createEntity();
+
+    auto &playerEntity = entityManager.createEntity();
     playerEntity.addComponent<PositionComponent>(400, 300);
     playerEntity.addComponent<RenderComponent>(30, sf::Color::Green);
     playerEntity.addComponent<NetworkComponent>(username);
