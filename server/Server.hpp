@@ -5,6 +5,10 @@
 #include <unordered_map>
 #include <list>
 
+#define SERVER_PORT 54000
+#define MAX_CLIENTS 4
+#define MAX_ENNEMIES 6
+
 struct Client {
     sf::IpAddress ip;
     unsigned short port;
