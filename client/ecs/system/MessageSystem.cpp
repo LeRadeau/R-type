@@ -1,5 +1,5 @@
-#include "MessageSystem.hpp"
 #include <iostream>
+#include "MessageSystem.hpp"
 #include "Serializer.hpp"
 #include "ecs/component/BulletIdComponent.hpp"
 #include "ecs/component/EnnemyIdComponent.hpp"
@@ -21,109 +21,128 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
         auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
 
         switch (messageType) {
-            case MessageType::UPDATE_CLIENTS: {
-                auto numClients = Serializer::deserialize<uint32_t>(ptr);
-                for (uint32_t i = 0; i < numClients; ++i) {
-                    auto username = Serializer::deserializeString(ptr);
-                    auto x = Serializer::deserialize<float>(ptr);
-                    auto y = Serializer::deserialize<float>(ptr);
-                    Entity *clientEntity = nullptr;
-
-                    for (auto &entity : entityManager.entities) {
-                        auto *usernameComp = entity->getComponent<usernameComponent>();
-                        if (usernameComp && usernameComp->username == username) {
-                            clientEntity = entity.get();
-                            break;
-                        }
-                    }
-                    if (clientEntity) {
-                        auto *position = clientEntity->getComponent<PositionComponent>();
-                        if (position && localUsername != username) {
-                            position->position.x = x;
-                            position->position.y = y;
-                        }
-                    } else {
-                        auto &newEntity = entityManager.createEntity();
-                        newEntity.addComponent<PositionComponent>(x, y);
-                        newEntity.addComponent<RenderComponent>(20, sf::Color::Blue);
-                        newEntity.addComponent<usernameComponent>(username);
-                    }
-                }
+            case MessageType::UPDATE_CLIENTS:
+                handleUpdateClients(entityManager, ptr, localUsername);
                 break;
-            }
-            case MessageType::UPDATE_BULLETS: {
-                auto numBullets = Serializer::deserialize<uint32_t>(ptr);
-                for (uint32_t i = 0; i < numBullets; ++i) {
-                    auto id = Serializer::deserializeString(ptr);
-                    float x = Serializer::deserialize<float>(ptr);
-                    float y = Serializer::deserialize<float>(ptr);
-                    float vx = Serializer::deserialize<float>(ptr);
-                    float vy = Serializer::deserialize<float>(ptr);
-
-                    Entity *bulletEntity = nullptr;
-
-                    for (auto &entity : entityManager.entities) {
-                        auto *bulletId = entity->getComponent<BulletIdComponent>();
-                        if (bulletId && bulletId->id == id) {
-                            bulletEntity = entity.get();
-                            break;
-                        }
-                    }
-
-                    if (!bulletEntity) {
-                        auto &newEntity = entityManager.createEntity();
-                        newEntity.addComponent<PositionComponent>(x, y);
-                        newEntity.addComponent<RenderComponent>(5, sf::Color::Red);
-                        newEntity.addComponent<BulletIdComponent>(id);
-                        newEntity.addComponent<VelocityComponent>(vx, vy);
-                    }
-                }
+            case MessageType::UPDATE_BULLETS:
+                handleUpdateBullets(entityManager, ptr);
                 break;
-            }
             case MessageType::ERROR:
-                std::cerr << "Received error message from server" << Serializer::deserializeString(ptr) << std::endl;
+                handleError(ptr);
                 break;
-            case MessageType::UPDATE_ENEMIES: {
-                auto numEnnemies = Serializer::deserialize<uint32_t>(ptr);
-                std::cout << "Received " << numEnnemies << " ennemies" << std::endl;
-                for (uint32_t i = 0; i < numEnnemies; ++i) {
-                    auto id = Serializer::deserializeString(ptr);
-                    float x = Serializer::deserialize<float>(ptr);
-                    float y = Serializer::deserialize<float>(ptr);
-                    int health = Serializer::deserialize<int>(ptr);
+            case MessageType::UPDATE_ENEMIES:
+                handleUpdateEnemies(entityManager, ptr);
+                break;
+            default:
+                break;
+        }
+    }
+}
 
-                    Entity *ennemyEntity = nullptr;
+void MessageSystem::handleUpdateClients(EntityManager &entityManager, const char *&ptr, const std::string &localUsername)
+{
+    auto numClients = Serializer::deserialize<uint32_t>(ptr);
+    for (uint32_t i = 0; i < numClients; ++i) {
+        auto username = Serializer::deserializeString(ptr);
+        auto x = Serializer::deserialize<float>(ptr);
+        auto y = Serializer::deserialize<float>(ptr);
+        Entity *clientEntity = nullptr;
 
-                    for (auto &entity : entityManager.entities) {
-                        auto *ennemyId = entity->getComponent<EnnemyIdComponent>();
-                        if (ennemyId && ennemyId->id == id) {
-                            ennemyEntity = entity.get();
-                            break;
-                        }
-                    }
-
-                    if (ennemyEntity) {
-                        auto *position = ennemyEntity->getComponent<PositionComponent>();
-                        auto *healthComp = ennemyEntity->getComponent<HealthComponent>();
-                        if (position) {
-                            position->position.x = x;
-                            position->position.y = y;
-                        }
-                        if (healthComp) {
-                            healthComp->health = health;
-                        }
-                    }
-
-                    if (!ennemyEntity) {
-                        auto &newEntity = entityManager.createEntity();
-                        newEntity.addComponent<PositionComponent>(x, y);
-                        newEntity.addComponent<RenderComponent>(20, sf::Color::Red);
-                        newEntity.addComponent<EnnemyIdComponent>(id);
-                        newEntity.addComponent<HealthComponent>(health);
-                    }
-                }
+        for (auto &entity : entityManager.entities) {
+            auto *usernameComp = entity->getComponent<usernameComponent>();
+            if (usernameComp && usernameComp->username == username) {
+                clientEntity = entity.get();
+                break;
             }
-            default: break;
+        }
+        if (clientEntity) {
+            auto *position = clientEntity->getComponent<PositionComponent>();
+            if (position && localUsername != username) {
+                position->position.x = x;
+                position->position.y = y;
+            }
+        } else {
+            auto &newEntity = entityManager.createEntity();
+            newEntity.addComponent<PositionComponent>(x, y);
+            newEntity.addComponent<RenderComponent>(20, sf::Color::Blue);
+            newEntity.addComponent<usernameComponent>(username);
+        }
+    }
+}
+
+void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char *&ptr)
+{
+    auto numBullets = Serializer::deserialize<uint32_t>(ptr);
+    for (uint32_t i = 0; i < numBullets; ++i) {
+        auto id = Serializer::deserializeString(ptr);
+        float x = Serializer::deserialize<float>(ptr);
+        float y = Serializer::deserialize<float>(ptr);
+        float vx = Serializer::deserialize<float>(ptr);
+        float vy = Serializer::deserialize<float>(ptr);
+
+        Entity *bulletEntity = nullptr;
+
+        for (auto &entity : entityManager.entities) {
+            auto *bulletId = entity->getComponent<BulletIdComponent>();
+            if (bulletId && bulletId->id == id) {
+                bulletEntity = entity.get();
+                break;
+            }
+        }
+
+        if (!bulletEntity) {
+            auto &newEntity = entityManager.createEntity();
+            newEntity.addComponent<PositionComponent>(x, y);
+            newEntity.addComponent<RenderComponent>(5, sf::Color::Red);
+            newEntity.addComponent<BulletIdComponent>(id);
+            newEntity.addComponent<VelocityComponent>(vx, vy);
+        }
+    }
+}
+
+void MessageSystem::handleError(const char *&ptr)
+{
+    std::cerr << "Received error message from server: " << Serializer::deserializeString(ptr) << std::endl;
+}
+
+void MessageSystem::handleUpdateEnemies(EntityManager &entityManager, const char *&ptr)
+{
+    auto numEnemies = Serializer::deserialize<uint32_t>(ptr);
+    std::cout << "Received " << numEnemies << " enemies" << std::endl;
+    for (uint32_t i = 0; i < numEnemies; ++i) {
+        auto id = Serializer::deserializeString(ptr);
+        float x = Serializer::deserialize<float>(ptr);
+        float y = Serializer::deserialize<float>(ptr);
+        int health = Serializer::deserialize<int>(ptr);
+
+        Entity *enemyEntity = nullptr;
+
+        for (auto &entity : entityManager.entities) {
+            auto *enemyId = entity->getComponent<EnnemyIdComponent>();
+            if (enemyId && enemyId->id == id) {
+                enemyEntity = entity.get();
+                break;
+            }
+        }
+
+        if (enemyEntity) {
+            auto *position = enemyEntity->getComponent<PositionComponent>();
+            auto *healthComp = enemyEntity->getComponent<HealthComponent>();
+            if (position) {
+                position->position.x = x;
+                position->position.y = y;
+            }
+            if (healthComp) {
+                healthComp->health = health;
+            }
+        }
+
+        if (!enemyEntity) {
+            auto &newEntity = entityManager.createEntity();
+            newEntity.addComponent<PositionComponent>(x, y);
+            newEntity.addComponent<RenderComponent>(20, sf::Color::Red);
+            newEntity.addComponent<EnnemyIdComponent>(id);
+            newEntity.addComponent<HealthComponent>(health);
         }
     }
 }
