@@ -1,6 +1,6 @@
 # Server executable
 file(GLOB_RECURSE SOURCES "./*.cpp")
-add_executable(r-type_server ${SOURCES} handle.cpp)
+add_executable(r-type_server ${SOURCES})
 
 # Link common library
 target_link_libraries(r-type_server PRIVATE common)
