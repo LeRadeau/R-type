@@ -7,6 +7,7 @@ void HoverSystem::update(EntityManager &entityManager, float x, float y)
     for (auto &i : entityManager.entities) {
         auto *hoverComponent = i->getComponent<HoverComponent>();
         auto *spriteComponent = i->getComponent<SpriteComponent>();
-        hoverComponent->isHover = spriteComponent->sprite.getGlobalBounds().contains(x, y);
+        if (hoverComponent && spriteComponent)
+            hoverComponent->isHover = spriteComponent->sprite.getGlobalBounds().contains(x, y);
     }
 }
