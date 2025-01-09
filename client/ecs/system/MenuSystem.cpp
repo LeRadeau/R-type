@@ -1,4 +1,4 @@
-#include "Menu.hpp"
+#include "MenuSystem.hpp"
 #include <SFML/Graphics/Color.hpp>
 #include "ecs/EntityManager.hpp"
 #include "ecs/component/HoverComponent.hpp"
@@ -6,11 +6,11 @@
 #include "ecs/component/SelectionComponent.hpp"
 #include "ecs/component/TextComponent.hpp"
 
-Menu::Menu(EntityManager &entityManager, const sf::Font &font) : entityManager_(entityManager), font_(font)
+MenuSystem::MenuSystem(EntityManager &entityManager, const sf::Font &font) : entityManager_(entityManager), font_(font)
 {
 }
 
-void Menu::createButton(const std::string &text, const sf::Vector2f &position, const sf::Vector2f &size)
+void MenuSystem::createButton(const std::string &text, const sf::Vector2f &position, const sf::Vector2f &size)
 {
     auto &entity = entityManager_.createEntity();
     entity.addComponent<SelectionComponent>(sf::Color(128, 128, 128), sf::Color(128, 76, 76));
@@ -20,13 +20,22 @@ void Menu::createButton(const std::string &text, const sf::Vector2f &position, c
     entities_.push_back(entity.getId());
 }
 
-void Menu::open()
+void MenuSystem::toggle()
+{
+    if (entities_.size() == 0) {
+        open();
+    } else {
+        close();
+    }
+}
+
+void MenuSystem::open()
 {
     createButton("Play", sf::Vector2f(500, 500), sf::Vector2f(150, 50));
     createButton("Quit", sf::Vector2f(660, 500), sf::Vector2f(150, 50));
 }
 
-void Menu::close()
+void MenuSystem::close()
 {
     for (auto i : entities_) {
         entityManager_.markForDeletion(i);

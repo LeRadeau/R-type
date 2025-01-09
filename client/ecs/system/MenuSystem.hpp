@@ -3,11 +3,13 @@
 #include <SFML/System/Vector2.hpp>
 #include "ecs/EntityManager.hpp"
 
-class Menu {
+class MenuSystem {
   public:
-    Menu(EntityManager &entityManager, const sf::Font &font);
+    MenuSystem(EntityManager &entityManager, const sf::Font &font);
+    void toggle();
     void open();
     void close();
+    void update();
 
   private:
     void createButton(const std::string &text, const sf::Vector2f &position, const sf::Vector2f &size);

@@ -2,7 +2,6 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
-#include "Menu.hpp"
 #include "Serializer.hpp"
 #include "ecs/EntityManager.hpp"
 #include "ecs/NetworkManager.hpp"
@@ -12,6 +11,7 @@
 #include "ecs/component/UsernameComponent.hpp"
 #include "ecs/system/HoverSystem.hpp"
 #include "ecs/system/InputSystem.hpp"
+#include "ecs/system/MenuSystem.hpp"
 #include "ecs/system/MessageSystem.hpp"
 #include "ecs/system/MovementSystem.hpp"
 #include "ecs/system/RenderSystem.hpp"
@@ -34,61 +34,18 @@ static void sendGoodbyeMessage(NetworkManager &networkManager, const std::string
     networkManager.send(buffer);
 }
 
-static void createPlayer(EntityManager &entityManager, const std::string &username)
+static Entity &createPlayer(EntityManager &entityManager, const std::string &username)
 {
     auto &playerEntity = entityManager.createEntity();
     playerEntity.addComponent<PositionComponent>(400, 300);
     playerEntity.addComponent<RenderComponent>(30, sf::Color::Green);
     playerEntity.addComponent<InputComponent>();
     playerEntity.addComponent<usernameComponent>(username);
+    return playerEntity;
 }
 
-static void gameLoop(
-    sf::RenderWindow &window, EntityManager &entityManager, const std::string &serverIp, const std::string &username)
+int main(void)
 {
-    NetworkManager networkManager(serverIp, 54000);
-    sendConnectMessage(networkManager, username);
-
-    createPlayer(entityManager, username);
-
-    RenderSystem renderSystem(window);
-    MovementSystem movementSystem;
-    InputSystem inputSystem;
-    MessageSystem messageSystem;
-
-    sf::Clock deltaClock;
-
-    while (window.isOpen()) {
-        sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-                sendGoodbyeMessage(networkManager, username);
-                break;
-            }
-        }
-        float deltaTime = deltaClock.restart().asSeconds();
-
-        movementSystem.update(entityManager, networkManager, deltaTime, window.hasFocus());
-        inputSystem.update(entityManager);
-        messageSystem.update(entityManager, networkManager, username);
-
-        window.clear();
-        renderSystem.update(entityManager);
-        window.display();
-    }
-}
-
-int main(int argc, char *const *argv)
-{
-    if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <server_ip> <username>" << std::endl;
-        return 1;
-    }
-
-    std::string serverIp = argv[1];
-    std::string username = argv[2];
-
     sf::Font font;
     if (!font.loadFromFile("assets/arial.ttf")) {
         std::cerr << "Failed to load font." << std::endl;
@@ -99,15 +56,27 @@ int main(int argc, char *const *argv)
     window.setFramerateLimit(60);
 
     EntityManager entityManager;
+
+    RenderSystem renderSystem(window);
     HoverSystem hoverSystem;
     SelectionSystem selectionSystem;
-    RenderSystem renderSystem(window);
+    MovementSystem movementSystem;
+    InputSystem inputSystem;
+    MessageSystem messageSystem;
 
-    Menu menu(entityManager, font);
+    MenuSystem menu(entityManager, font);
 
     menu.open();
     renderSystem.update(entityManager);
     window.display();
+    sf::Clock deltaClock;
+
+    std::string username = "user";
+    std::string serverIp = "localhost";
+
+    NetworkManager networkManager(serverIp, 54000);
+    sendConnectMessage(networkManager, username);
+    auto &i = createPlayer(entityManager, username);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -123,18 +92,22 @@ int main(int argc, char *const *argv)
             if (event.type == sf::Event::MouseButtonReleased) {
                 selectionSystem.update(entityManager, event.mouseButton);
             }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::M) {
-                menu.open();
-            }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Q) {
-                menu.close();
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape) {
+                menu.toggle();
             }
         }
+
+        float deltaTime = deltaClock.restart().asSeconds();
+
+        movementSystem.update(entityManager, networkManager, deltaTime, window.hasFocus());
+        inputSystem.update(entityManager);
+        messageSystem.update(entityManager, networkManager, username);
+
         window.clear();
         renderSystem.update(entityManager);
         window.display();
     }
-    /* gameLoop(window, entityManager, serverIp, username); */
-
+    sendGoodbyeMessage(networkManager, username);
+    std::cout << "Goodbye" << std::endl;
     return 0;
 }
