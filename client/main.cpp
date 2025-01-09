@@ -44,7 +44,7 @@ static Entity &createPlayer(EntityManager &entityManager, const std::string &use
     return playerEntity;
 }
 
-int main(void)
+int main(int argc, char *const *argv)
 {
     sf::Font font;
     if (!font.loadFromFile("assets/arial.ttf")) {
@@ -71,8 +71,8 @@ int main(void)
     window.display();
     sf::Clock deltaClock;
 
-    std::string username = "user";
-    std::string serverIp = "localhost";
+    std::string username = argc == 3 ? argv[1] : "user";
+    std::string serverIp = argc == 3 ? argv[2] : "localhost";
 
     NetworkManager networkManager(serverIp, 54000);
     sendConnectMessage(networkManager, username);
