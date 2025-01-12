@@ -2,47 +2,18 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
-#include "Serializer.hpp"
 #include "ecs/EntityManager.hpp"
 #include "ecs/NetworkManager.hpp"
-#include "ecs/component/InputComponent.hpp"
-#include "ecs/component/PositionComponent.hpp"
-#include "ecs/component/RenderComponent.hpp"
-#include "ecs/component/UsernameComponent.hpp"
+#include "ecs/entity/MenuEntity.hpp"
+#include "ecs/entity/PlayerEntity.hpp"
+#include "ecs/system/EventHandlingSystem.hpp"
 #include "ecs/system/HoverSystem.hpp"
 #include "ecs/system/InputSystem.hpp"
-#include "ecs/system/MenuSystem.hpp"
 #include "ecs/system/MessageSystem.hpp"
 #include "ecs/system/MovementSystem.hpp"
 #include "ecs/system/RenderSystem.hpp"
 #include "ecs/system/SelectionSystem.hpp"
 #include "network_types.hpp"
-
-static void sendConnectMessage(NetworkManager &networkManager, const std::string &username)
-{
-    std::string buffer;
-    Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::CONNECT));
-    Serializer::serialize(buffer, username);
-    networkManager.send(buffer);
-}
-
-static void sendGoodbyeMessage(NetworkManager &networkManager, const std::string &username)
-{
-    std::string buffer;
-    Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::GOODBYE));
-    Serializer::serialize(buffer, username);
-    networkManager.send(buffer);
-}
-
-static Entity &createPlayer(EntityManager &entityManager, const std::string &username)
-{
-    auto &playerEntity = entityManager.createEntity();
-    playerEntity.addComponent<PositionComponent>(400, 300);
-    playerEntity.addComponent<RenderComponent>(30, sf::Color::Green);
-    playerEntity.addComponent<InputComponent>();
-    playerEntity.addComponent<usernameComponent>(username);
-    return playerEntity;
-}
 
 int main(int argc, char *const *argv)
 {
@@ -63,20 +34,18 @@ int main(int argc, char *const *argv)
     MovementSystem movementSystem;
     InputSystem inputSystem;
     MessageSystem messageSystem;
+    EventHandlingSystem eventHandlingSystem;
 
-    MenuSystem menu(entityManager, font);
-
-    menu.open();
     renderSystem.update(entityManager);
     window.display();
     sf::Clock deltaClock;
 
-    std::string username = argc == 3 ? argv[1] : "user";
-    std::string serverIp = argc == 3 ? argv[2] : "localhost";
+    std::string serverIp = argc == 2 ? argv[1] : "localhost";
+
+    std::unique_ptr<PlayerEntity> player;
 
     NetworkManager networkManager(serverIp, 54000);
-    sendConnectMessage(networkManager, username);
-    auto &i = createPlayer(entityManager, username);
+    MenuEntity menu(entityManager, window, font, player, networkManager);
 
     while (window.isOpen()) {
         sf::Event event;
@@ -92,22 +61,19 @@ int main(int argc, char *const *argv)
             if (event.type == sf::Event::MouseButtonReleased) {
                 selectionSystem.update(entityManager, event.mouseButton);
             }
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape) {
-                menu.toggle();
-            }
+            eventHandlingSystem.update(entityManager, event);
         }
 
         float deltaTime = deltaClock.restart().asSeconds();
 
         movementSystem.update(entityManager, networkManager, deltaTime, window.hasFocus());
         inputSystem.update(entityManager);
-        messageSystem.update(entityManager, networkManager, username);
+        messageSystem.update(entityManager, networkManager, menu.getUsername());
 
         window.clear();
         renderSystem.update(entityManager);
         window.display();
     }
-    sendGoodbyeMessage(networkManager, username);
-    std::cout << "Goodbye" << std::endl;
+    networkManager.send(MessageType::GOODBYE, menu.getUsername());
     return 0;
 }

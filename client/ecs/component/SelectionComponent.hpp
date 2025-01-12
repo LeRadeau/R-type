@@ -3,11 +3,9 @@
 #include "AComponent.hpp"
 
 struct SelectionComponent : public AComponent {
-    sf::Color selectedColor;
-    sf::Color defaultColor;
+    bool isSelected;
 
-    SelectionComponent(const sf::Color &defaultColor, const sf::Color &selectedColor)
-        : selectedColor(selectedColor), defaultColor(defaultColor)
+    SelectionComponent() : isSelected(false)
     {
     }
 };

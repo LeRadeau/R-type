@@ -13,18 +13,12 @@ void SelectionSystem::update(EntityManager &entityManager, const sf::Event::Mous
         auto *rectangleShapeComponent = i->getComponent<RectangleShapeComponent>();
 
         if (spriteComponent && selectionComponent) {
-            if (spriteComponent->sprite.getGlobalBounds().contains(mouseEvent.x, mouseEvent.y)) {
-                spriteComponent->sprite.setColor(selectionComponent->selectedColor);
-            } else {
-                spriteComponent->sprite.setColor(selectionComponent->defaultColor);
-            }
+            selectionComponent->isSelected =
+                spriteComponent->sprite.getGlobalBounds().contains(mouseEvent.x, mouseEvent.y);
         }
         if (rectangleShapeComponent && selectionComponent) {
-            if (rectangleShapeComponent->shape.getGlobalBounds().contains(mouseEvent.x, mouseEvent.y)) {
-                rectangleShapeComponent->shape.setFillColor(selectionComponent->selectedColor);
-            } else {
-                rectangleShapeComponent->shape.setFillColor(selectionComponent->defaultColor);
-            }
+            selectionComponent->isSelected =
+                rectangleShapeComponent->shape.getGlobalBounds().contains(mouseEvent.x, mouseEvent.y);
         }
     }
 }
