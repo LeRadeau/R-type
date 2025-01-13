@@ -50,6 +50,7 @@ void MenuEntity::closeLobby()
         entityManager_.markForDeletion(i->getEntity().getId());
     }
     buttons_.clear();
+    entityManager_.markForDeletion(entityText_.getId());
 }
 
 std::size_t MenuEntity::getNbrClients()
