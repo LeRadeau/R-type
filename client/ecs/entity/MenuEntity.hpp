@@ -15,7 +15,10 @@ class MenuEntity {
     Entity &getEntity();
     void toggle();
     void open();
+    void openLobby();
     void close();
+    void closeLobby();
+
     const std::string &getIpAdress();
     const std::string &getUsername();
 

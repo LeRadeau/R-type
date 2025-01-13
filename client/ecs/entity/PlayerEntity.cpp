@@ -12,5 +12,5 @@ PlayerEntity::PlayerEntity(EntityManager &entityManager, const std::string &user
     entity_.addComponent<RenderComponent>(30, sf::Color::Green);
     entity_.addComponent<InputComponent>();
     entity_.addComponent<usernameComponent>(username);
-    networkManager.send(MessageType::CONNECT, username);
+    // networkManager.send(MessageType::CONNECT, username);
 }

@@ -15,10 +15,29 @@ std::string Server::generateBulletID(const std::string& username) {
     return oss.str();
 }
 
+void Server::handleReady(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr)
+{
+    // Check if there is at less 1 player
+    if (clients_.size() >= 1) {
+        std::cout << "Game is launched\n";
+        // Send new state of the Game for each client. Then they can start the game, but if one client don't receiveid the message ?? (Have to create TCP protocole for this case ?)
+        for (auto it = clients_.begin(); it != clients_.end(); it++) {
+            std::string buffer;
+            Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::START_GAME));
+            socket_.send(buffer.data(), buffer.size(), it->second.ip, it->second.port);
+        }
+        // The server start the game !
+        Ready = true;
+        // previousTime = std::chrono::high_resolution_clock::now();
+        // previousBulletBroadcastTime = previousTime;
+        // previousClientBroadcastTime = previousTime;
+    }
+}
+
 void Server::handleConnect(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr)
 {
     std::string newUsername = Serializer::deserializeString(ptr);
-
+    std::cout << "CONNECCT\n";
     if (clients_.find(newUsername) != clients_.end()) {
         std::cout << "Client already exists: " << newUsername << std::endl;
 

@@ -29,6 +29,17 @@ void MenuEntity::toggle()
         close();
     }
 }
+void MenuEntity::openLobby()
+{
+    sf::Vector2f size(275, 50);
+    sf::Vector2f position(window_.getSize().x / 2.0f - 300, 500);
+    buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "LANCER LA PARTIE", font_));
+    buttons_[0]->setCallback(sf::Event::MouseButtonReleased, [this](const sf::Event &event) {
+        EventCallbacks::ButtonLaunchGame(
+            *this, buttons_[0]->getEntity(), window_, event, entityManager_, player_, networkManager_);
+    });
+
+}
 
 void MenuEntity::open()
 {
@@ -69,6 +80,14 @@ void MenuEntity::close()
     entityManager_.markForDeletion(username_->getTitleEntity().getId());
     username_.reset();
     entityManager_.destroyMarkedEntities();
+}
+
+void MenuEntity::closeLobby()
+{
+    for (auto &i : buttons_) {
+        entityManager_.markForDeletion(i->getEntity().getId());
+    }
+    buttons_.clear();
 }
 
 const std::string &MenuEntity::getIpAdress()

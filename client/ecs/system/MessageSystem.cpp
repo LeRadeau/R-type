@@ -10,7 +10,7 @@
 #include "ecs/component/VelocityComponent.hpp"
 #include "network_types.hpp"
 
-void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername)
+void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername, MenuEntity &menu)
 {
     auto receivedMessages = networkManager.getReceivedMessages();
 
@@ -21,6 +21,12 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
         auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
 
         switch (messageType) {
+            case MessageType::START_GAME:
+                handleLaunchGame(entityManager, ptr, menu);
+                break;
+            case MessageType::WAIT:
+                handleWaitLobby(entityManager, ptr);
+                break;
             case MessageType::UPDATE_CLIENTS:
                 handleUpdateClients(entityManager, ptr, localUsername);
                 break;
@@ -70,6 +76,17 @@ void MessageSystem::handleUpdateClients(EntityManager &entityManager, const char
     }
 }
 
+void MessageSystem::handleLaunchGame(EntityManager &entityManager, const char *&ptr, MenuEntity &menu)
+{
+    menu.closeLobby();
+}
+
+void MessageSystem::handleWaitLobby(EntityManager &entityManager, const char *&ptr)
+{
+    auto nbrClients = Serializer::deserialize<std::size_t>(ptr);
+    std::cout << "Il y a " << nbrClients << " clients" << std::endl;
+}
+
 void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char *&ptr)
 {
     auto numBullets = Serializer::deserialize<uint32_t>(ptr);
@@ -108,7 +125,7 @@ void MessageSystem::handleError(const char *&ptr)
 void MessageSystem::handleUpdateEnemies(EntityManager &entityManager, const char *&ptr)
 {
     auto numEnemies = Serializer::deserialize<uint32_t>(ptr);
-    std::cout << "Received " << numEnemies << " enemies" << std::endl;
+    // std::cout << "Received " << numEnemies << " enemies" << std::endl;
     for (uint32_t i = 0; i < numEnemies; ++i) {
         auto id = Serializer::deserializeString(ptr);
         float x = Serializer::deserialize<float>(ptr);

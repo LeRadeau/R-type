@@ -8,6 +8,24 @@
 
 namespace EventCallbacks
 {
+    void ButtonLaunchGame(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event,
+        EntityManager &entityManager, std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
+    {
+        if (!window.hasFocus())
+            return;
+        if (event.mouseButton.button != sf::Mouse::Left)
+            return;
+        auto *shape = entity.getComponent<RectangleShapeComponent>();
+        sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+        if (!shape || !shape->shape.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)))
+            return;
+        menu.closeLobby();
+        std::string username = menu.getUsername();
+        if (username != "" && !player) {
+            networkManager.send(MessageType::READY, username);
+            player = std::make_unique<PlayerEntity>(entityManager, username, networkManager);
+        }
+    }
     void ButtonHandlePlay(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event,
         EntityManager &entityManager, std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
     {
@@ -25,8 +43,11 @@ namespace EventCallbacks
         if (ipAddress == "")
             return;
         networkManager.setRemoteIp(ipAddress);
-        if (username != "" && !player)
-            player = std::make_unique<PlayerEntity>(entityManager, username, networkManager);
+    
+        if (username != "" && !player) {
+            networkManager.send(MessageType::CONNECT, username);
+            menu.openLobby();
+        }
     }
 
     void ButtonHandleQuit(

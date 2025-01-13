@@ -80,7 +80,7 @@ int main(int argc, char *const *argv)
 
         movementSystem.update(entityManager, networkManager, deltaTime, window.hasFocus());
         inputSystem.update(entityManager);
-        messageSystem.update(entityManager, networkManager, menu.getUsername());
+        messageSystem.update(entityManager, networkManager, menu.getUsername(), menu);
         parallaxSystem.update(entityManager, deltaTime);
 
         window.clear();
