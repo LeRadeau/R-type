@@ -1,6 +1,5 @@
 #include "Server.hpp"
 #include <math.h> 
-#include <iostream>
 
 void Server::updateBullets(float deltaTime)
 {
@@ -37,7 +36,7 @@ void Server::updateEnnemies(float deltaTime)
 {
     for (auto &ennemy : ennemies_) {
         if (ennemy.isAlive) {
-            ennemy.position.x += (ennemy.velocity.x) * deltaTime;
+            ennemy.position.x -= (ennemy.velocity.x) * deltaTime;
 
             ennemy.position.y = ennemy.startingY + ennemy.amplitude * std::sin(ennemy.cosinus * ennemy.frequency);
             ennemy.cosinus += deltaTime;
