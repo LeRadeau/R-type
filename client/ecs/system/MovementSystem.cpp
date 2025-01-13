@@ -3,6 +3,7 @@
 #include "ecs/component/BulletIdComponent.hpp"
 #include "ecs/component/InputComponent.hpp"
 #include "ecs/component/PositionComponent.hpp"
+#include "ecs/component/SoundComponent.hpp"
 #include "ecs/component/UsernameComponent.hpp"
 #include "ecs/component/VelocityComponent.hpp"
 #include "network_types.hpp"
@@ -21,10 +22,11 @@ void MovementSystem::update(EntityManager &entityManager, NetworkManager &networ
         auto *username = entity->getComponent<usernameComponent>();
         auto *velocity = entity->getComponent<VelocityComponent>();
         auto *bulletId = entity->getComponent<BulletIdComponent>();
+        auto *sound = entity->getComponent<SoundComponent>();
 
         // Movement logic for players
-        if (input && position && username && (input->moveLeft || input->moveRight || input->moveUp || input->moveDown)
-            && focus) {
+        bool isMoving = input && (input->moveLeft || input->moveRight || input->moveUp || input->moveDown);
+        if (input && position && username && isMoving && focus) {
             if (input->moveLeft)
                 position->position.x -= 200.0f * deltaTime;
             if (input->moveRight)
@@ -44,6 +46,10 @@ void MovementSystem::update(EntityManager &entityManager, NetworkManager &networ
                 networkManager.send(buffer);
                 timer = 0.0f;
             }
+            sound->sound.setPitch(1);
+        }
+        if (!isMoving && sound && username) {
+            sound->sound.setPitch(0.5);
         }
 
         // Shooting logic

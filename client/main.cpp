@@ -1,3 +1,5 @@
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -13,7 +15,10 @@
 #include "ecs/system/MovementSystem.hpp"
 #include "ecs/system/RenderSystem.hpp"
 #include "ecs/system/SelectionSystem.hpp"
+#include "ecs/system/SoundSystem.hpp"
 #include "network_types.hpp"
+
+using sf::SoundBuffer;
 
 int main(int argc, char *const *argv)
 {
@@ -35,6 +40,7 @@ int main(int argc, char *const *argv)
     InputSystem inputSystem;
     MessageSystem messageSystem;
     EventHandlingSystem eventHandlingSystem;
+    SoundSystem soundSystem;
 
     renderSystem.update(entityManager);
     window.display();
@@ -46,6 +52,8 @@ int main(int argc, char *const *argv)
 
     NetworkManager networkManager(serverIp, 54000);
     MenuEntity menu(entityManager, window, font, player, networkManager);
+
+    int volume = 50;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -69,6 +77,7 @@ int main(int argc, char *const *argv)
         movementSystem.update(entityManager, networkManager, deltaTime, window.hasFocus());
         inputSystem.update(entityManager);
         messageSystem.update(entityManager, networkManager, menu.getUsername());
+        soundSystem.update(entityManager, volume);
 
         window.clear();
         renderSystem.update(entityManager);

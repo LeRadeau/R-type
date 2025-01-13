@@ -1,11 +1,12 @@
-#include <iostream>
 #include "MessageSystem.hpp"
+#include <iostream>
 #include "Serializer.hpp"
 #include "ecs/component/BulletIdComponent.hpp"
 #include "ecs/component/EnnemyIdComponent.hpp"
 #include "ecs/component/HealthComponent.hpp"
 #include "ecs/component/PositionComponent.hpp"
 #include "ecs/component/RenderComponent.hpp"
+#include "ecs/component/SoundComponent.hpp"
 #include "ecs/component/UsernameComponent.hpp"
 #include "ecs/component/VelocityComponent.hpp"
 #include "network_types.hpp"
@@ -21,25 +22,17 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
         auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
 
         switch (messageType) {
-            case MessageType::UPDATE_CLIENTS:
-                handleUpdateClients(entityManager, ptr, localUsername);
-                break;
-            case MessageType::UPDATE_BULLETS:
-                handleUpdateBullets(entityManager, ptr);
-                break;
-            case MessageType::ERROR:
-                handleError(ptr);
-                break;
-            case MessageType::UPDATE_ENEMIES:
-                handleUpdateEnemies(entityManager, ptr);
-                break;
-            default:
-                break;
+            case MessageType::UPDATE_CLIENTS: handleUpdateClients(entityManager, ptr, localUsername); break;
+            case MessageType::UPDATE_BULLETS: handleUpdateBullets(entityManager, ptr); break;
+            case MessageType::ERROR: handleError(ptr); break;
+            case MessageType::UPDATE_ENEMIES: handleUpdateEnemies(entityManager, ptr); break;
+            default: break;
         }
     }
 }
 
-void MessageSystem::handleUpdateClients(EntityManager &entityManager, const char *&ptr, const std::string &localUsername)
+void MessageSystem::handleUpdateClients(
+    EntityManager &entityManager, const char *&ptr, const std::string &localUsername)
 {
     auto numClients = Serializer::deserialize<uint32_t>(ptr);
     for (uint32_t i = 0; i < numClients; ++i) {
@@ -96,6 +89,7 @@ void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char
             newEntity.addComponent<RenderComponent>(5, sf::Color::Red);
             newEntity.addComponent<BulletIdComponent>(id);
             newEntity.addComponent<VelocityComponent>(vx, vy);
+            newEntity.addComponent<SoundComponent>("assets/shoot.ogg", 1);
         }
     }
 }
