@@ -17,7 +17,18 @@
 #include "ecs/system/RenderSystem.hpp"
 #include "ecs/system/SelectionSystem.hpp"
 #include "ecs/system/SoundSystem.hpp"
+#include "ecs/system/ParallaxSystem.hpp"
+
 #include "network_types.hpp"
+
+static void loadParallax(EntityManager &entityManager)
+{
+    auto &background = entityManager.createEntity();
+    background.addComponent<ParallaxComponent>("assets/back.png", sf::Vector2f(-500.0f, 0.0f), sf::Vector2f(0, 0), sf::Vector2u(7, 7));
+
+    auto &midground = entityManager.createEntity();
+    midground.addComponent<ParallaxComponent>("assets/starBack.png", sf::Vector2f(-600.0f, 0.0f), sf::Vector2f(0, 0), sf::Vector2u(7, 7));
+}
 
 int main(int argc, char *const *argv)
 {
@@ -40,6 +51,8 @@ int main(int argc, char *const *argv)
     MessageSystem messageSystem;
     EventHandlingSystem eventHandlingSystem;
     SoundSystem soundSystem;
+    ParallaxSystem parallaxSystem;
+
 
     renderSystem.update(entityManager);
     window.display();
@@ -48,6 +61,7 @@ int main(int argc, char *const *argv)
     std::string serverIp = argc == 2 ? argv[1] : "localhost";
 
     std::unique_ptr<PlayerEntity> player;
+    loadParallax(entityManager);
 
     NetworkManager networkManager(serverIp, 54000);
     MenuEntity menu(entityManager, window, font, player, networkManager);
@@ -85,8 +99,10 @@ int main(int argc, char *const *argv)
         inputSystem.update(entityManager);
         messageSystem.update(entityManager, networkManager, menu.getUsername());
         soundSystem.update(entityManager, volume);
+        parallaxSystem.update(entityManager, deltaTime);
 
         window.clear();
+        parallaxSystem.render(window, entityManager);
         renderSystem.update(entityManager);
         window.display();
     }
