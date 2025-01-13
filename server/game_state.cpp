@@ -14,12 +14,33 @@ void Server::updateBullets(float deltaTime)
     }
 }
 
+void Server::enemyShoot(Ennemy &ennemy)
+{
+    if (ennemy.shootingCooldown > 0) {
+        return;
+    }
+    std::string bulletID = generateBulletID("enemy");
+    Bullet newBullet;
+    newBullet.id = bulletID;
+    newBullet.position = {ennemy.position.x, ennemy.position.y};
+    newBullet.velocity = {-500.0f, 0.0f};
+    newBullet.shooter = "enemy";
+    bullets_.push_back(newBullet);
+    ennemy.shootingCooldown = 2.0f;
+}
+
+
+
 void Server::updateEnnemies(float deltaTime)
 {
     for (auto &ennemy : ennemies_) {
         if (ennemy.isAlive) {
             ennemy.position.x += ennemy.velocity.x * deltaTime;
             ennemy.position.y += ennemy.velocity.y * deltaTime;
+            ennemy.shootingCooldown -= deltaTime;
+            if (ennemy.shootingCooldown <= 0) {
+                enemyShoot(ennemy);
+            }
         } else {
             ennemy.respawnCooldown -= deltaTime;
             if (ennemy.respawnCooldown <= 0) {
@@ -29,6 +50,7 @@ void Server::updateEnnemies(float deltaTime)
         }
     }
 }
+
 
 void Server::loadEnnemies()
 {
@@ -49,7 +71,15 @@ void Server::CheckEnnemyCollision()
 {
     for (auto &ennemy : ennemies_) {
         for (auto &bullet : bullets_) {
-            if (ennemy.isAlive && bullet.shooter != "ennemy" && bullet.position.x > ennemy.position.x - 20 && bullet.position.x < ennemy.position.x + 20 && bullet.position.y > ennemy.position.y - 20 && bullet.position.y < ennemy.position.y + 20) {
+            if (bullet.shooter == "enemy") {
+                continue;
+            }
+            if (ennemy.isAlive && 
+                bullet.position.x > ennemy.position.x - 20 &&
+                bullet.position.x < ennemy.position.x + 20 &&
+                bullet.position.y > ennemy.position.y - 20 &&
+                bullet.position.y < ennemy.position.y + 20) {
+
                 ennemy.health -= 10;
                 if (ennemy.health <= 0) {
                     ennemy.isAlive = false;
