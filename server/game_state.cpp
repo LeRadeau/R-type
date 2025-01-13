@@ -1,4 +1,5 @@
 #include "Server.hpp"
+#include <math.h> 
 
 void Server::updateBullets(float deltaTime)
 {
@@ -35,9 +36,10 @@ void Server::updateEnnemies(float deltaTime)
 {
     for (auto &ennemy : ennemies_) {
         if (ennemy.isAlive) {
-            ennemy.position.x += ennemy.velocity.x * deltaTime;
-            ennemy.position.y += ennemy.velocity.y * deltaTime;
-            ennemy.shootingCooldown -= deltaTime;
+            ennemy.position.x -= (ennemy.velocity.x) * deltaTime;
+
+            ennemy.position.y = ennemy.startingY + ennemy.amplitude * std::sin(ennemy.cosinus * ennemy.frequency);
+            ennemy.cosinus += deltaTime;
             if (ennemy.shootingCooldown <= 0) {
                 enemyShoot(ennemy);
             }
@@ -58,11 +60,15 @@ void Server::loadEnnemies()
         Ennemy newEnnemy;
         newEnnemy.id = "ennemy_" + std::to_string(i);
         newEnnemy.position = {float(1000), float(100 * i)};
-        newEnnemy.velocity = {0, 0};
+        newEnnemy.velocity = {50, 15};
         newEnnemy.health = 100;
         newEnnemy.shootingCooldown = 1.0f;
         newEnnemy.respawnCooldown = 5.0f;
         newEnnemy.isAlive = true;
+        newEnnemy.amplitude = 70.0f;
+        newEnnemy.frequency = 1.0f;
+        newEnnemy.cosinus = 1;
+        newEnnemy.startingY = newEnnemy.position.y;
         ennemies_.push_back(newEnnemy);
     }
 }

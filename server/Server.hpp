@@ -38,7 +38,11 @@ struct Ennemy {
     int health;
     float shootingCooldown;
     float respawnCooldown;
+    float startingY;
     bool isAlive;
+    float amplitude;
+    float frequency;
+    float cosinus;
 };
 
 class Server {
