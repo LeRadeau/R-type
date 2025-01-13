@@ -22,10 +22,10 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
 
         switch (messageType) {
             case MessageType::START_GAME:
-                handleLaunchGame(entityManager, ptr, menu);
+                handleLaunchGame(menu);
                 break;
             case MessageType::WAIT:
-                handleWaitLobby(entityManager, ptr);
+                handleWaitLobby(ptr, menu);
                 break;
             case MessageType::UPDATE_CLIENTS:
                 handleUpdateClients(entityManager, ptr, localUsername);
@@ -76,15 +76,17 @@ void MessageSystem::handleUpdateClients(EntityManager &entityManager, const char
     }
 }
 
-void MessageSystem::handleLaunchGame(EntityManager &entityManager, const char *&ptr, MenuEntity &menu)
+void MessageSystem::handleLaunchGame(MenuEntity &menu)
 {
     menu.closeLobby();
 }
 
-void MessageSystem::handleWaitLobby(EntityManager &entityManager, const char *&ptr)
+void MessageSystem::handleWaitLobby(const char *&ptr, MenuEntity &menu)
 {
     auto nbrClients = Serializer::deserialize<std::size_t>(ptr);
-    std::cout << "Il y a " << nbrClients << " clients" << std::endl;
+    if (nbrClients != menu.getNbrClients()) {
+        menu.setNbrClients(nbrClients);
+    }
 }
 
 void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char *&ptr)
@@ -125,7 +127,7 @@ void MessageSystem::handleError(const char *&ptr)
 void MessageSystem::handleUpdateEnemies(EntityManager &entityManager, const char *&ptr)
 {
     auto numEnemies = Serializer::deserialize<uint32_t>(ptr);
-    // std::cout << "Received " << numEnemies << " enemies" << std::endl;
+    std::cout << "Received " << numEnemies << " enemies" << std::endl;
     for (uint32_t i = 0; i < numEnemies; ++i) {
         auto id = Serializer::deserializeString(ptr);
         float x = Serializer::deserialize<float>(ptr);

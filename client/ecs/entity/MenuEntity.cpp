@@ -8,7 +8,7 @@
 MenuEntity::MenuEntity(EntityManager &entityManager, sf::RenderWindow &window, const sf::Font &font,
     std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
     : entity_(entityManager.createEntity()), entityManager_(entityManager), networkManager_(networkManager),
-      window_(window), font_(font), player_(player)
+      window_(window), font_(font), player_(player), entityText_(entityManager.createEntity())
 {
     open();
     entity_.addComponent<EventHandlerComponent>(sf::Event::KeyReleased, [this, &window](const sf::Event &event) {
@@ -31,14 +31,39 @@ void MenuEntity::toggle()
 }
 void MenuEntity::openLobby()
 {
+
     sf::Vector2f size(275, 50);
     sf::Vector2f position(window_.getSize().x / 2.0f - 300, 500);
+    sf::Vector2f positionText(position.x, position.y - 100);
+
+    entityText_.addComponent<TextComponent>("?/4 players", font_, positionText, sf::Color::White);
     buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "LANCER LA PARTIE", font_));
     buttons_[0]->setCallback(sf::Event::MouseButtonReleased, [this](const sf::Event &event) {
         EventCallbacks::ButtonLaunchGame(
             *this, buttons_[0]->getEntity(), window_, event, entityManager_, player_, networkManager_);
     });
+}
 
+void MenuEntity::closeLobby()
+{
+    for (auto &i : buttons_) {
+        entityManager_.markForDeletion(i->getEntity().getId());
+    }
+    buttons_.clear();
+}
+
+std::size_t MenuEntity::getNbrClients()
+{
+    return nbrClients_;
+}
+void MenuEntity::setNbrClients(std::size_t nbrClients)
+{
+    TextComponent* textComponent = entity_.getComponent<TextComponent>();
+
+    if (textComponent) {
+        // Faut modifier le texte ici
+        nbrClients += 0;
+    }
 }
 
 void MenuEntity::open()
@@ -80,14 +105,6 @@ void MenuEntity::close()
     entityManager_.markForDeletion(username_->getTitleEntity().getId());
     username_.reset();
     entityManager_.destroyMarkedEntities();
-}
-
-void MenuEntity::closeLobby()
-{
-    for (auto &i : buttons_) {
-        entityManager_.markForDeletion(i->getEntity().getId());
-    }
-    buttons_.clear();
 }
 
 const std::string &MenuEntity::getIpAdress()

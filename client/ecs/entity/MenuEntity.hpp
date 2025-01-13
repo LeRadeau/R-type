@@ -5,6 +5,7 @@
 #include <vector>
 #include "ButtonEntity.hpp"
 #include "ecs/entity/PlayerEntity.hpp"
+#include "ecs/component/TextComponent.hpp"
 #include "ecs/entity/TextFieldEntity.hpp"
 
 class MenuEntity {
@@ -19,6 +20,9 @@ class MenuEntity {
     void close();
     void closeLobby();
 
+    std::size_t getNbrClients();
+    void setNbrClients(std::size_t nbrClients);
+  
     const std::string &getIpAdress();
     const std::string &getUsername();
 
@@ -31,7 +35,10 @@ class MenuEntity {
     std::vector<std::unique_ptr<ButtonEntity>> buttons_;
     std::unique_ptr<TextFieldEntity> ipAddress_;
     std::unique_ptr<TextFieldEntity> username_;
+    std::unique_ptr<TextComponent> text;
     std::string ipAddressStr_;
     std::string usernameStr_;
     std::unique_ptr<PlayerEntity> &player_;
+    Entity &entityText_;
+    std::size_t nbrClients_;
 };

@@ -1,6 +1,6 @@
 #include "Server.hpp"
 #include <math.h> 
-#include <iostream>
+
 void Server::updateBullets(float deltaTime)
 {
     for (auto it = bullets_.begin(); it != bullets_.end();) {
@@ -34,7 +34,6 @@ void Server::enemyShoot(Ennemy &ennemy)
 
 void Server::updateEnnemies(float deltaTime)
 {
-    std::cout << "CA BOUGE !";
     for (auto &ennemy : ennemies_) {
         if (ennemy.isAlive) {
             ennemy.position.x -= (ennemy.velocity.x) * deltaTime;
