@@ -1,7 +1,9 @@
 #include "RenderSystem.hpp"
 #include "ecs/component/HealthComponent.hpp"
 #include "ecs/component/PositionComponent.hpp"
+#include "ecs/component/RectangleShapeComponent.hpp"
 #include "ecs/component/RenderComponent.hpp"
+#include "ecs/component/TextComponent.hpp"
 #include "ecs/component/UsernameComponent.hpp"
 
 RenderSystem::RenderSystem(sf::RenderWindow &window, const std::string &fontName) : window(window)
@@ -44,7 +46,13 @@ void RenderSystem::update(EntityManager &entityManager)
         auto *render = entity->getComponent<RenderComponent>();
         auto *username = entity->getComponent<usernameComponent>();
         auto *health = entity->getComponent<HealthComponent>();
+        auto *rectangleShape = entity->getComponent<RectangleShapeComponent>();
+        auto *textComponent = entity->getComponent<TextComponent>();
 
+        if (rectangleShape)
+            window.draw(rectangleShape->shape);
+        if (textComponent)
+            window.draw(textComponent->data);
         if (position && render && username && health) {
             render->shape.setPosition(position->position);
             window.draw(render->shape);

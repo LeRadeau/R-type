@@ -63,6 +63,8 @@ class Server {
     void updateEnnemies(float deltaTime);
     void loadEnnemies();
     void CheckEnnemyCollision();
+    void enemyShoot(Ennemy &ennemy);
+    std::string generateBulletID(const std::string& username);
     sf::UdpSocket socket_;
     std::unordered_map<std::string, Client> clients_;
     std::list<Bullet> bullets_;
