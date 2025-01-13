@@ -1,3 +1,4 @@
+#include <SFML/Audio/Music.hpp>
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics.hpp>
@@ -17,8 +18,6 @@
 #include "ecs/system/SelectionSystem.hpp"
 #include "ecs/system/SoundSystem.hpp"
 #include "network_types.hpp"
-
-using sf::SoundBuffer;
 
 int main(int argc, char *const *argv)
 {
@@ -52,8 +51,16 @@ int main(int argc, char *const *argv)
 
     NetworkManager networkManager(serverIp, 54000);
     MenuEntity menu(entityManager, window, font, player, networkManager);
+    sf::Music backgroundMusic;
+
+    if (!backgroundMusic.openFromFile("assets/backgroundMusic.mp3"))
+        return -1;
 
     int volume = 50;
+
+    backgroundMusic.setLoop(true);
+    backgroundMusic.setVolume(volume);
+    backgroundMusic.play();
 
     while (window.isOpen()) {
         sf::Event event;
