@@ -8,8 +8,7 @@
 
 namespace EventCallbacks
 {
-    void ButtonLaunchGame(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event,
-        EntityManager &entityManager, std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
+    void ButtonLaunchGame(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event, std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
     {
         if (!window.hasFocus())
             return;
@@ -23,11 +22,10 @@ namespace EventCallbacks
         std::string username = menu.getUsername();
         if (username != "" && !player) {
             networkManager.send(MessageType::READY, username);
-            player = std::make_unique<PlayerEntity>(entityManager, username, networkManager);
         }
     }
     void ButtonHandlePlay(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event,
-        EntityManager &entityManager, std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
+        std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
     {
         if (!window.hasFocus())
             return;

@@ -7,7 +7,7 @@ class MessageSystem {
   public:
     void update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername, MenuEntity &menu);
   private:
-    void handleLaunchGame(MenuEntity& menu);
+    void handleLaunchGame(EntityManager &entityManager, MenuEntity& menu);
     void handleWaitLobby(const char *&ptr, MenuEntity& menu);
     void handleUpdateClients(EntityManager &entityManager, const char *&ptr, const std::string &localUsername);
     void handleUpdateBullets(EntityManager &entityManager, const char *&ptr);

@@ -7,9 +7,9 @@
 void Server::run()
 {
     std::thread networkThread(&Server::readSocket, this);
-    auto previousTime = std::chrono::high_resolution_clock::now();
-    auto previousBulletBroadcastTime = previousTime;
-    auto previousClientBroadcastTime = previousTime;
+    // auto previousTime = std::chrono::high_resolution_clock::now();
+    // auto previousBulletBroadcastTime = previousTime;
+    // auto previousClientBroadcastTime = previousTime;
 
     loadEnnemies();
     while (true) {

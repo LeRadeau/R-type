@@ -72,7 +72,7 @@ class Server {
     std::list<Bullet> bullets_;
     std::list<Ennemy> ennemies_;
     bool Ready = false; // Booléen qui permet de savoir si la game est lancé
-    // static std::chrono::_V2::system_clock::time_point previousTime;
-    // static std::chrono::_V2::system_clock::time_point previousBulletBroadcastTime;
-    // static std::chrono::_V2::system_clock::time_point previousClientBroadcastTime;
+    std::chrono::_V2::system_clock::time_point previousTime;
+    std::chrono::_V2::system_clock::time_point previousBulletBroadcastTime;
+    std::chrono::_V2::system_clock::time_point previousClientBroadcastTime;
 };

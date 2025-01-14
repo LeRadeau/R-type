@@ -19,10 +19,10 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
         receivedMessages.pop();
         const char *ptr = message.data();
         auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
-
+ 
         switch (messageType) {
             case MessageType::START_GAME:
-                handleLaunchGame(menu);
+                handleLaunchGame(entityManager, menu);
                 break;
             case MessageType::WAIT:
                 handleWaitLobby(ptr, menu);
@@ -76,9 +76,10 @@ void MessageSystem::handleUpdateClients(EntityManager &entityManager, const char
     }
 }
 
-void MessageSystem::handleLaunchGame(MenuEntity &menu)
+void MessageSystem::handleLaunchGame(EntityManager &entityManager, MenuEntity &menu)
 {
     menu.closeLobby();
+    menu.getPlayer() = std::make_unique<PlayerEntity>(entityManager, menu.getUsername(), menu.getnetworkManager());
 }
 
 void MessageSystem::handleWaitLobby(const char *&ptr, MenuEntity &menu)
@@ -127,7 +128,7 @@ void MessageSystem::handleError(const char *&ptr)
 void MessageSystem::handleUpdateEnemies(EntityManager &entityManager, const char *&ptr)
 {
     auto numEnemies = Serializer::deserialize<uint32_t>(ptr);
-    std::cout << "Received " << numEnemies << " enemies" << std::endl;
+    // std::cout << "Received " << numEnemies << " enemies" << std::endl;
     for (uint32_t i = 0; i < numEnemies; ++i) {
         auto id = Serializer::deserializeString(ptr);
         float x = Serializer::deserialize<float>(ptr);

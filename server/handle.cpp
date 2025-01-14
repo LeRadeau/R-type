@@ -25,12 +25,13 @@ void Server::handleReady(const sf::IpAddress &sender, unsigned short senderPort,
             std::string buffer;
             Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::START_GAME));
             socket_.send(buffer.data(), buffer.size(), it->second.ip, it->second.port);
+            std::cout << "PROUT PROUT\n";
         }
         // The server start the game !
         Ready = true;
-        // previousTime = std::chrono::high_resolution_clock::now();
-        // previousBulletBroadcastTime = previousTime;
-        // previousClientBroadcastTime = previousTime;
+        previousTime = std::chrono::high_resolution_clock::now();
+        previousBulletBroadcastTime = previousTime;
+        previousClientBroadcastTime = previousTime;
     }
 }
 

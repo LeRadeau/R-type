@@ -40,7 +40,7 @@ void MenuEntity::openLobby()
     buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "LANCER LA PARTIE", font_));
     buttons_[0]->setCallback(sf::Event::MouseButtonReleased, [this](const sf::Event &event) {
         EventCallbacks::ButtonLaunchGame(
-            *this, buttons_[0]->getEntity(), window_, event, entityManager_, player_, networkManager_);
+            *this, buttons_[0]->getEntity(), window_, event, player_, networkManager_);
     });
 }
 
@@ -74,7 +74,7 @@ void MenuEntity::open()
     buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "Play", font_));
     buttons_[0]->setCallback(sf::Event::MouseButtonReleased, [this](const sf::Event &event) {
         EventCallbacks::ButtonHandlePlay(
-            *this, buttons_[0]->getEntity(), window_, event, entityManager_, player_, networkManager_);
+            *this, buttons_[0]->getEntity(), window_, event, player_, networkManager_);
     });
     position.x += 160;
     buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "Quit", font_));
@@ -116,4 +116,9 @@ const std::string &MenuEntity::getIpAdress()
 const std::string &MenuEntity::getUsername()
 {
     return usernameStr_;
+}
+
+std::unique_ptr<PlayerEntity> &MenuEntity::getPlayer()
+{
+    return player_;
 }

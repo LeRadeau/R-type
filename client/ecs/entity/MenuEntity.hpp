@@ -22,7 +22,12 @@ class MenuEntity {
 
     std::size_t getNbrClients();
     void setNbrClients(std::size_t nbrClients);
-  
+
+    std::unique_ptr<PlayerEntity> &getPlayer();
+
+    NetworkManager &getnetworkManager() {
+      return networkManager_;
+    }
     const std::string &getIpAdress();
     const std::string &getUsername();
 
