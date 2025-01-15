@@ -8,7 +8,7 @@
 
 #define SERVER_PORT 54000
 #define MAX_CLIENTS 4
-#define MAX_ENNEMIES 6
+#define MAX_ENNEMIES 10
 
 struct Client {
     sf::IpAddress ip;

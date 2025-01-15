@@ -17,5 +17,6 @@ enum class MessageType : uint8_t {
         START_GAME = 10, // Le jeu commence
         WAIT = 11, // + {Nombres de joueur}
         // ERROR
-        ERROR = 4
+        ERROR = 4,
+        NONE = 12
     };

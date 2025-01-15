@@ -3,6 +3,7 @@
 #include "Server.hpp"
 #include "../common/Serializer.hpp"
 #include "./../common/network_types.hpp"
+#include <iostream>
 
 void Server::run()
 {
@@ -20,6 +21,7 @@ void Server::run()
                 Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::WAIT));
                 Serializer::serialize(buffer, static_cast<std::size_t>(clients_.size()));
                 socket_.send(buffer.data(), buffer.size(), it->second.ip, it->second.port);
+                std::cout << "Server: Send MessageType::WAIT to client " << it->second.ip << std::endl;
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Attends 1 seconde avant le prochain check
             continue;

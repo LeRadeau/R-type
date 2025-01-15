@@ -5,6 +5,7 @@
 #include "ecs/entity/MenuEntity.hpp"
 #include "ecs/entity/PlayerEntity.hpp"
 #include "ecs/entity/TextFieldEntity.hpp"
+#include <iostream>
 
 namespace EventCallbacks
 {
@@ -22,6 +23,7 @@ namespace EventCallbacks
         std::string username = menu.getUsername();
         if (username != "" && !player) {
             networkManager.send(MessageType::READY, username);
+            std::cout << "Client: Send MessageType::READY to server "<< std::endl;
         }
     }
     void ButtonHandlePlay(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event,
@@ -44,6 +46,7 @@ namespace EventCallbacks
     
         if (username != "" && !player) {
             networkManager.send(MessageType::CONNECT, username);
+            std::cout << "Client: Send MessageType::CONNECT to server "<< std::endl;
             menu.openLobby();
         }
     }

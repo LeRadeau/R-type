@@ -1,8 +1,7 @@
 #include "NetworkManager.hpp"
 #include <cstdlib>
-#include <ostream>
 #include "Serializer.hpp"
-
+#include <iostream>
 // Public
 
 NetworkManager::NetworkManager(const std::string &serverIp, uint16_t port)
@@ -35,9 +34,8 @@ void NetworkManager::send(MessageType type, const std::string &data)
     send(buffer);
 }
 
-std::queue<std::string> &NetworkManager::getReceivedMessages()
+TSQueue<std::string> &NetworkManager::getReceivedMessages()
 {
-    std::lock_guard<std::mutex> lock(queueMutex);
     return receivedMessages;
 }
 
@@ -62,11 +60,7 @@ void NetworkManager::receiveMessages()
 
     while (isRunning) {
         if (socket.receive(data, sizeof(data), received, sender, senderPort) == sf::Socket::Done) {
-            std::lock_guard<std::mutex> lock(queueMutex);
             receivedMessages.push(std::string(data, received));
-            if (receivedMessages.size() > 10) {
-                receivedMessages = std::queue<std::string>();
-            }
         }
     }
 }
