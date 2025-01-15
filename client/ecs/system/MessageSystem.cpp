@@ -19,11 +19,10 @@ MessageSystem::MessageSystem(sf::Font &font) : font_(font)
 
 void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername)
 {
-    auto receivedMessages = networkManager.getReceivedMessages();
+    auto &receivedMessages = networkManager.getReceivedMessages();
 
     while (!receivedMessages.empty()) {
-        auto message = receivedMessages.front();
-        receivedMessages.pop();
+        auto message = receivedMessages.pop();
         const char *ptr = message.data();
         auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
 
