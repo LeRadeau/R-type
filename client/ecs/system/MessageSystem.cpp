@@ -6,6 +6,7 @@
 #include "ecs/component/HealthComponent.hpp"
 #include "ecs/component/PositionComponent.hpp"
 #include "ecs/component/RenderComponent.hpp"
+#include "ecs/component/SoundComponent.hpp"
 #include "ecs/component/UsernameComponent.hpp"
 #include "ecs/component/VelocityComponent.hpp"
 #include "ecs/entity/AllyEntity.hpp"
@@ -91,6 +92,7 @@ void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char
             newEntity.addComponent<RenderComponent>(5, sf::Color::Red);
             newEntity.addComponent<BulletIdComponent>(id);
             newEntity.addComponent<VelocityComponent>(vx, vy);
+            newEntity.addComponent<SoundComponent>("assets/shoot.ogg", 1);
         }
     }
 }

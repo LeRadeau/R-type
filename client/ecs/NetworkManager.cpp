@@ -1,6 +1,5 @@
 #include "NetworkManager.hpp"
 #include <cstdlib>
-#include <ostream>
 #include "Serializer.hpp"
 
 // Public

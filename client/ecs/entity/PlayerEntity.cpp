@@ -2,6 +2,7 @@
 #include "ecs/NetworkManager.hpp"
 #include "ecs/component/InputComponent.hpp"
 #include "ecs/component/PositionComponent.hpp"
+#include "ecs/component/SoundComponent.hpp"
 #include "ecs/component/SpriteComponent.hpp"
 #include "ecs/component/UsernameComponent.hpp"
 
@@ -12,5 +13,7 @@ PlayerEntity::PlayerEntity(EntityManager &entityManager, const std::string &user
     entity_.addComponent<SpriteComponent>("assets/Player64x64.png", sf::Vector2f(1, 1));
     entity_.addComponent<InputComponent>();
     entity_.addComponent<usernameComponent>(username);
+    auto &sound = entity_.addComponent<SoundComponent>("assets/spaceshipIdle.mp3", -1);
+    sound.sound.setPitch(0.5);
     networkManager.send(MessageType::CONNECT, username);
 }

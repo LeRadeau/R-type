@@ -1,3 +1,6 @@
+#include <SFML/Audio/Music.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -13,7 +16,9 @@
 #include "ecs/system/MovementSystem.hpp"
 #include "ecs/system/RenderSystem.hpp"
 #include "ecs/system/SelectionSystem.hpp"
+#include "ecs/system/SoundSystem.hpp"
 #include "ecs/system/ParallaxSystem.hpp"
+
 #include "network_types.hpp"
 
 static void loadParallax(EntityManager &entityManager)
@@ -45,7 +50,9 @@ int main(int argc, char *const *argv)
     InputSystem inputSystem;
     MessageSystem messageSystem(font);
     EventHandlingSystem eventHandlingSystem;
+    SoundSystem soundSystem;
     ParallaxSystem parallaxSystem;
+
 
     renderSystem.update(entityManager);
     window.display();
@@ -58,6 +65,16 @@ int main(int argc, char *const *argv)
 
     NetworkManager networkManager(serverIp, 54000);
     MenuEntity menu(entityManager, window, font, player, networkManager);
+    sf::Music backgroundMusic;
+
+    if (!backgroundMusic.openFromFile("assets/backgroundMusic.mp3"))
+        return -1;
+
+    int volume = 50;
+
+    backgroundMusic.setLoop(true);
+    backgroundMusic.setVolume(volume);
+    backgroundMusic.play();
 
     while (window.isOpen()) {
         sf::Event event;
@@ -81,6 +98,7 @@ int main(int argc, char *const *argv)
         movementSystem.update(entityManager, networkManager, deltaTime, window.hasFocus());
         inputSystem.update(entityManager);
         messageSystem.update(entityManager, networkManager, menu.getUsername());
+        soundSystem.update(entityManager, volume);
         parallaxSystem.update(entityManager, deltaTime);
 
         window.clear();
