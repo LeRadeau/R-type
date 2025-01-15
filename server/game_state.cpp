@@ -76,12 +76,18 @@ void Server::loadEnnemies()
 
 void Server::spawnEnnemies(int count)
 {
-    static int enemyCounter = 0;
+    static int enemyCounter = 0; // Génère des IDs uniques pour chaque ennemi
     for (int i = 0; i < count; ++i) {
         Ennemy newEnnemy;
+
+        // Génération des positions : x commence à droite, y dans les limites de l'écran
+        float screenWidth = 1920.0f;   // Largeur de l'écran
+        float screenHeight = 1080.0f;  // Hauteur de l'écran
+        newEnnemy.position = {screenWidth + 50.0f, static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f};
+
+        // Autres attributs de l'ennemi
         newEnnemy.id = "ennemy_" + std::to_string(enemyCounter++);
-        newEnnemy.position = {1920.0f, static_cast<float>(rand() % 1080)};
-        newEnnemy.velocity = {50, 15};
+        newEnnemy.velocity = {50, 15}; // Vitesse initiale
         newEnnemy.health = 100;
         newEnnemy.shootingCooldown = 1.0f;
         newEnnemy.respawnCooldown = 5.0f;
@@ -90,9 +96,12 @@ void Server::spawnEnnemies(int count)
         newEnnemy.frequency = 1.0f;
         newEnnemy.cosinus = 1;
         newEnnemy.startingY = newEnnemy.position.y;
+
+        // Ajouter l'ennemi à la liste
         ennemies_.push_back(newEnnemy);
     }
 }
+
 
 void Server::CheckEnnemyCollision()
 {
