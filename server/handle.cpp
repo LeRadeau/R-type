@@ -18,11 +18,16 @@ std::string Server::generateBulletID(const std::string &username)
 
 void Server::handleReady(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr)
 {
+    bool shouldContinue = false;
+    for (auto &i : clients_) {
+        if (i.second.ip == sender && i.second.port == senderPort) {
+            shouldContinue = true;
+        }
+    }
+    if (!shouldContinue)
+        return;
     // Check if there is at less 1 player
     if (clients_.size() >= 1) {
-        std::cout << "\033[1;32mGame is launched by " << sender.toString() << ":" << senderPort << "\033[0m\n";
-        // Send new state of the Game for each client. Then they can start the game, but if one client don't receiveid
-        // the message ?? (Have to create TCP protocole for this case ?)
         for (auto it = clients_.begin(); it != clients_.end(); it++) {
             std::string buffer;
             Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::START_GAME));
@@ -90,8 +95,6 @@ void Server::handleShoot(const sf::IpAddress &sender, unsigned short senderPort,
     std::string shootingUsername = Serializer::deserializeString(ptr);
     float x = Serializer::deserialize<float>(ptr);
     float y = Serializer::deserialize<float>(ptr);
-
-    // std::cout << shootingUsername << " shot at " << x << ", " << y << std::endl;
 
     Bullet newBullet;
     newBullet.id = generateBulletID(shootingUsername);

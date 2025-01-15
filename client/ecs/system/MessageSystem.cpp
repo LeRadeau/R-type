@@ -4,6 +4,7 @@
 #include "ecs/component/BulletIdComponent.hpp"
 #include "ecs/component/EnnemyIdComponent.hpp"
 #include "ecs/component/HealthComponent.hpp"
+#include "ecs/component/NetworkCallbackComponent.hpp"
 #include "ecs/component/PositionComponent.hpp"
 #include "ecs/component/RenderComponent.hpp"
 #include "ecs/component/SoundComponent.hpp"
@@ -11,13 +12,15 @@
 #include "ecs/component/VelocityComponent.hpp"
 #include "ecs/entity/AllyEntity.hpp"
 #include "ecs/entity/BydosEntity.hpp"
+#include "ecs/entity/PlayerEntity.hpp"
 #include "network_types.hpp"
 
 MessageSystem::MessageSystem(sf::Font &font) : font_(font)
 {
 }
 
-void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername, MenuEntity &menu)
+void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername,
+    std::unique_ptr<PlayerEntity> &player)
 {
     auto &receivedMessages = networkManager.getReceivedMessages();
 
@@ -25,10 +28,19 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
         auto message = receivedMessages.pop();
         const char *ptr = message.data();
         auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
-
+        // Check for callbacks loop
+        for (size_t i = 0; i < entityManager.entities.size(); i++) {
+            auto &currentEntity = entityManager.entities[i];
+            auto *networkCallbackComponent = currentEntity->getComponent<NetworkCallbackComponent>();
+            if (!networkCallbackComponent
+                || networkCallbackComponent->callbacks.find(messageType) == networkCallbackComponent->callbacks.end()) {
+                continue;
+            }
+            networkCallbackComponent->callbacks.at(messageType)(ptr);
+        }
         switch (messageType) {
-            case MessageType::START_GAME: handleLaunchGame(entityManager, menu); break;
-            case MessageType::WAIT: handleWaitLobby(ptr, menu); break;
+            case MessageType::START_GAME: handleLaunchGame(entityManager, player, localUsername); break;
+            case MessageType::WAIT: handleWaitLobby(ptr); break;
             case MessageType::UPDATE_CLIENTS: handleUpdateClients(entityManager, ptr, localUsername); break;
             case MessageType::UPDATE_BULLETS: handleUpdateBullets(entityManager, ptr); break;
             case MessageType::ERROR: handleError(ptr); break;
@@ -38,21 +50,19 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
     }
 }
 
-void MessageSystem::handleLaunchGame(EntityManager &entityManager, MenuEntity &menu)
+void MessageSystem::handleLaunchGame(
+    EntityManager &entityManager, std::unique_ptr<PlayerEntity> &player, const std::string &username)
 {
     std::cout << "\033[1;32mGame has started\033[0m" << std::endl;
-    menu.closeLobby();
-    if (menu.getPlayer() == nullptr)
-        menu.getPlayer() = std::make_unique<PlayerEntity>(entityManager, menu.getUsername(), menu.getnetworkManager());
+    if (player == nullptr)
+        player = std::make_unique<PlayerEntity>(entityManager, username);
 }
 
-void MessageSystem::handleWaitLobby(const char *&ptr, MenuEntity &menu)
+void MessageSystem::handleWaitLobby(const char *&ptr)
 {
     auto nbrClients = Serializer::deserialize<std::size_t>(ptr);
-    std::cout << "\033[1;33mCurrentyly there is -> " << nbrClients << " clients in the game" <<"\033[0m"<< std::endl;
-    if (nbrClients != menu.getNbrClients()) {
-        menu.setNbrClients(nbrClients);
-    }
+    std::cout << "\033[1;33mCurrentyly there is -> " << nbrClients << " clients in the game" << "\033[0m" << std::endl;
+    // TODO: Update Menu Entity
 }
 
 void MessageSystem::handleUpdateClients(
@@ -86,7 +96,6 @@ void MessageSystem::handleUpdateClients(
 
 void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char *&ptr)
 {
-
     auto numBullets = Serializer::deserialize<uint32_t>(ptr);
     for (uint32_t i = 0; i < numBullets; ++i) {
         auto id = Serializer::deserializeString(ptr);

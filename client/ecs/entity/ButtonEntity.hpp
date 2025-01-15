@@ -12,6 +12,8 @@ class ButtonEntity {
         const sf::Font &font);
     void setCallback(sf::Event::EventType eventType, EventHandlerComponent::callbackFunction callback);
     Entity &getEntity();
+    static Entity &createButtonEntity(EntityManager &entityManager, sf::Vector2f size, sf::Vector2f position,
+        const std::string &text, const sf::Font &font);
 
   private:
     EntityManager &entityManager_;
