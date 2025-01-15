@@ -40,6 +40,7 @@ void Server::updateEnnemies(float deltaTime)
 
             ennemy.position.y = ennemy.startingY + ennemy.amplitude * std::sin(ennemy.cosinus * ennemy.frequency);
             ennemy.cosinus += deltaTime;
+            ennemy.shootingCooldown -= deltaTime;
             if (ennemy.shootingCooldown <= 0) {
                 enemyShoot(ennemy);
             }
