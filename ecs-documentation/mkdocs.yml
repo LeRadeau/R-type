@@ -1,0 +1,26 @@
+site_name: R-Type ECS Documentation
+nav:
+  - Home: index.md
+  - Overview:
+      - Introduction: overview/introduction.md
+      - Architecture: overview/architecture.md
+  - Components:
+      - AComponent: components/a_component.md
+      - BulletIdComponent: components/bullet_id_component.md
+      - EnnemyIdComponent: components/ennemy_id_component.md
+      - HealthComponent: components/health_component.md
+      - InputComponent: components/input_component.md
+      - NetworkComponent: components/network_component.md
+      - PositionComponent: components/position_component.md
+      - RenderComponent: components/render_component.md
+      - SpriteComponent: components/sprite_component.md
+      - UsernameComponent: components/username_component.md
+      - VelocityComponent: components/velocity_component.md
+  - Systems:
+      - InputSystem: systems/input_system.md
+      - MessageSystem: systems/message_system.md
+      - MovementSystem: systems/movement_system.md
+      - RenderSystem: systems/render_system.md
+  - Managers:
+      - EntityManager: managers/entity_manager.md
+      - NetworkManager: managers/network_manager.md
