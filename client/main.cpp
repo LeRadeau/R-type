@@ -43,7 +43,7 @@ int main(int argc, char *const *argv)
     SelectionSystem selectionSystem;
     MovementSystem movementSystem;
     InputSystem inputSystem;
-    MessageSystem messageSystem;
+    MessageSystem messageSystem(font);
     EventHandlingSystem eventHandlingSystem;
     ParallaxSystem parallaxSystem;
 

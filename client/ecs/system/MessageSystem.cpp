@@ -1,5 +1,5 @@
-#include <iostream>
 #include "MessageSystem.hpp"
+#include <iostream>
 #include "Serializer.hpp"
 #include "ecs/component/BulletIdComponent.hpp"
 #include "ecs/component/EnnemyIdComponent.hpp"
@@ -8,7 +8,13 @@
 #include "ecs/component/RenderComponent.hpp"
 #include "ecs/component/UsernameComponent.hpp"
 #include "ecs/component/VelocityComponent.hpp"
+#include "ecs/entity/AllyEntity.hpp"
+#include "ecs/entity/BydosEntity.hpp"
 #include "network_types.hpp"
+
+MessageSystem::MessageSystem(sf::Font &font) : font_(font)
+{
+}
 
 void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername)
 {
@@ -21,25 +27,17 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
         auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
 
         switch (messageType) {
-            case MessageType::UPDATE_CLIENTS:
-                handleUpdateClients(entityManager, ptr, localUsername);
-                break;
-            case MessageType::UPDATE_BULLETS:
-                handleUpdateBullets(entityManager, ptr);
-                break;
-            case MessageType::ERROR:
-                handleError(ptr);
-                break;
-            case MessageType::UPDATE_ENEMIES:
-                handleUpdateEnemies(entityManager, ptr);
-                break;
-            default:
-                break;
+            case MessageType::UPDATE_CLIENTS: handleUpdateClients(entityManager, ptr, localUsername); break;
+            case MessageType::UPDATE_BULLETS: handleUpdateBullets(entityManager, ptr); break;
+            case MessageType::ERROR: handleError(ptr); break;
+            case MessageType::UPDATE_ENEMIES: handleUpdateEnemies(entityManager, ptr); break;
+            default: break;
         }
     }
 }
 
-void MessageSystem::handleUpdateClients(EntityManager &entityManager, const char *&ptr, const std::string &localUsername)
+void MessageSystem::handleUpdateClients(
+    EntityManager &entityManager, const char *&ptr, const std::string &localUsername)
 {
     auto numClients = Serializer::deserialize<uint32_t>(ptr);
     for (uint32_t i = 0; i < numClients; ++i) {
@@ -62,10 +60,7 @@ void MessageSystem::handleUpdateClients(EntityManager &entityManager, const char
                 position->position.y = y;
             }
         } else {
-            auto &newEntity = entityManager.createEntity();
-            newEntity.addComponent<PositionComponent>(x, y);
-            newEntity.addComponent<RenderComponent>(20, sf::Color::Blue);
-            newEntity.addComponent<usernameComponent>(username);
+            AllyEntity::createAllyEntity(entityManager, x, y, username, font_);
         }
     }
 }
@@ -108,7 +103,6 @@ void MessageSystem::handleError(const char *&ptr)
 void MessageSystem::handleUpdateEnemies(EntityManager &entityManager, const char *&ptr)
 {
     auto numEnemies = Serializer::deserialize<uint32_t>(ptr);
-    std::cout << "Received " << numEnemies << " enemies" << std::endl;
     for (uint32_t i = 0; i < numEnemies; ++i) {
         auto id = Serializer::deserializeString(ptr);
         float x = Serializer::deserialize<float>(ptr);
@@ -138,11 +132,7 @@ void MessageSystem::handleUpdateEnemies(EntityManager &entityManager, const char
         }
 
         if (!enemyEntity) {
-            auto &newEntity = entityManager.createEntity();
-            newEntity.addComponent<PositionComponent>(x, y);
-            newEntity.addComponent<RenderComponent>(20, sf::Color::Red);
-            newEntity.addComponent<EnnemyIdComponent>(id);
-            newEntity.addComponent<HealthComponent>(health);
+            BydosEntity::createBydos(entityManager, x, y, id, health);
         }
     }
 }
