@@ -73,18 +73,19 @@ void Server::loadEnnemies()
 
 void Server::spawnEnnemies(int count)
 {
-    static int enemyCounter = 0; // Génère des IDs uniques pour chaque ennemi
+    static int enemyCounter = 0;
+    float lastSpawnX = 1920.0f;
+    const float minSpacingX = 150.0f;
+
     for (int i = 0; i < count; ++i) {
         Ennemy newEnnemy;
 
-        // Génération des positions : x commence à droite, y dans les limites de l'écran
-        float screenWidth = 1920.0f;   // Largeur de l'écran
-        float screenHeight = 1080.0f;  // Hauteur de l'écran
-        newEnnemy.position = {screenWidth + 50.0f, static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f};
-
-        // Autres attributs de l'ennemi
+        float screenHeight = 1080.0f;
+        newEnnemy.position.x = lastSpawnX + minSpacingX;
+        newEnnemy.position.y = static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f;
+        lastSpawnX = newEnnemy.position.x;
         newEnnemy.id = "ennemy_" + std::to_string(enemyCounter++);
-        newEnnemy.velocity = {50, 15}; // Vitesse initiale
+        newEnnemy.velocity = {50, 15};
         newEnnemy.health = 100;
         newEnnemy.shootingCooldown = 1.0f;
         newEnnemy.respawnCooldown = 5.0f;
@@ -93,8 +94,6 @@ void Server::spawnEnnemies(int count)
         newEnnemy.frequency = 1.0f;
         newEnnemy.cosinus = 1;
         newEnnemy.startingY = newEnnemy.position.y;
-
-        // Ajouter l'ennemi à la liste
         ennemies_.push_back(newEnnemy);
     }
 }
