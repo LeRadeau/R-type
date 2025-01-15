@@ -74,6 +74,28 @@ void Server::loadEnnemies()
     }
 }
 
+void Server::spawnEnnemies(int count)
+{
+    static int enemyCounter = 0; // Pour générer des IDs uniques
+
+    for (int i = 0; i < count; ++i) {
+        Ennemy newEnnemy;
+        newEnnemy.id = "ennemy_" + std::to_string(enemyCounter++);
+        newEnnemy.position = {1920.0f, static_cast<float>(rand() % 1080)}; // Position aléatoire
+        newEnnemy.velocity = {50, 15};
+        newEnnemy.health = 100;
+        newEnnemy.shootingCooldown = 1.0f;
+        newEnnemy.respawnCooldown = 5.0f;
+        newEnnemy.isAlive = true;
+        newEnnemy.amplitude = 70.0f;
+        newEnnemy.frequency = 1.0f;
+        newEnnemy.cosinus = 1;
+        newEnnemy.startingY = newEnnemy.position.y;
+
+        ennemies_.push_back(newEnnemy);
+    }
+}
+
 void Server::CheckEnnemyCollision()
 {
     for (auto &ennemy : ennemies_) {

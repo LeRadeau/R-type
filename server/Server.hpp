@@ -64,6 +64,7 @@ class Server {
     void loadEnnemies();
     void CheckEnnemyCollision();
     void enemyShoot(Ennemy &ennemy);
+    void spawnEnnemies(int count);
     std::string generateBulletID(const std::string& username);
     sf::UdpSocket socket_;
     std::unordered_map<std::string, Client> clients_;
