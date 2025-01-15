@@ -1,9 +1,9 @@
+#include "Serializer.hpp"
 #include "Server.hpp"
-#include "../common/Serializer.hpp"
-#include "../common/network_types.hpp"
+#include "network_types.hpp"
 
 static const size_t MAX_PACKET_SIZE = 1000;
-    
+
 void Server::broadcastClients()
 {
     std::string buffer;
@@ -35,7 +35,8 @@ void Server::broadcastClients()
         }
 
         Serializer::serialize(buffer, static_cast<uint32_t>(packetClientsCount));
-        buffer.insert(buffer.begin() + sizeof(uint8_t), reinterpret_cast<char*>(&packetClientsCount), reinterpret_cast<char*>(&packetClientsCount) + sizeof(uint32_t));
+        buffer.insert(buffer.begin() + sizeof(uint8_t), reinterpret_cast<char *>(&packetClientsCount),
+            reinterpret_cast<char *>(&packetClientsCount) + sizeof(uint32_t));
 
         for (const auto &client : clients_) {
             socket_.send(buffer.data(), buffer.size(), client.second.ip, client.second.port);
@@ -78,7 +79,8 @@ void Server::broadcastBullet()
         }
 
         Serializer::serialize(buffer, static_cast<uint32_t>(packetBulletsCount));
-        buffer.insert(buffer.begin() + sizeof(uint8_t), reinterpret_cast<char*>(&packetBulletsCount), reinterpret_cast<char*>(&packetBulletsCount) + sizeof(uint32_t));
+        buffer.insert(buffer.begin() + sizeof(uint8_t), reinterpret_cast<char *>(&packetBulletsCount),
+            reinterpret_cast<char *>(&packetBulletsCount) + sizeof(uint32_t));
 
         for (const auto &client : clients_) {
             socket_.send(buffer.data(), buffer.size(), client.second.ip, client.second.port);
@@ -120,10 +122,10 @@ void Server::broadcastEnnemies()
         }
 
         Serializer::serialize(buffer, static_cast<uint32_t>(packetEnemiesCount));
-        buffer.insert(buffer.begin() + sizeof(uint8_t), reinterpret_cast<char*>(&packetEnemiesCount), reinterpret_cast<char*>(&packetEnemiesCount) + sizeof(uint32_t));
+        buffer.insert(buffer.begin() + sizeof(uint8_t), reinterpret_cast<char *>(&packetEnemiesCount),
+            reinterpret_cast<char *>(&packetEnemiesCount) + sizeof(uint32_t));
 
         for (const auto &client : clients_) {
-            // std::cout << "Sending " << packetEnemiesCount << " enemies to " << client.second.username << std::endl;
             socket_.send(buffer.data(), buffer.size(), client.second.ip, client.second.port);
         }
 

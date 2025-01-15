@@ -1,12 +1,13 @@
 #include <SFML/Network.hpp>
-#include <iostream>
 #include <chrono>
+#include <iostream>
 #include <sstream>
+#include "Serializer.hpp"
 #include "Server.hpp"
-#include "../common/Serializer.hpp"
-#include "../common/network_types.hpp"
+#include "network_types.hpp"
 
-std::string Server::generateBulletID(const std::string& username) {
+std::string Server::generateBulletID(const std::string &username)
+{
     static int counter = 0;
     std::ostringstream oss;
     auto now = std::chrono::high_resolution_clock::now();
@@ -20,7 +21,8 @@ void Server::handleReady(const sf::IpAddress &sender, unsigned short senderPort,
     // Check if there is at less 1 player
     if (clients_.size() >= 1) {
         std::cout << "\033[1;32mGame is launched by " << sender.toString() << ":" << senderPort << "\033[0m\n";
-        // Send new state of the Game for each client. Then they can start the game, but if one client don't receiveid the message ?? (Have to create TCP protocole for this case ?)
+        // Send new state of the Game for each client. Then they can start the game, but if one client don't receiveid
+        // the message ?? (Have to create TCP protocole for this case ?)
         for (auto it = clients_.begin(); it != clients_.end(); it++) {
             std::string buffer;
             Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::START_GAME));

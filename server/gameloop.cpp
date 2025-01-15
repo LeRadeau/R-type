@@ -1,16 +1,12 @@
 #include <chrono>
 #include <thread>
+#include "Serializer.hpp"
 #include "Server.hpp"
-#include "../common/Serializer.hpp"
-#include "./../common/network_types.hpp"
-#include <iostream>
+#include "network_types.hpp"
 
 void Server::run()
 {
     std::thread networkThread(&Server::readSocket, this);
-    // auto previousTime = std::chrono::high_resolution_clock::now();
-    // auto previousBulletBroadcastTime = previousTime;
-    // auto previousClientBroadcastTime = previousTime;
 
     loadEnnemies();
     while (true) {
@@ -21,7 +17,6 @@ void Server::run()
                 Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::WAIT));
                 Serializer::serialize(buffer, static_cast<std::size_t>(clients_.size()));
                 socket_.send(buffer.data(), buffer.size(), it->second.ip, it->second.port);
-                std::cout << "Server: Send MessageType::WAIT to client " << it->second.ip << std::endl;
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Attends 1 seconde avant le prochain check
             continue;
@@ -35,13 +30,15 @@ void Server::run()
         updateEnnemies(deltaTimeSeconds);
         CheckEnnemyCollision();
 
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousClientBroadcastTime).count() >= 50) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousClientBroadcastTime).count()
+            >= 50) {
             broadcastClients();
             broadcastEnnemies();
             previousClientBroadcastTime = currentTime;
         }
 
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousBulletBroadcastTime).count() >= 50) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousBulletBroadcastTime).count()
+            >= 50) {
             broadcastBullet();
             previousBulletBroadcastTime = currentTime;
         }
