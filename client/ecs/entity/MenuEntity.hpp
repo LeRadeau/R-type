@@ -4,6 +4,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <vector>
 #include "ButtonEntity.hpp"
+#include "ecs/NetworkManager.hpp"
 #include "ecs/entity/PlayerEntity.hpp"
 #include "ecs/entity/TextFieldEntity.hpp"
 
@@ -15,7 +16,10 @@ class MenuEntity {
     Entity &getEntity();
     void toggle();
     void open();
+    void openLobby();
     void close();
+    void closeLobby();
+
     const std::string &getIpAdress();
     const std::string &getUsername();
 
@@ -31,4 +35,6 @@ class MenuEntity {
     std::string ipAddressStr_;
     std::string usernameStr_;
     std::unique_ptr<PlayerEntity> &player_;
+    Entity &entityText_;
+    std::size_t nbrClients_;
 };
