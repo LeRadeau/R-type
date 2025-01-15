@@ -1,9 +1,9 @@
 #pragma once
 #include <SFML/Network.hpp>
 #include <mutex>
-#include <queue>
 #include <string>
 #include <thread>
+#include "TSQueue.hpp"
 #include "network_types.hpp"
 
 class NetworkManager {
@@ -17,7 +17,7 @@ class NetworkManager {
     void setRemoteIp(const std::string &ip);
     void setRemotePort(uint16_t port);
 
-    std::queue<std::string> &getReceivedMessages();
+    TSQueue<std::string> &getReceivedMessages();
 
   private:
     void receiveMessages();
@@ -29,5 +29,5 @@ class NetworkManager {
     std::atomic<bool> isRunning;
 
     std::mutex queueMutex;
-    std::queue<std::string> receivedMessages;
+    TSQueue<std::string> receivedMessages;
 };
