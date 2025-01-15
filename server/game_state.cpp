@@ -30,13 +30,11 @@ void Server::enemyShoot(Ennemy &ennemy)
     ennemy.shootingCooldown = 2.0f;
 }
 
-
-
 void Server::updateEnnemies(float deltaTime)
 {
     for (auto &ennemy : ennemies_) {
         if (ennemy.isAlive) {
-            ennemy.position.x -= (ennemy.velocity.x) * deltaTime;
+            //ennemy.position.x -= (ennemy.velocity.x) * deltaTime;
 
             ennemy.position.y = ennemy.startingY + ennemy.amplitude * std::sin(ennemy.cosinus * ennemy.frequency);
             ennemy.cosinus += deltaTime;
@@ -53,7 +51,6 @@ void Server::updateEnnemies(float deltaTime)
         }
     }
 }
-
 
 void Server::loadEnnemies()
 {
