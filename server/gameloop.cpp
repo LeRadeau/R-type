@@ -13,7 +13,7 @@ void Server::run()
     auto previousSpawnTime = previousTime;
     int level = 1;
 
-    loadEnnemies();
+    // loadEnnemies();
     while (true) {
         auto currentTime = std::chrono::high_resolution_clock::now();
         std::chrono::duration<float> deltaTime = currentTime - previousTime;
