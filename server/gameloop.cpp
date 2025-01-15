@@ -10,8 +10,8 @@ void Server::run()
     auto previousBulletBroadcastTime = previousTime;
     auto previousClientBroadcastTime = previousTime;
 
-    auto previousSpawnTime = previousTime; // Nouveau : pour le spawner
-    int level = 1; // Niveau initial
+    auto previousSpawnTime = previousTime;
+    int level = 1;
 
     loadEnnemies();
     while (true) {
@@ -24,10 +24,9 @@ void Server::run()
         updateEnnemies(deltaTimeSeconds);
         CheckEnnemyCollision();
 
-        // Diffusions
         if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousSpawnTime).count() >= 10000) {
-            level++; // Augmenter le niveau toutes les 10 secondes
-            spawnEnnemies(level); // Spawner un nombre d’ennemis égal au niveau
+            level++;
+            spawnEnnemies(level);
             previousSpawnTime = currentTime;
         }
         std::cout << "spawning: " << level << " ennemies!"<< std::endl;

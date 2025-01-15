@@ -76,12 +76,11 @@ void Server::loadEnnemies()
 
 void Server::spawnEnnemies(int count)
 {
-    static int enemyCounter = 0; // Pour générer des IDs uniques
-
+    static int enemyCounter = 0;
     for (int i = 0; i < count; ++i) {
         Ennemy newEnnemy;
         newEnnemy.id = "ennemy_" + std::to_string(enemyCounter++);
-        newEnnemy.position = {1920.0f, static_cast<float>(rand() % 1080)}; // Position aléatoire
+        newEnnemy.position = {1920.0f, static_cast<float>(rand() % 1080)};
         newEnnemy.velocity = {50, 15};
         newEnnemy.health = 100;
         newEnnemy.shootingCooldown = 1.0f;
@@ -91,7 +90,6 @@ void Server::spawnEnnemies(int count)
         newEnnemy.frequency = 1.0f;
         newEnnemy.cosinus = 1;
         newEnnemy.startingY = newEnnemy.position.y;
-
         ennemies_.push_back(newEnnemy);
     }
 }
@@ -108,7 +106,6 @@ void Server::CheckEnnemyCollision()
                 bullet.position.x < ennemy.position.x + 20 &&
                 bullet.position.y > ennemy.position.y - 20 &&
                 bullet.position.y < ennemy.position.y + 20) {
-
                 ennemy.health -= 10;
                 if (ennemy.health <= 0) {
                     ennemy.isAlive = false;
