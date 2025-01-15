@@ -4,6 +4,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <unordered_map>
 #include <list>
+#include <chrono>
 
 #define SERVER_PORT 54000
 #define MAX_CLIENTS 4
@@ -51,6 +52,7 @@ class Server {
     void run();
 
   private:
+    void handleReady(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr);
     void handleConnect(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr);
     void handleMove(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr);
     void handleGoodbye(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr);
@@ -69,4 +71,8 @@ class Server {
     std::unordered_map<std::string, Client> clients_;
     std::list<Bullet> bullets_;
     std::list<Ennemy> ennemies_;
+    bool Ready = false; // Booléen qui permet de savoir si la game est lancé
+    std::chrono::_V2::system_clock::time_point previousTime;
+    std::chrono::_V2::system_clock::time_point previousBulletBroadcastTime;
+    std::chrono::_V2::system_clock::time_point previousClientBroadcastTime;
 };

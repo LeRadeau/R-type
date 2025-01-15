@@ -1,7 +1,6 @@
 #include "NetworkManager.hpp"
 #include <cstdlib>
 #include "Serializer.hpp"
-
 // Public
 
 NetworkManager::NetworkManager(const std::string &serverIp, uint16_t port)

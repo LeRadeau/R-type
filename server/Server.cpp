@@ -33,6 +33,7 @@ void Server::readSocket()
         auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
 
         switch (messageType) {
+            case MessageType::READY: handleReady(sender, senderPort, ptr); break;
             case MessageType::CONNECT: handleConnect(sender, senderPort, ptr); break;
             case MessageType::MOVE: handleMove(sender, senderPort, ptr); break;
             case MessageType::GOODBYE: handleGoodbye(sender, senderPort, ptr); break;
