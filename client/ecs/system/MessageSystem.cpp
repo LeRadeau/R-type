@@ -37,6 +37,19 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
         }
     }
 }
+void MessageSystem::handleLaunchGame(EntityManager &entityManager, MenuEntity &menu)
+{
+    menu.closeLobby();
+    menu.getPlayer() = std::make_unique<PlayerEntity>(entityManager, menu.getUsername(), menu.getnetworkManager());
+}
+
+void MessageSystem::handleWaitLobby(const char *&ptr, MenuEntity &menu)
+{
+    auto nbrClients = Serializer::deserialize<std::size_t>(ptr);
+    if (nbrClients != menu.getNbrClients()) {
+        menu.setNbrClients(nbrClients);
+    }
+}
 
 void MessageSystem::handleUpdateClients(
     EntityManager &entityManager, const char *&ptr, const std::string &localUsername)
