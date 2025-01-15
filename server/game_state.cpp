@@ -35,7 +35,6 @@ void Server::updateEnnemies(float deltaTime)
     for (auto &ennemy : ennemies_) {
         if (ennemy.isAlive) {
             ennemy.position.x -= (ennemy.velocity.x) * deltaTime;
-
             ennemy.position.y = ennemy.startingY + ennemy.amplitude * std::sin(ennemy.cosinus * ennemy.frequency);
             ennemy.cosinus += deltaTime;
             ennemy.shootingCooldown -= deltaTime;
@@ -51,6 +50,7 @@ void Server::updateEnnemies(float deltaTime)
         }
     }
 }
+
 
 void Server::loadEnnemies()
 {
@@ -79,7 +79,6 @@ void Server::spawnEnnemies(int count)
 
     for (int i = 0; i < count; ++i) {
         Ennemy newEnnemy;
-
         float screenHeight = 1080.0f;
         newEnnemy.position.x = lastSpawnX + minSpacingX;
         newEnnemy.position.y = static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f;
@@ -87,7 +86,7 @@ void Server::spawnEnnemies(int count)
         newEnnemy.id = "ennemy_" + std::to_string(enemyCounter++);
         newEnnemy.velocity = {50, 15};
         newEnnemy.health = 100;
-        newEnnemy.shootingCooldown = 1.0f;
+        newEnnemy.shootingCooldown = static_cast<float>((rand() % 3) + 1);
         newEnnemy.respawnCooldown = 5.0f;
         newEnnemy.isAlive = true;
         newEnnemy.amplitude = 70.0f;
