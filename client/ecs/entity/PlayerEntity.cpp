@@ -15,5 +15,4 @@ PlayerEntity::PlayerEntity(EntityManager &entityManager, const std::string &user
     entity_.addComponent<usernameComponent>(username);
     auto &sound = entity_.addComponent<SoundComponent>("assets/spaceshipIdle.mp3", -1);
     sound.sound.setPitch(0.5);
-    networkManager.send(MessageType::CONNECT, username);
 }

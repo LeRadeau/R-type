@@ -1,7 +1,6 @@
 #include "Server.hpp"
 #include "../common/Serializer.hpp"
 #include "../common/network_types.hpp"
-#include <iostream>
 
 static const size_t MAX_PACKET_SIZE = 1000;
     
@@ -124,7 +123,7 @@ void Server::broadcastEnnemies()
         buffer.insert(buffer.begin() + sizeof(uint8_t), reinterpret_cast<char*>(&packetEnemiesCount), reinterpret_cast<char*>(&packetEnemiesCount) + sizeof(uint32_t));
 
         for (const auto &client : clients_) {
-            std::cout << "Sending " << packetEnemiesCount << " enemies to " << client.second.username << std::endl;
+            // std::cout << "Sending " << packetEnemiesCount << " enemies to " << client.second.username << std::endl;
             socket_.send(buffer.data(), buffer.size(), client.second.ip, client.second.port);
         }
 

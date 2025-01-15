@@ -17,10 +17,9 @@ std::string Server::generateBulletID(const std::string& username) {
 
 void Server::handleReady(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr)
 {
-    std::cout << "Server: Handle MessageType::READY\n";
     // Check if there is at less 1 player
     if (clients_.size() >= 1) {
-        std::cout << "Game is launched\n";
+        std::cout << "\033[1;32mGame is launched by " << sender.toString() << ":" << senderPort << "\033[0m\n";
         // Send new state of the Game for each client. Then they can start the game, but if one client don't receiveid the message ?? (Have to create TCP protocole for this case ?)
         for (auto it = clients_.begin(); it != clients_.end(); it++) {
             std::string buffer;
@@ -39,7 +38,7 @@ void Server::handleReady(const sf::IpAddress &sender, unsigned short senderPort,
 void Server::handleConnect(const sf::IpAddress &sender, unsigned short senderPort, char const *&ptr)
 {
     std::string newUsername = Serializer::deserializeString(ptr);
-    std::cout << "CONNECT\n";
+    std::cout << "CONNECTION by " << sender.toString() << ":" << senderPort << std::endl;
     if (clients_.find(newUsername) != clients_.end()) {
         std::cout << "Client already exists: " << newUsername << std::endl;
 
@@ -47,7 +46,7 @@ void Server::handleConnect(const sf::IpAddress &sender, unsigned short senderPor
         Serializer::serialize(errorBuffer, static_cast<uint8_t>(MessageType::ERROR));
         Serializer::serialize(errorBuffer, "Username already exists");
         socket_.send(errorBuffer.data(), errorBuffer.size(), sender, senderPort);
-        std::cout << "Server: Send MessageType::ERROR to client" << sender << std::endl;
+        std::cout << "Server: Send MessageType::ERROR already exist to client" << sender << std::endl;
     }
     if (clients_.size() >= MAX_CLIENTS) {
         std::cout << "Server is full" << std::endl;
@@ -56,7 +55,7 @@ void Server::handleConnect(const sf::IpAddress &sender, unsigned short senderPor
         Serializer::serialize(errorBuffer, static_cast<uint8_t>(MessageType::ERROR));
         Serializer::serialize(errorBuffer, "Server is full");
         socket_.send(errorBuffer.data(), errorBuffer.size(), sender, senderPort);
-        std::cout << "Server: Send MessageType::ERROR to client" << sender << std::endl;
+        std::cout << "Server: Send MessageType::ERROR FULL to client" << sender << std::endl;
     }
 
     clients_[newUsername] = Client(sender, senderPort, newUsername);
@@ -90,7 +89,7 @@ void Server::handleShoot(const sf::IpAddress &sender, unsigned short senderPort,
     float x = Serializer::deserialize<float>(ptr);
     float y = Serializer::deserialize<float>(ptr);
 
-    std::cout << shootingUsername << " shot at " << x << ", " << y << std::endl;
+    // std::cout << shootingUsername << " shot at " << x << ", " << y << std::endl;
 
     Bullet newBullet;
     newBullet.id = generateBulletID(shootingUsername);

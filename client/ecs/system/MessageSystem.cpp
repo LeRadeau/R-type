@@ -37,15 +37,19 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
         }
     }
 }
+
 void MessageSystem::handleLaunchGame(EntityManager &entityManager, MenuEntity &menu)
 {
+    std::cout << "\033[1;32mGame has started\033[0m" << std::endl;
     menu.closeLobby();
-    menu.getPlayer() = std::make_unique<PlayerEntity>(entityManager, menu.getUsername(), menu.getnetworkManager());
+    if (menu.getPlayer() == nullptr)
+        menu.getPlayer() = std::make_unique<PlayerEntity>(entityManager, menu.getUsername(), menu.getnetworkManager());
 }
 
 void MessageSystem::handleWaitLobby(const char *&ptr, MenuEntity &menu)
 {
     auto nbrClients = Serializer::deserialize<std::size_t>(ptr);
+    std::cout << "\033[1;33mCurrentyly there is -> " << nbrClients << " clients in the game" <<"\033[0m"<< std::endl;
     if (nbrClients != menu.getNbrClients()) {
         menu.setNbrClients(nbrClients);
     }
@@ -82,6 +86,7 @@ void MessageSystem::handleUpdateClients(
 
 void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char *&ptr)
 {
+
     auto numBullets = Serializer::deserialize<uint32_t>(ptr);
     for (uint32_t i = 0; i < numBullets; ++i) {
         auto id = Serializer::deserializeString(ptr);
@@ -113,6 +118,7 @@ void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char
 
 void MessageSystem::handleError(const char *&ptr)
 {
+    // Segfault problem
     std::cerr << "Received error message from server: " << Serializer::deserializeString(ptr) << std::endl;
 }
 
