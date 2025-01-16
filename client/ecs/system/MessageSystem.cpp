@@ -40,7 +40,6 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
         }
         switch (messageType) {
             case MessageType::START_GAME: handleLaunchGame(entityManager, player, localUsername); break;
-            case MessageType::WAIT: handleWaitLobby(ptr); break;
             case MessageType::UPDATE_CLIENTS: handleUpdateClients(entityManager, ptr, localUsername); break;
             case MessageType::UPDATE_BULLETS: handleUpdateBullets(entityManager, ptr); break;
             case MessageType::ERROR: handleError(ptr); break;
@@ -56,13 +55,6 @@ void MessageSystem::handleLaunchGame(
     std::cout << "\033[1;32mGame has started\033[0m" << std::endl;
     if (player == nullptr)
         player = std::make_unique<PlayerEntity>(entityManager, username);
-}
-
-void MessageSystem::handleWaitLobby(const char *&ptr)
-{
-    auto nbrClients = Serializer::deserialize<std::size_t>(ptr);
-    std::cout << "\033[1;33mCurrentyly there is -> " << nbrClients << " clients in the game" << "\033[0m" << std::endl;
-    // TODO: Update Menu Entity
 }
 
 void MessageSystem::handleUpdateClients(
