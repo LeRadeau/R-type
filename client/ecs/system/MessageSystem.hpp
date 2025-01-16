@@ -17,5 +17,9 @@ class MessageSystem {
     void handleUpdateBullets(EntityManager &entityManager, const char *&ptr);
     void handleError(const char *&ptr);
     void handleUpdateEnemies(EntityManager &entityManager, const char *&ptr);
+    void handleBulletHit(EntityManager &entityManager, const char *&ptr);
+    void handleEnemyDeath(EntityManager &entityManager, const char *&ptr);
+    void handlePlayerDeath(EntityManager &entityManager, const char *&ptr);
+    void handleGameOver(EntityManager &entityManager);
     sf::Font &font_;
 };

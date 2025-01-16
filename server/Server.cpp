@@ -1,15 +1,10 @@
 #include "Server.hpp"
 #include <SFML/Network.hpp>
 #include <SFML/Network/Packet.hpp>
-#include <chrono>
 #include <iostream>
-#include <thread>
-#include "./../common/Serializer.hpp"
-#include "./../common/network_types.hpp"
+#include "Serializer.hpp"
+#include "network_types.hpp"
 #include <system_error>
-#include <unordered_map>
-#include <sstream>
-#include <chrono>
 
 void Server::bind(unsigned short port, const sf::IpAddress &addr)
 {
@@ -21,7 +16,8 @@ void Server::bind(unsigned short port, const sf::IpAddress &addr)
 
 void Server::readSocket()
 {
-    while (true) {
+    running_ = true;
+    while (running_) {
         char data[1024];
         std::size_t received;
         sf::IpAddress sender;
@@ -40,6 +36,14 @@ void Server::readSocket()
             case MessageType::SHOOT: handleShoot(sender, senderPort, ptr); break;
             default: break;
         }
+    }
+}
+
+Server::~Server()
+{
+    running_ = false;
+    if (networkThread_.joinable()) {
+        networkThread_.join();
     }
 }
 
