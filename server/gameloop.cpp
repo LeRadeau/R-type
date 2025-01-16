@@ -2,13 +2,18 @@
 #include <thread>
 #include "Serializer.hpp"
 #include "Server.hpp"
+#include <iostream>
 #include "network_types.hpp"
+
 
 void Server::run()
 {
     std::thread networkThread(&Server::readSocket, this);
 
-    loadEnnemies();
+    auto previousSpawnTime = previousTime;
+    int level = 1;
+
+    // loadEnnemies();
     while (true) {
         // Vérifie si le jeu est ready
         if (Ready == false) {
@@ -30,8 +35,16 @@ void Server::run()
         updateEnnemies(deltaTimeSeconds);
         CheckEnnemyCollision();
 
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousSpawnTime).count() >= 10000) {
+            level++;
+            spawnEnnemies(level);
+            previousSpawnTime = currentTime;
+        }
+        std::cout << "spawning: " << level << " ennemies!"<< std::endl;
+
         if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousClientBroadcastTime).count()
             >= 50) {
+
             broadcastClients();
             broadcastEnnemies();
             previousClientBroadcastTime = currentTime;

@@ -34,10 +34,10 @@ void Server::updateEnnemies(float deltaTime)
 {
     for (auto &ennemy : ennemies_) {
         if (ennemy.isAlive) {
-            //ennemy.position.x -= (ennemy.velocity.x) * deltaTime;
-
+            ennemy.position.x -= (ennemy.velocity.x) * deltaTime;
             ennemy.position.y = ennemy.startingY + ennemy.amplitude * std::sin(ennemy.cosinus * ennemy.frequency);
             ennemy.cosinus += deltaTime;
+            ennemy.shootingCooldown -= deltaTime;
             if (ennemy.shootingCooldown <= 0) {
                 enemyShoot(ennemy);
             }
@@ -50,6 +50,7 @@ void Server::updateEnnemies(float deltaTime)
         }
     }
 }
+
 
 void Server::loadEnnemies()
 {
@@ -70,6 +71,33 @@ void Server::loadEnnemies()
     }
 }
 
+void Server::spawnEnnemies(int count)
+{
+    static int enemyCounter = 0;
+    float lastSpawnX = 1920.0f;
+    const float minSpacingX = 150.0f;
+
+    for (int i = 0; i < count; ++i) {
+        Ennemy newEnnemy;
+        float screenHeight = 1080.0f;
+        newEnnemy.position.x = lastSpawnX + minSpacingX;
+        newEnnemy.position.y = static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f;
+        lastSpawnX = newEnnemy.position.x;
+        newEnnemy.id = "ennemy_" + std::to_string(enemyCounter++);
+        newEnnemy.velocity = {50, 15};
+        newEnnemy.health = 100;
+        newEnnemy.shootingCooldown = static_cast<float>((rand() % 3) + 1);
+        newEnnemy.respawnCooldown = 5.0f;
+        newEnnemy.isAlive = true;
+        newEnnemy.amplitude = 70.0f;
+        newEnnemy.frequency = 1.0f;
+        newEnnemy.cosinus = 1;
+        newEnnemy.startingY = newEnnemy.position.y;
+        ennemies_.push_back(newEnnemy);
+    }
+}
+
+
 void Server::CheckEnnemyCollision()
 {
     for (auto &ennemy : ennemies_) {
@@ -82,7 +110,6 @@ void Server::CheckEnnemyCollision()
                 bullet.position.x < ennemy.position.x + 20 &&
                 bullet.position.y > ennemy.position.y - 20 &&
                 bullet.position.y < ennemy.position.y + 20) {
-
                 ennemy.health -= 10;
                 if (ennemy.health <= 0) {
                     ennemy.isAlive = false;
