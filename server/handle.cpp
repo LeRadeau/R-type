@@ -6,7 +6,7 @@
 #include "../common/Serializer.hpp"
 #include "../common/network_types.hpp"
 
-std::string generateBulletID(const std::string& username) {
+std::string Server::generateBulletID(const std::string& username) {
     static int counter = 0;
     std::ostringstream oss;
     auto now = std::chrono::high_resolution_clock::now();

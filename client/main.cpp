@@ -1,45 +1,37 @@
+#include <SFML/Audio/Music.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <iostream>
-#include "Serializer.hpp"
 #include "ecs/EntityManager.hpp"
 #include "ecs/NetworkManager.hpp"
-#include "ecs/component/InputComponent.hpp"
-#include "ecs/component/NetworkComponent.hpp"
-#include "ecs/component/PositionComponent.hpp"
-#include "ecs/component/RenderComponent.hpp"
-#include "ecs/component/UsernameComponent.hpp"
+#include "ecs/entity/MenuEntity.hpp"
+#include "ecs/entity/PlayerEntity.hpp"
+#include "ecs/system/EventHandlingSystem.hpp"
+#include "ecs/system/HoverSystem.hpp"
 #include "ecs/system/InputSystem.hpp"
 #include "ecs/system/MessageSystem.hpp"
 #include "ecs/system/MovementSystem.hpp"
 #include "ecs/system/RenderSystem.hpp"
+#include "ecs/system/SelectionSystem.hpp"
+#include "ecs/system/SoundSystem.hpp"
+#include "ecs/system/ParallaxSystem.hpp"
+
 #include "network_types.hpp"
 
-static void sendConnectMessage(NetworkManager &networkManager, const std::string &username)
+static void loadParallax(EntityManager &entityManager)
 {
-    std::string buffer;
-    Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::CONNECT));
-    Serializer::serialize(buffer, username);
-    networkManager.send(buffer);
-}
+    auto &background = entityManager.createEntity();
+    background.addComponent<ParallaxComponent>("assets/back.png", sf::Vector2f(-500.0f, 0.0f), sf::Vector2f(0, 0), sf::Vector2u(7, 7));
 
-static void sendGoodbyeMessage(NetworkManager &networkManager, const std::string &username)
-{
-    std::string buffer;
-    Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::GOODBYE));
-    Serializer::serialize(buffer, username);
-    networkManager.send(buffer);
+    auto &midground = entityManager.createEntity();
+    midground.addComponent<ParallaxComponent>("assets/starBack.png", sf::Vector2f(-600.0f, 0.0f), sf::Vector2f(0, 0), sf::Vector2u(7, 7));
 }
 
 int main(int argc, char *const *argv)
 {
-    if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <server_ip> <username>" << std::endl;
-        return 1;
-    }
-
-    std::string serverIp = argv[1];
-    std::string username = argv[2];
-
     sf::Font font;
     if (!font.loadFromFile("assets/arial.ttf")) {
         std::cerr << "Failed to load font." << std::endl;
@@ -49,46 +41,71 @@ int main(int argc, char *const *argv)
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "ECS UDP Client");
     window.setFramerateLimit(60);
 
-    NetworkManager networkManager(serverIp, 54000);
-
     EntityManager entityManager;
 
-    sendConnectMessage(networkManager, username);
-
-    auto &playerEntity = entityManager.createEntity();
-    playerEntity.addComponent<PositionComponent>(400, 300);
-    playerEntity.addComponent<RenderComponent>(30, sf::Color::Green);
-    playerEntity.addComponent<NetworkComponent>(username);
-    playerEntity.addComponent<InputComponent>();
-    playerEntity.addComponent<usernameComponent>(username);
-
     RenderSystem renderSystem(window);
+    HoverSystem hoverSystem;
+    SelectionSystem selectionSystem;
     MovementSystem movementSystem;
     InputSystem inputSystem;
-    MessageSystem messageSystem;
+    MessageSystem messageSystem(font);
+    EventHandlingSystem eventHandlingSystem;
+    SoundSystem soundSystem;
+    ParallaxSystem parallaxSystem;
 
-    std::queue<std::string> receivedMessages;
 
+    renderSystem.update(entityManager);
+    window.display();
     sf::Clock deltaClock;
+
+    std::string serverIp = argc == 2 ? argv[1] : "localhost";
+
+    std::unique_ptr<PlayerEntity> player;
+    loadParallax(entityManager);
+
+    NetworkManager networkManager(serverIp, 54000);
+    MenuEntity menu(entityManager, window, font, player, networkManager);
+    sf::Music backgroundMusic;
+
+    if (!backgroundMusic.openFromFile("assets/backgroundMusic.mp3"))
+        return -1;
+
+    int volume = 50;
+
+    backgroundMusic.setLoop(true);
+    backgroundMusic.setVolume(volume);
+    backgroundMusic.play();
 
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
-                sendGoodbyeMessage(networkManager, username);
-                break;
             }
+            if (!window.hasFocus())
+                break;
+            if (event.type == sf::Event::MouseMoved) {
+                hoverSystem.update(entityManager, event.mouseMove.x, event.mouseMove.y);
+            }
+            if (event.type == sf::Event::MouseButtonReleased) {
+                selectionSystem.update(entityManager, event.mouseButton);
+            }
+            eventHandlingSystem.update(entityManager, event);
         }
+
         float deltaTime = deltaClock.restart().asSeconds();
 
         movementSystem.update(entityManager, networkManager, deltaTime, window.hasFocus());
         inputSystem.update(entityManager);
-        messageSystem.update(entityManager, networkManager, username);
+        messageSystem.update(entityManager, networkManager, menu.getUsername());
+        soundSystem.update(entityManager, volume);
+        parallaxSystem.update(entityManager, deltaTime);
 
         window.clear();
+        parallaxSystem.render(window, entityManager);
         renderSystem.update(entityManager);
         window.display();
     }
+    networkManager.send(MessageType::GOODBYE, menu.getUsername());
     return 0;
 }

@@ -7,7 +7,7 @@
 
 #define SERVER_PORT 54000
 #define MAX_CLIENTS 4
-#define MAX_ENNEMIES 6
+#define MAX_ENNEMIES 10
 
 struct Client {
     sf::IpAddress ip;
@@ -38,7 +38,11 @@ struct Ennemy {
     int health;
     float shootingCooldown;
     float respawnCooldown;
+    float startingY;
     bool isAlive;
+    float amplitude;
+    float frequency;
+    float cosinus;
 };
 
 class Server {
@@ -59,6 +63,8 @@ class Server {
     void updateEnnemies(float deltaTime);
     void loadEnnemies();
     void CheckEnnemyCollision();
+    void enemyShoot(Ennemy &ennemy);
+    std::string generateBulletID(const std::string& username);
     sf::UdpSocket socket_;
     std::unordered_map<std::string, Client> clients_;
     std::list<Bullet> bullets_;

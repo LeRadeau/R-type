@@ -1,9 +1,13 @@
 #include "NetworkManager.hpp"
+#include <cstdlib>
+#include "Serializer.hpp"
 
 // Public
 
-NetworkManager::NetworkManager(const std::string &serverIp, uint16_t port) : serverIp(serverIp), serverPort(port)
+NetworkManager::NetworkManager(const std::string &serverIp, uint16_t port)
+    : serverIp(serverIp), serverPort(port), isRunning(true)
 {
+    socket.setBlocking(false);
     if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Done) {
         throw std::runtime_error("Failed to bind socket");
     }
@@ -11,6 +15,7 @@ NetworkManager::NetworkManager(const std::string &serverIp, uint16_t port) : ser
 }
 NetworkManager::~NetworkManager()
 {
+    isRunning = false;
     if (receiverThread.joinable()) {
         receiverThread.join();
     }
@@ -21,10 +26,27 @@ void NetworkManager::send(const std::string &buffer)
     socket.send(buffer.data(), buffer.size(), serverIp, serverPort);
 }
 
-std::queue<std::string> &NetworkManager::getReceivedMessages()
+void NetworkManager::send(MessageType type, const std::string &data)
 {
-    std::lock_guard<std::mutex> lock(queueMutex);
+    std::string buffer;
+    Serializer::serialize(buffer, static_cast<uint8_t>(type));
+    Serializer::serialize(buffer, data);
+    send(buffer);
+}
+
+TSQueue<std::string> &NetworkManager::getReceivedMessages()
+{
     return receivedMessages;
+}
+
+void NetworkManager::setRemoteIp(const std::string &ip)
+{
+    serverIp = ip;
+}
+
+void NetworkManager::setRemotePort(uint16_t port)
+{
+    serverPort = port;
 }
 
 // Private
@@ -36,13 +58,9 @@ void NetworkManager::receiveMessages()
     sf::IpAddress sender;
     unsigned short senderPort;
 
-    while (true) {
+    while (isRunning) {
         if (socket.receive(data, sizeof(data), received, sender, senderPort) == sf::Socket::Done) {
-            std::lock_guard<std::mutex> lock(queueMutex);
             receivedMessages.push(std::string(data, received));
-            if (receivedMessages.size() > 10) {
-                receivedMessages = std::queue<std::string>();
-            }
         }
     }
 }
