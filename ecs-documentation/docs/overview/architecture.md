@@ -35,21 +35,58 @@ client/ecs/
 │   ├── RenderComponent.hpp
 │   ├── SpriteComponent.hpp
 │   ├── UsernameComponent.hpp
-│   └── VelocityComponent.hpp
+│   ├── VelocityComponent.hpp
+│   ├── EventHandlerComponent.hpp
+│   ├── HoverComponent.hpp
+│   ├── ParallaxComponent.hpp
+│   ├── RectangleShapeComponent.hpp
+│   ├── SelectionComponent.hpp
+│   ├── SoundComponent.hpp
+│   └── TextComponent.hpp
+├── entity
+│   ├── AllyEntity.cpp
+│   ├── AllyEntity.hpp
+│   ├── ButtonEntity.cpp
+│   ├── ButtonEntity.hpp
+│   ├── BydosEntity.cpp
+│   ├── BydosEntity.hpp
+│   ├── MenuEntity.cpp
+│   ├── MenuEntity.hpp
+│   ├── PlayerEntity.cpp
+│   ├── PlayerEntity.hpp
+│   ├── TextFieldEntity.cpp
+│   └── TextFieldEntity.hpp
 └── system
+    ├── EventHandlingSystem.cpp
+    ├── EventHandlingSystem.hpp
+    ├── HoverSystem.cpp
+    ├── HoverSystem.hpp
     ├── InputSystem.cpp
     ├── InputSystem.hpp
     ├── MessageSystem.cpp
     ├── MessageSystem.hpp
     ├── MovementSystem.cpp
     ├── MovementSystem.hpp
+    ├── ParallaxSystem.cpp
+    ├── ParallaxSystem.hpp
     ├── RenderSystem.cpp
-    └── RenderSystem.hpp
+    ├── RenderSystem.hpp
+    ├── SelectionSystem.cpp
+    ├── SelectionSystem.hpp
+    ├── SoundSystem.cpp
+    └── SoundSystem.hpp
 ```
 
 ### Entités et gestion
 
-Les entités sont gérées par la classe **EntityManager**. Chaque entité possède un identifiant unique (ID) qui permet de les suivre et de les manipuler dans les différents systèmes.
+Les entités sont gérées par la classe **EntityManager**. Chaque entité possède un identifiant unique (ID) qui permet de les suivre et de les manipuler dans les différents systèmes. Parmi les entités notables :
+
+- **AllyEntity** : Représente les alliés du joueur.
+- **ButtonEntity** : Gère les boutons interactifs des interfaces utilisateur.
+- **BydosEntity** : Représente les ennemis principaux.
+- **MenuEntity** : Construit et gère les menus du jeu.
+- **PlayerEntity** : Représente le joueur.
+- **TextFieldEntity** : Gère les champs de texte interactifs.
 
 ### Composants
 
@@ -58,6 +95,9 @@ Les composants sont des structures de données pures, sans logique, qui décrive
 - **PositionComponent** : Gère la position spatiale d'une entité.
 - **HealthComponent** : Suivi des points de vie.
 - **RenderComponent** : Gestion de l'affichage.
+- **HoverComponent** : Change l'apparence d'une entité lorsqu'elle est survolée.
+- **SelectionComponent** : Indique si une entité est sélectionnée.
+- **SoundComponent** : Gère les effets sonores associés à une entité.
 
 ### Systèmes
 
@@ -66,21 +106,19 @@ Les systèmes implémentent la logique du jeu en interagissant avec les composan
 - **InputSystem** : Gère les entrées utilisateur.
 - **MovementSystem** : Met à jour les positions des entités en fonction des vitesses.
 - **RenderSystem** : Dessine les entités à l'écran.
+- **HoverSystem** : Modifie l'apparence des entités survolées.
+- **SelectionSystem** : Gère la sélection des entités interactives.
+- **SoundSystem** : Gère les effets sonores des entités.
+- **ParallaxSystem** : Crée des effets de défilement parallaxe.
+- **EventHandlingSystem** : Gère les interactions basées sur des événements utilisateur.
 
 ### Gestion réseau
 
 La classe **NetworkManager** gère les communications entre le client et le serveur, permettant de synchroniser l'état des entités à travers le réseau.
-
-<!-- ## Diagramme de l'architecture ECS
-
-![Diagramme ECS](../assets/ecs_diagram.png)
-
-Le diagramme ci-dessus illustre les interactions entre les entités, composants, et systèmes, ainsi que le rôle du gestionnaire d'entités. -->
 
 ## Points forts de l'architecture
 
 - **Flexibilité** : Facile à étendre avec de nouveaux composants ou systèmes.
 - **Modularité** : Découplage des données et de la logique.
 - **Performance** : Approprié pour un traitement efficace en boucle de jeu.
-
 
