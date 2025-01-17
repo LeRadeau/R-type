@@ -30,6 +30,18 @@ template <typename T> class TSQueue {
         return m_queue.empty();
     }
 
+    void clear()
+    {
+        std::unique_lock<std::mutex> lock(m_mutex);
+        m_queue.clear();
+    }
+
+    std::size_t size()
+    {
+        std::unique_lock<std::mutex> lock(m_mutex);
+        return m_queue.size();
+    }
+
   private:
     std::queue<T> m_queue;
     std::mutex m_mutex;
