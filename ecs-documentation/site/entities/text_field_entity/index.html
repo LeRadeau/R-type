@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>TextFieldEntity - R-Type ECS Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">R-Type ECS Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Overview</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../overview/introduction/" class="dropdown-item">Introduction</a>
+</li>
+                                    
+<li>
+    <a href="../../overview/architecture/" class="dropdown-item">Architecture</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Components</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../components/a_component/" class="dropdown-item">AComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/bullet_id_component/" class="dropdown-item">BulletIdComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/ennemy_id_component/" class="dropdown-item">EnnemyIdComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/event_handler_component/" class="dropdown-item">EventHandlerComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/health_component/" class="dropdown-item">HealthComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/hover_component/" class="dropdown-item">HoverComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/input_component/" class="dropdown-item">InputComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/network_component/" class="dropdown-item">NetworkComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/parallax_component/" class="dropdown-item">ParallaxComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/position_component/" class="dropdown-item">PositionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/rectangle_shape_component.md" class="dropdown-item">RectangleShapeComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/render_component/" class="dropdown-item">RenderComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/selection_component/" class="dropdown-item">SelectionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/sound_component/" class="dropdown-item">SoundComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/sprite_component/" class="dropdown-item">SpriteComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/text_component/" class="dropdown-item">TextComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/username_component/" class="dropdown-item">UsernameComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/velocity_component/" class="dropdown-item">VelocityComponent</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Entities</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../ally_entity/" class="dropdown-item">AllyEntity</a>
+</li>
+                                    
+<li>
+    <a href="../button_entity/" class="dropdown-item">ButtonEntity</a>
+</li>
+                                    
+<li>
+    <a href="../bydos_entity/" class="dropdown-item">BydosEntity</a>
+</li>
+                                    
+<li>
+    <a href="../menu_entity/" class="dropdown-item">MenuEntity</a>
+</li>
+                                    
+<li>
+    <a href="../player_entity/" class="dropdown-item">PlayerEntity</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">TextFieldEntity</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Systems</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../systems/event_handling_system/" class="dropdown-item">EventHandlingSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/hover_system/" class="dropdown-item">HoverSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/input_system/" class="dropdown-item">InputSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/message_system/" class="dropdown-item">MessageSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/movement_system/" class="dropdown-item">MovementSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/parallax_system/" class="dropdown-item">ParallaxSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/render_system/" class="dropdown-item">RenderSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/selection_system/" class="dropdown-item">SelectionSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/sound_system/" class="dropdown-item">SoundSystem</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Managers</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../managers/entity_manager/" class="dropdown-item">EntityManager</a>
+</li>
+                                    
+<li>
+    <a href="../../managers/network_manager/" class="dropdown-item">NetworkManager</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../player_entity/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../../systems/event_handling_system/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#textfieldentity" class="nav-link">TextFieldEntity</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#role-dans-lecs" class="nav-link">Rôle dans l'ECS</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#attributs" class="nav-link">Attributs</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#interactions" class="nav-link">Interactions</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#exemples-dutilisation" class="nav-link">Exemples d'Utilisation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#fonctionnalites-principales" class="nav-link">Fonctionnalités principales</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="textfieldentity">TextFieldEntity</h1>
+<h2 id="introduction">Introduction</h2>
+<p><code>TextFieldEntity</code> représente un champ de texte interactif utilisé dans les interfaces utilisateur du jeu. Cette entité permet d'afficher des titres, de saisir des informations et de capturer des interactions utilisateur pour des actions spécifiques.</p>
+<h2 id="role-dans-lecs">Rôle dans l'ECS</h2>
+<p><code>TextFieldEntity</code> est utilisé pour :</p>
+<ul>
+<li>Afficher et gérer des champs de texte interactifs.</li>
+<li>Permettre à l'utilisateur d'entrer des informations telles que des noms ou des adresses IP.</li>
+<li>Capturer et traiter les événements clavier pour interagir avec le texte.</li>
+</ul>
+<h2 id="attributs">Attributs</h2>
+<p>Les entités <code>TextFieldEntity</code> sont créées avec les composants suivants :</p>
+<ul>
+<li><strong>RectangleShapeComponent</strong> : Définit la forme et l'apparence visuelle du champ de texte.</li>
+<li><strong>TextComponent</strong> : Affiche le texte principal et le titre associé.</li>
+<li><strong>HoverComponent</strong> : Modifie l'apparence lorsque la souris survole le champ de texte.</li>
+<li><strong>SelectionComponent</strong> : Indique si le champ de texte est actuellement sélectionné pour l'édition.</li>
+<li><strong>EventHandlerComponent</strong> : Capture les événements clavier pour modifier le contenu du texte.</li>
+</ul>
+<h3 id="exemple-de-creation">Exemple de création</h3>
+<h4 id="code-extrait-de-textfieldentitycpp">Code extrait de <code>TextFieldEntity.cpp</code> :</h4>
+<pre><code class="language-cpp">TextFieldEntity::TextFieldEntity(EntityManager &amp;entityManager, sf::RenderWindow &amp;window, sf::Vector2f size,
+    sf::Vector2f position, const sf::Font &amp;font, const std::string &amp;title)
+    : entity_(entityManager.createEntity()), titleEntity_(entityManager.createEntity()), entityManager_(entityManager),
+      window_(window)
+{
+    auto &amp;eventHandlerComponent =
+        entity_.addComponent&lt;EventHandlerComponent&gt;(sf::Event::KeyPressed, [this](const sf::Event &amp;event) {
+            EventCallbacks::TextFieldListener(event, window_, *this);
+        });
+    eventHandlerComponent.setCallback(sf::Event::KeyReleased, [this](const sf::Event &amp;event) {
+        EventCallbacks::TextFieldCapsReleaseHandler(event, window_, *this);
+    });
+    entity_.addComponent&lt;RectangleShapeComponent&gt;(size, position, sf::Color(128, 128, 128));
+    position.y -= size.y;
+    titleEntity_.addComponent&lt;TextComponent&gt;(title, font, position, sf::Color(208, 208, 208));
+    position.y += size.y;
+    entity_.addComponent&lt;TextComponent&gt;(&quot;&quot;, font, position, sf::Color(228, 228, 228));
+    entity_.addComponent&lt;SelectionComponent&gt;();
+    entity_.addComponent&lt;HoverComponent&gt;(sf::Color(128, 128, 128), sf::Color(100, 100, 100));
+    conversion_ = 'a';
+}
+</code></pre>
+<h2 id="interactions">Interactions</h2>
+<ul>
+<li><strong>Avec EventHandlingSystem</strong> : Capture les entrées utilisateur et met à jour le texte affiché.</li>
+<li><strong>Avec HoverSystem</strong> : Change l'apparence visuelle en fonction des interactions avec la souris.</li>
+<li><strong>Avec RenderSystem</strong> : Affiche le champ de texte et le titre associé à l'écran.</li>
+</ul>
+<h2 id="exemples-dutilisation">Exemples d'Utilisation</h2>
+<ol>
+<li>
+<p><strong>Création d'un champ de texte</strong> :
+   <code>cpp
+   sf::Font font;
+   font.loadFromFile("assets/fonts/arial.ttf");
+   TextFieldEntity textField(entityManager, window, sf::Vector2f(200, 50), sf::Vector2f(300, 400), font, "Enter Name:");</code></p>
+</li>
+<li>
+<p><strong>Mise à jour du contenu textuel</strong> :
+   <code>cpp
+   auto *textComponent = textField.getComponent&lt;TextComponent&gt;();
+   if (textComponent) {
+       textComponent-&gt;data.setString("Player1");
+   }</code></p>
+</li>
+<li>
+<p><strong>Sélection et modification</strong> :
+   <code>cpp
+   auto *selection = textField.getComponent&lt;SelectionComponent&gt;();
+   if (selection &amp;&amp; selection-&gt;isSelected) {
+       textField.addKey(sf::Keyboard::A);
+   }</code></p>
+</li>
+</ol>
+<h2 id="fonctionnalites-principales">Fonctionnalités principales</h2>
+<ul>
+<li><strong>Gestion des événements clavier</strong> : Capture les entrées utilisateur pour modifier dynamiquement le texte.</li>
+<li><strong>Apparence interactive</strong> : Change visuellement en fonction de l'état de sélection ou des interactions souris.</li>
+<li><strong>Synchronisation avec d'autres entités</strong> : Affiche des informations pertinentes pour le joueur ou les paramètres du jeu.</li>
+</ul>
+<hr />
+<p><code>TextFieldEntity</code> offre une solution puissante et flexible pour gérer les champs de texte interactifs dans les menus ou interfaces utilisateur du jeu.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

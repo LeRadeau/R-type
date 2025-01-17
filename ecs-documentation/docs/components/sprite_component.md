@@ -2,12 +2,12 @@
 
 ## Introduction
 
-Le composant `SpriteComponent` est conçu pour gérer les sprites graphiques associés à une entité. Il permet d'afficher des textures complexes, telles que des personnages ou des objets, en utilisant des images.
+Le composant `SpriteComponent` est utilisé pour gérer les sprites graphiques associés à une entité. Il permet d'afficher des images ou des textures pour représenter visuellement les entités dans le jeu.
 
 ## Attributs
 
-- **sprite** : Un objet `sf::Sprite` qui contient la texture et les informations associées pour le rendu.
-- **texture** : Un objet `sf::Texture` qui stocke l'image utilisée par le sprite.
+- **sprite** : Un objet `sf::Sprite` représentant le sprite de l'entité.
+- **texture** : Un objet `sf::Texture` qui stocke l'image associée au sprite.
 
 ### Exemple d'attributs dans le fichier `SpriteComponent.hpp` :
 
@@ -20,11 +20,12 @@ public:
     sf::Sprite sprite;
     sf::Texture texture;
 
-    SpriteComponent(const std::string &texturePath) {
+    SpriteComponent(const std::string &texturePath, const sf::Vector2f &scale = sf::Vector2f(1.0f, 1.0f)) {
         if (!texture.loadFromFile(texturePath)) {
             throw std::runtime_error("Failed to load texture: " + texturePath);
         }
         sprite.setTexture(texture);
+        sprite.setScale(scale);
     }
 };
 ```
@@ -33,50 +34,48 @@ public:
 
 `SpriteComponent` est utilisé pour :
 
-- Afficher des textures personnalisées sur les entités.
-- Gérer les animations ou les changements d'apparence en modifiant les propriétés du sprite.
-- Compléter `RenderComponent` pour des affichages graphiques plus détaillés.
+- Afficher des entités avec des textures personnalisées.
+- Gérer les propriétés visuelles, comme l'échelle et la position des sprites.
+- Faciliter l'affichage dynamique des entités dans le jeu.
 
 ## Exemples d'Utilisation
 
 1. **Ajout à une entité** :
    ```cpp
-   Entity &entity = entityManager.createEntity();
-   entity.addComponent<SpriteComponent>("assets/player.png");
+   Entity &player = entityManager.createEntity();
+   player.addComponent<SpriteComponent>("assets/player.png");
    ```
 
 2. **Modification de la texture** :
    ```cpp
-   auto *sprite = entity->getComponent<SpriteComponent>();
+   auto *sprite = entity.getComponent<SpriteComponent>();
    if (sprite) {
-       if (!sprite->texture.loadFromFile("assets/enemy.png")) {
-           throw std::runtime_error("Failed to load texture");
-       }
+       sprite->texture.loadFromFile("assets/new_texture.png");
        sprite->sprite.setTexture(sprite->texture);
    }
    ```
 
-3. **Rendu dans un système** :
-   Utilisé par `RenderSystem` pour dessiner le sprite :
+3. **Positionnement** :
    ```cpp
-   void RenderSystem::update(EntityManager &entityManager) {
-       for (auto &entity : entityManager.entities) {
-           auto *sprite = entity->getComponent<SpriteComponent>();
-           auto *position = entity->getComponent<PositionComponent>();
-           if (sprite && position) {
-               sprite->sprite.setPosition(position->position);
-               window.draw(sprite->sprite);
-           }
-       }
+   auto *sprite = entity.getComponent<SpriteComponent>();
+   auto *position = entity.getComponent<PositionComponent>();
+   if (sprite && position) {
+       sprite->sprite.setPosition(position->position);
    }
    ```
 
 ## Interactions
 
-- **Avec PositionComponent** : Positionne le sprite à l'endroit approprié sur l'écran.
-- **Avec AnimationSystem** : Permet de gérer les animations en modifiant les textures ou les propriétés du sprite.
+- **Avec PositionComponent** : Positionne le sprite à l'endroit approprié.
+- **Avec RenderSystem** : Dessine les sprites des entités à l'écran.
+- **Avec HoverComponent** : Change l'apparence du sprite en réponse à des interactions utilisateur.
+
+## Fonctionnalités supplémentaires
+
+- **Support de l'échelle** : Permet de redimensionner les sprites pour s'adapter à différents contextes visuels.
+- **Flexibilité graphique** : Peut être utilisé avec des textures animées ou statiques.
 
 ---
 
-Le composant `SpriteComponent` est idéal pour des entités nécessitant des visuels complexes, offrant une flexibilité pour le rendu d'images dans le jeu.
+`SpriteComponent` est un composant essentiel pour gérer les visuels des entités dans le jeu, offrant une flexibilité pour afficher des images et des textures.
 

@@ -12,11 +12,12 @@ nav:
       - HealthComponent: components/health_component.md
       - HoverComponent: components/hover_component.md
       - InputComponent: components/input_component.md
-      - NetworkComponent: components/network_component.md
+      - NetworkCallbackComponent: components/network_callback_component.md
       - ParallaxComponent: components/parallax_component.md
       - PositionComponent: components/position_component.md
       - RectangleShapeComponent: components/rectangle_shape_component.md
       - RenderComponent: components/render_component.md
+      - ScoreComponent: components/score_component.md
       - SelectionComponent: components/selection_component.md
       - SoundComponent: components/sound_component.md
       - SpriteComponent: components/sprite_component.md
@@ -40,6 +41,9 @@ nav:
       - RenderSystem: systems/render_system.md
       - SelectionSystem: systems/selection_system.md
       - SoundSystem: systems/sound_system.md
+  - Callbacks:
+      - EventCallbacks: callbacks/event_callbacks.md
+      - NetworkCallbacks: callbacks/network_callbacks.md
   - Managers:
       - EntityManager: managers/entity_manager.md
       - NetworkManager: managers/network_manager.md

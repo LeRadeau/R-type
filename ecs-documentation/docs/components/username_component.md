@@ -2,11 +2,11 @@
 
 ## Introduction
 
-Le composant `UsernameComponent` est utilisé pour associer un identifiant utilisateur unique à une entité. Ce composant est essentiel dans un environnement multijoueur pour différencier les joueurs.
+Le composant `UsernameComponent` est utilisé pour associer un identifiant unique ou un nom d'utilisateur à une entité. Il est essentiel pour les entités représentant des joueurs ou des personnages dans un environnement multijoueur.
 
 ## Attributs
 
-- **username** : Une chaîne de caractères représentant l'identifiant unique d'un joueur.
+- **username** : Une chaîne de caractères représentant le nom d'utilisateur ou l'identifiant unique.
 
 ### Exemple d'attributs dans le fichier `UsernameComponent.hpp` :
 
@@ -23,9 +23,9 @@ public:
 
 `UsernameComponent` est utilisé pour :
 
-- Identifier de manière unique les joueurs dans le système.
-- Faciliter les interactions entre joueurs et la gestion des scores, des statistiques ou d'autres informations spécifiques.
-- Synchroniser les informations utilisateur entre les clients et le serveur dans un jeu en réseau.
+- Identifier de manière unique des entités dans le jeu.
+- Faciliter les interactions entre joueurs ou entre joueurs et serveurs.
+- Synchroniser les actions et états des entités avec leurs identifiants.
 
 ## Exemples d'Utilisation
 
@@ -37,27 +37,31 @@ public:
 
 2. **Récupération du nom d'utilisateur** :
    ```cpp
-   auto *username = entity->getComponent<UsernameComponent>();
+   auto *username = entity.getComponent<UsernameComponent>();
    if (username) {
        std::cout << "Nom d'utilisateur : " << username->username << std::endl;
    }
    ```
 
-3. **Utilisation dans un système** :
-   Dans un système comme `MessageSystem`, ce composant peut être utilisé pour associer les actions ou événements à un joueur spécifique :
+3. **Comparaison des identifiants** :
    ```cpp
-   auto *username = entity->getComponent<UsernameComponent>();
-   if (username) {
-       std::cout << "Synchronisation des données pour : " << username->username << std::endl;
+   if (username->username == "Admin") {
+       std::cout << "Accès administrateur accordé." << std::endl;
    }
    ```
 
 ## Interactions
 
-- **Avec NetworkComponent** : Associe le nom d'utilisateur à des données réseau spécifiques pour la synchronisation.
-- **Avec RenderSystem** : Affiche le nom d'utilisateur au-dessus de l'entité correspondante.
+- **Avec NetworkManager** : Utilisé pour identifier les messages ou actions associés à une entité spécifique.
+- **Avec RenderSystem** : Affiche le nom d'utilisateur au-dessus des entités correspondantes.
+- **Avec ScoreComponent** : Associe des scores ou statistiques spécifiques à un utilisateur.
+
+## Fonctionnalités supplémentaires
+
+- **Flexibilité d'identification** : Peut être utilisé avec n'importe quelle entité nécessitant un identifiant unique.
+- **Support multijoueur** : Particulièrement utile dans des environnements en ligne pour gérer les interactions entre joueurs.
 
 ---
 
-Le composant `UsernameComponent` est essentiel pour identifier les joueurs dans un environnement multijoueur et gérer les interactions spécifiques à chaque utilisateur.
+`UsernameComponent` est un composant simple mais crucial pour les systèmes nécessitant des identifiants uniques, en particulier dans des jeux multijoueurs ou collaboratifs.
 

@@ -2,35 +2,46 @@
 
 ## Introduction
 
-Le système `MessageSystem` est conçu pour gérer la communication entre le client et le serveur. Il permet de recevoir et de traiter les messages réseau, tout en mettant à jour les entités du jeu en conséquence.
+Le système `MessageSystem` gère les messages reçus du serveur et déclenche les actions correspondantes sur les entités. Il permet de synchroniser les états du jeu entre les clients et le serveur.
 
 ## Rôle dans l'ECS
 
-`MessageSystem` est responsable de :
+`MessageSystem` est utilisé pour :
 
-- Récupérer les messages reçus via le réseau.
-- Décoder et interpréter les messages pour mettre à jour les entités concernées.
-- Envoyer les réponses ou les mises à jour nécessaires au serveur.
+- Traiter les messages réseau entrants.
+- Mettre à jour les composants et entités en fonction des messages reçus.
+- Gérer la logique réseau et les interactions multijoueurs.
 
 ## Fonctionnalités principales
 
 ### Méthode `update`
 
-La méthode `update` traite les messages en file d'attente, identifie leur type, et invoque les fonctions appropriées pour mettre à jour les entités.
+La méthode `update` lit les messages reçus, identifie leur type, et applique les actions appropriées via des callbacks ou des mises à jour directes.
 
-#### Exemple de code
+#### Code extrait de `MessageSystem.cpp`
 
 ```cpp
-void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername) {
-    auto receivedMessages = networkManager.getReceivedMessages();
+void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername,
+    std::unique_ptr<PlayerEntity> &player)
+{
+    auto &receivedMessages = networkManager.getReceivedMessages();
 
     while (!receivedMessages.empty()) {
-        auto message = receivedMessages.front();
-        receivedMessages.pop();
+        auto message = receivedMessages.pop();
         const char *ptr = message.data();
         auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
 
+        for (auto &entity : entityManager.entities) {
+            auto *networkCallbackComponent = entity->getComponent<NetworkCallbackComponent>();
+            if (networkCallbackComponent && networkCallbackComponent->callbacks.count(messageType)) {
+                networkCallbackComponent->callbacks.at(messageType)(ptr);
+            }
+        }
+
         switch (messageType) {
+            case MessageType::START_GAME:
+                handleLaunchGame(entityManager, player, localUsername);
+                break;
             case MessageType::UPDATE_CLIENTS:
                 handleUpdateClients(entityManager, ptr, localUsername);
                 break;
@@ -40,9 +51,6 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
             case MessageType::ERROR:
                 handleError(ptr);
                 break;
-            case MessageType::UPDATE_ENEMIES:
-                handleUpdateEnemies(entityManager, ptr);
-                break;
             default:
                 break;
         }
@@ -50,35 +58,33 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
 }
 ```
 
-### Méthodes de traitement
+## Interactions
 
-- **`handleUpdateClients`** : Met à jour les positions et les données des clients.
-- **`handleUpdateBullets`** : Ajoute ou met à jour les projectiles dans le jeu.
-- **`handleError`** : Affiche les messages d'erreur reçus.
-- **`handleUpdateEnemies`** : Synchronise les données des ennemis avec celles reçues du serveur.
+- **Avec NetworkManager** : Récupère les messages réseau.
+- **Avec EntityManager** : Modifie ou crée des entités en fonction des messages reçus.
+- **Avec NetworkCallbackComponent** : Exécute des actions spécifiques liées aux messages.
 
 ## Exemples d'Utilisation
 
-1. **Initialisation et appel** :
+1. **Initialisation et mise à jour** :
    ```cpp
-   MessageSystem messageSystem;
-   messageSystem.update(entityManager, networkManager, "Player1");
+   MessageSystem messageSystem(font);
+   messageSystem.update(entityManager, networkManager, localUsername, playerEntity);
    ```
 
-2. **Traitement des erreurs** :
+2. **Traitement des messages réseau** :
    ```cpp
-   void MessageSystem::handleError(const char *&ptr) {
-       std::cerr << "Erreur reçue : " << Serializer::deserializeString(ptr) << std::endl;
+   if (messageType == MessageType::UPDATE_CLIENTS) {
+       handleUpdateClients(entityManager, ptr, localUsername);
    }
    ```
 
-## Interactions
+## Fonctionnalités supplémentaires
 
-- **Avec NetworkManager** : Récupère les messages du réseau et envoie les réponses.
-- **Avec EntityManager** : Met à jour ou crée des entités en fonction des messages reçus.
-- **Avec Serializer** : Utilisé pour coder et décoder les données des messages.
+- **Gestion des erreurs réseau** : Traite les messages de type `ERROR` pour afficher des messages ou effectuer des actions correctives.
+- **Support multijoueur** : Synchronise les positions, scores et états des entités entre les clients.
 
 ---
 
-Le système `MessageSystem` joue un rôle central dans la gestion des communications réseau, garantissant une synchronisation fluide entre le client et le serveur.
+`MessageSystem` est un système central pour gérer les interactions réseau dans un environnement multijoueur, assurant une synchronisation fluide et une expérience utilisateur cohérente.
 

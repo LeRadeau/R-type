@@ -2,22 +2,23 @@
 
 ## Introduction
 
-Le composant `RenderComponent` gère les informations nécessaires pour afficher une entité à l'écran. Il contient des données sur la forme, la couleur et d'autres propriétés graphiques.
+Le composant `RenderComponent` permet de définir des propriétés visuelles pour une entité à l'aide de formes géométriques. Il est utilisé pour afficher des entités avec des propriétés graphiques telles que la taille, la position et la couleur.
 
 ## Attributs
 
-- **shape** : Un objet graphique (par exemple, `sf::RectangleShape` ou `sf::CircleShape`) représentant l'apparence de l'entité.
+- **shape** : Un objet `sf::RectangleShape` représentant la forme visuelle de l'entité.
 
 ### Exemple d'attributs dans le fichier `RenderComponent.hpp` :
 
 ```cpp
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/System/Vector2.hpp>
 
 class RenderComponent : public AComponent {
 public:
     sf::RectangleShape shape;
 
-    RenderComponent(float width, float height, sf::Color color) {
+    RenderComponent(float width, float height, const sf::Color &color) {
         shape.setSize(sf::Vector2f(width, height));
         shape.setFillColor(color);
     }
@@ -28,9 +29,8 @@ public:
 
 `RenderComponent` est utilisé pour :
 
-- Définir l'apparence visuelle d'une entité.
-- Fournir les données nécessaires pour le rendu graphique dans des systèmes comme `RenderSystem`.
-- Permettre des effets visuels tels que le changement de couleur ou de taille en fonction des états du jeu.
+- Définir une apparence visuelle simple pour une entité.
+- Permettre à `RenderSystem` de dessiner l'entité à l'écran.
 
 ## Exemples d'Utilisation
 
@@ -40,37 +40,27 @@ public:
    entity.addComponent<RenderComponent>(50.0f, 50.0f, sf::Color::Red);
    ```
 
-2. **Mise à jour de l'apparence** :
-   Dans un système, on peut modifier les propriétés du composant :
+2. **Modification des propriétés** :
    ```cpp
-   auto *render = entity->getComponent<RenderComponent>();
+   auto *render = entity.getComponent<RenderComponent>();
    if (render) {
        render->shape.setFillColor(sf::Color::Blue);
-   }
-   ```
-
-3. **Rendu dans un système** :
-   Utilisé par `RenderSystem` pour dessiner l'entité :
-   ```cpp
-   void RenderSystem::update(EntityManager &entityManager) {
-       for (auto &entity : entityManager.entities) {
-           auto *render = entity->getComponent<RenderComponent>();
-           auto *position = entity->getComponent<PositionComponent>();
-           if (render && position) {
-               render->shape.setPosition(position->position);
-               window.draw(render->shape);
-           }
-       }
+       render->shape.setSize(sf::Vector2f(100.0f, 50.0f));
    }
    ```
 
 ## Interactions
 
-- **Avec PositionComponent** : Associe la position de l'entité à son rendu graphique.
-- **Avec HealthComponent** : Permet d'afficher des indicateurs visuels (par exemple, une barre de vie).
-- **Avec InputComponent** : Peut modifier l'apparence en fonction des actions de l'utilisateur.
+- **Avec RenderSystem** : Utilisé pour dessiner la forme définie par le composant à l'écran.
+- **Avec PositionComponent** : La position de la forme est synchronisée avec la position de l'entité.
+- **Avec HoverComponent** : Peut modifier la couleur ou d'autres propriétés visuelles en réponse à des interactions utilisateur.
+
+## Fonctionnalités supplémentaires
+
+- **Apparence dynamique** : Les propriétés de la forme peuvent être modifiées à la volée pour refléter des changements dans l'état du jeu.
+- **Compatibilité avec d'autres composants** : Fonctionne avec d'autres composants graphiques pour enrichir les visuels.
 
 ---
 
-Le composant `RenderComponent` est essentiel pour donner vie aux entités du jeu en fournissant les données nécessaires pour les afficher à l'écran.
+`RenderComponent` est un composant simple mais essentiel pour définir l'apparence des entités et les afficher à l'écran.
 

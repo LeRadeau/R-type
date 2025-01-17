@@ -14,7 +14,7 @@ Cette architecture permet une forte découplage entre les données et la logique
 
 ## Organisation du projet
 
-Voici la structure du dossier ECS :
+Voici la structure du dossier ECS mise à jour :
 
 ```
 client/ecs/
@@ -24,25 +24,31 @@ client/ecs/
 ├── EntityManager.hpp
 ├── NetworkManager.cpp
 ├── NetworkManager.hpp
+├── callback
+│   ├── EventCallbacks.cpp
+│   ├── EventCallbacks.hpp
+│   ├── NetworkCallbacks.cpp
+│   └── NetworkCallbacks.hpp
 ├── component
 │   ├── AComponent.hpp
 │   ├── BulletIdComponent.hpp
 │   ├── EnnemyIdComponent.hpp
-│   ├── HealthComponent.hpp
-│   ├── InputComponent.hpp
-│   ├── NetworkComponent.hpp
-│   ├── PositionComponent.hpp
-│   ├── RenderComponent.hpp
-│   ├── SpriteComponent.hpp
-│   ├── UsernameComponent.hpp
-│   ├── VelocityComponent.hpp
 │   ├── EventHandlerComponent.hpp
+│   ├── HealthComponent.hpp
 │   ├── HoverComponent.hpp
+│   ├── InputComponent.hpp
+│   ├── NetworkCallbackComponent.hpp
 │   ├── ParallaxComponent.hpp
+│   ├── PositionComponent.hpp
 │   ├── RectangleShapeComponent.hpp
+│   ├── RenderComponent.hpp
+│   ├── ScoreComponent.hpp
 │   ├── SelectionComponent.hpp
 │   ├── SoundComponent.hpp
-│   └── TextComponent.hpp
+│   ├── SpriteComponent.hpp
+│   ├── TextComponent.hpp
+│   ├── UsernameComponent.hpp
+│   └── VelocityComponent.hpp
 ├── entity
 │   ├── AllyEntity.cpp
 │   ├── AllyEntity.hpp
@@ -98,6 +104,7 @@ Les composants sont des structures de données pures, sans logique, qui décrive
 - **HoverComponent** : Change l'apparence d'une entité lorsqu'elle est survolée.
 - **SelectionComponent** : Indique si une entité est sélectionnée.
 - **SoundComponent** : Gère les effets sonores associés à une entité.
+- **ScoreComponent** : Enregistre et met à jour les scores des entités.
 
 ### Systèmes
 
@@ -111,6 +118,7 @@ Les systèmes implémentent la logique du jeu en interagissant avec les composan
 - **SoundSystem** : Gère les effets sonores des entités.
 - **ParallaxSystem** : Crée des effets de défilement parallaxe.
 - **EventHandlingSystem** : Gère les interactions basées sur des événements utilisateur.
+- **MessageSystem** : Synchronise les messages et les événements entre le client et le serveur.
 
 ### Gestion réseau
 

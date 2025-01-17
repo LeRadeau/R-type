@@ -67,7 +67,15 @@
 </li>
                                     
 <li>
+    <a href="../event_handler_component/" class="dropdown-item">EventHandlerComponent</a>
+</li>
+                                    
+<li>
     <a href="../health_component/" class="dropdown-item">HealthComponent</a>
+</li>
+                                    
+<li>
+    <a href="../hover_component/" class="dropdown-item">HoverComponent</a>
 </li>
                                     
 <li>
@@ -79,7 +87,15 @@
 </li>
                                     
 <li>
+    <a href="../parallax_component/" class="dropdown-item">ParallaxComponent</a>
+</li>
+                                    
+<li>
     <a href="../position_component/" class="dropdown-item">PositionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../rectangle_shape_component.md" class="dropdown-item">RectangleShapeComponent</a>
 </li>
                                     
 <li>
@@ -87,7 +103,19 @@
 </li>
                                     
 <li>
+    <a href="../selection_component/" class="dropdown-item">SelectionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../sound_component/" class="dropdown-item">SoundComponent</a>
+</li>
+                                    
+<li>
     <a href="./" class="dropdown-item active" aria-current="page">SpriteComponent</a>
+</li>
+                                    
+<li>
+    <a href="../text_component/" class="dropdown-item">TextComponent</a>
 </li>
                                     
 <li>
@@ -100,23 +128,72 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Entities</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../entities/ally_entity/" class="dropdown-item">AllyEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/button_entity/" class="dropdown-item">ButtonEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/bydos_entity/" class="dropdown-item">BydosEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/menu_entity/" class="dropdown-item">MenuEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/player_entity/" class="dropdown-item">PlayerEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/text_field_entity/" class="dropdown-item">TextFieldEntity</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Systems</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../systems/input_system.md" class="dropdown-item">InputSystem</a>
+    <a href="../../systems/event_handling_system/" class="dropdown-item">EventHandlingSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/message_system.md" class="dropdown-item">MessageSystem</a>
+    <a href="../../systems/hover_system/" class="dropdown-item">HoverSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/movement_system.md" class="dropdown-item">MovementSystem</a>
+    <a href="../../systems/input_system/" class="dropdown-item">InputSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/render_system.md" class="dropdown-item">RenderSystem</a>
+    <a href="../../systems/message_system/" class="dropdown-item">MessageSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/movement_system/" class="dropdown-item">MovementSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/parallax_system/" class="dropdown-item">ParallaxSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/render_system/" class="dropdown-item">RenderSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/selection_system/" class="dropdown-item">SelectionSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/sound_system/" class="dropdown-item">SoundSystem</a>
 </li>
                                 </ul>
                             </li>
@@ -125,11 +202,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../managers/entity_manager.md" class="dropdown-item">EntityManager</a>
+    <a href="../../managers/entity_manager/" class="dropdown-item">EntityManager</a>
 </li>
                                     
 <li>
-    <a href="../../managers/network_manager.md" class="dropdown-item">NetworkManager</a>
+    <a href="../../managers/network_manager/" class="dropdown-item">NetworkManager</a>
 </li>
                                 </ul>
                             </li>
@@ -142,12 +219,12 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../render_component/" class="nav-link">
+                                <a rel="prev" href="../sound_component/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" href="../username_component/" class="nav-link">
+                                <a rel="next" href="../text_component/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -168,12 +245,110 @@
     
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#spritecomponent" class="nav-link">SpriteComponent</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#attributs" class="nav-link">Attributs</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#role-dans-lecs" class="nav-link">Rôle dans l'ECS</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#exemples-dutilisation" class="nav-link">Exemples d'Utilisation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#interactions" class="nav-link">Interactions</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
         </ul>
     </div>
 </div></div>
                     <div class="col-md-9" role="main">
 
-</div>
+<h1 id="spritecomponent">SpriteComponent</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Le composant <code>SpriteComponent</code> est conçu pour gérer les sprites graphiques associés à une entité. Il permet d'afficher des textures complexes, telles que des personnages ou des objets, en utilisant des images.</p>
+<h2 id="attributs">Attributs</h2>
+<ul>
+<li><strong>sprite</strong> : Un objet <code>sf::Sprite</code> qui contient la texture et les informations associées pour le rendu.</li>
+<li><strong>texture</strong> : Un objet <code>sf::Texture</code> qui stocke l'image utilisée par le sprite.</li>
+</ul>
+<h3 id="exemple-dattributs-dans-le-fichier-spritecomponenthpp">Exemple d'attributs dans le fichier <code>SpriteComponent.hpp</code> :</h3>
+<pre><code class="language-cpp">#include &lt;SFML/Graphics/Sprite.hpp&gt;
+#include &lt;SFML/Graphics/Texture.hpp&gt;
+
+class SpriteComponent : public AComponent {
+public:
+    sf::Sprite sprite;
+    sf::Texture texture;
+
+    SpriteComponent(const std::string &amp;texturePath) {
+        if (!texture.loadFromFile(texturePath)) {
+            throw std::runtime_error(&quot;Failed to load texture: &quot; + texturePath);
+        }
+        sprite.setTexture(texture);
+    }
+};
+</code></pre>
+<h2 id="role-dans-lecs">Rôle dans l'ECS</h2>
+<p><code>SpriteComponent</code> est utilisé pour :</p>
+<ul>
+<li>Afficher des textures personnalisées sur les entités.</li>
+<li>Gérer les animations ou les changements d'apparence en modifiant les propriétés du sprite.</li>
+<li>Compléter <code>RenderComponent</code> pour des affichages graphiques plus détaillés.</li>
+</ul>
+<h2 id="exemples-dutilisation">Exemples d'Utilisation</h2>
+<ol>
+<li>
+<p><strong>Ajout à une entité</strong> :
+   <code>cpp
+   Entity &amp;entity = entityManager.createEntity();
+   entity.addComponent&lt;SpriteComponent&gt;("assets/player.png");</code></p>
+</li>
+<li>
+<p><strong>Modification de la texture</strong> :
+   <code>cpp
+   auto *sprite = entity-&gt;getComponent&lt;SpriteComponent&gt;();
+   if (sprite) {
+       if (!sprite-&gt;texture.loadFromFile("assets/enemy.png")) {
+           throw std::runtime_error("Failed to load texture");
+       }
+       sprite-&gt;sprite.setTexture(sprite-&gt;texture);
+   }</code></p>
+</li>
+<li>
+<p><strong>Rendu dans un système</strong> :
+   Utilisé par <code>RenderSystem</code> pour dessiner le sprite :
+   <code>cpp
+   void RenderSystem::update(EntityManager &amp;entityManager) {
+       for (auto &amp;entity : entityManager.entities) {
+           auto *sprite = entity-&gt;getComponent&lt;SpriteComponent&gt;();
+           auto *position = entity-&gt;getComponent&lt;PositionComponent&gt;();
+           if (sprite &amp;&amp; position) {
+               sprite-&gt;sprite.setPosition(position-&gt;position);
+               window.draw(sprite-&gt;sprite);
+           }
+       }
+   }</code></p>
+</li>
+</ol>
+<h2 id="interactions">Interactions</h2>
+<ul>
+<li><strong>Avec PositionComponent</strong> : Positionne le sprite à l'endroit approprié sur l'écran.</li>
+<li><strong>Avec AnimationSystem</strong> : Permet de gérer les animations en modifiant les textures ou les propriétés du sprite.</li>
+</ul>
+<hr />
+<p>Le composant <code>SpriteComponent</code> est idéal pour des entités nécessitant des visuels complexes, offrant une flexibilité pour le rendu d'images dans le jeu.</p></div>
             </div>
         </div>
 

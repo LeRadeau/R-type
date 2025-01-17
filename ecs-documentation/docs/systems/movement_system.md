@@ -2,81 +2,85 @@
 
 ## Introduction
 
-Le système `MovementSystem` est responsable de la mise à jour des positions des entités en fonction de leur vitesse et des entrées utilisateur. Il joue un rôle clé dans le déplacement des entités dans le jeu.
+Le système `MovementSystem` est chargé de mettre à jour les positions des entités en fonction de leurs composants `InputComponent`, `VelocityComponent` et autres propriétés associées. Il gère également les interactions comme les tirs ou les collisions hors écran.
 
 ## Rôle dans l'ECS
 
-`MovementSystem` a pour rôle de :
+`MovementSystem` est utilisé pour :
 
-- Calculer les nouvelles positions des entités en fonction de leur `VelocityComponent`.
-- Traiter les entrées utilisateur pour influencer le mouvement des entités.
-- Supprimer ou réinitialiser les entités en dehors des limites du jeu.
+- Déplacer les entités basées sur leurs vitesses et directions.
+- Réagir aux entrées utilisateur pour contrôler les déplacements.
+- Supprimer les entités qui sortent des limites définies.
 
 ## Fonctionnalités principales
 
 ### Méthode `update`
 
-Cette méthode parcourt toutes les entités ayant des composants pertinents (comme `VelocityComponent` et `PositionComponent`) et met à jour leurs positions.
+La méthode `update` parcourt toutes les entités et applique les mises à jour de position en fonction des composants pertinents.
 
-#### Exemple de code
+#### Code extrait de `MovementSystem.cpp`
 
 ```cpp
-void MovementSystem::update(EntityManager &entityManager, NetworkManager &networkManager, float deltaTime, bool focus) {
-    static float timer = 0.0f;
-    timer += deltaTime;
-
+void MovementSystem::update(EntityManager &entityManager, NetworkManager &networkManager, float deltaTime, bool focus)
+{
     for (auto &entity : entityManager.entities) {
-        auto *velocity = entity->getComponent<VelocityComponent>();
+        auto *input = entity->getComponent<InputComponent>();
         auto *position = entity->getComponent<PositionComponent>();
+        auto *velocity = entity->getComponent<VelocityComponent>();
 
-        if (velocity && position) {
+        if (input && position && focus) {
+            if (input->moveLeft) position->position.x -= 200.0f * deltaTime;
+            if (input->moveRight) position->position.x += 200.0f * deltaTime;
+            if (input->moveUp) position->position.y -= 200.0f * deltaTime;
+            if (input->moveDown) position->position.y += 200.0f * deltaTime;
+        }
+
+        if (position && velocity) {
             position->position.x += velocity->velocity.x * deltaTime;
             position->position.y += velocity->velocity.y * deltaTime;
+        }
 
-            // Gestion des entités en dehors des limites du jeu
-            if (position->position.x < 0 || position->position.x > 1920 ||
-                position->position.y < 0 || position->position.y > 1080) {
-                entityManager.markForDeletion(entity->getId());
-            }
+        if (position && (position->position.y < 0 || position->position.x < 0 ||
+                         position->position.x > 1920 || position->position.y > 1080)) {
+            entityManager.markForDeletion(entity->getId());
         }
     }
     entityManager.destroyMarkedEntities();
 }
 ```
 
-### Gestion des entrées utilisateur
+## Interactions
 
-Le système traite également les entrées utilisateur pour influencer la vitesse ou la direction :
-
-```cpp
-if (input && position && input->moveLeft) {
-    position->position.x -= 200.0f * deltaTime;
-}
-```
+- **Avec InputComponent** : Utilise les entrées utilisateur pour ajuster les positions.
+- **Avec VelocityComponent** : Applique des vitesses pour calculer les déplacements.
+- **Avec EntityManager** : Gère la suppression des entités hors limites.
+- **Avec NetworkManager** : Synchronise les positions des entités dans un environnement multijoueur.
 
 ## Exemples d'Utilisation
 
-1. **Initialisation et appel** :
+1. **Initialisation et mise à jour** :
    ```cpp
-   MovementSystem movementSystem;
-   movementSystem.update(entityManager, networkManager, 0.016f, true);
+   movementSystem.update(entityManager, networkManager, deltaTime, true);
    ```
 
-2. **Suppression des entités hors limites** :
+2. **Ajout d'un composant de vitesse** :
    ```cpp
-   if (position->position.x < 0 || position->position.x > 1920) {
+   entity.addComponent<VelocityComponent>(sf::Vector2f(100.0f, 0.0f));
+   ```
+
+3. **Suppression des entités hors écran** :
+   ```cpp
+   if (position->position.x > 1920) {
        entityManager.markForDeletion(entity->getId());
    }
    ```
 
-## Interactions
+## Fonctionnalités supplémentaires
 
-- **Avec PositionComponent** : Met à jour la position en fonction des calculs du système.
-- **Avec VelocityComponent** : Utilise la vitesse pour déterminer les déplacements.
-- **Avec InputComponent** : Permet aux utilisateurs d'influencer les mouvements des entités.
-- **Avec NetworkManager** : Synchronise les mouvements des entités dans un environnement multijoueur.
+- **Gestion des collisions hors limites** : Supprime automatiquement les entités sortant de l'écran.
+- **Prise en charge multijoueur** : Synchronise les déplacements des joueurs avec le serveur.
 
 ---
 
-Le système `MovementSystem` est essentiel pour gérer les déplacements des entités, en combinant la logique des composants de position, de vitesse et des entrées utilisateur.
+`MovementSystem` est essentiel pour gérer les déplacements des entités dans le jeu, en combinant des interactions utilisateur, des vitesses et des mises à jour dynamiques.
 

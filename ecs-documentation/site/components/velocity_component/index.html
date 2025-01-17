@@ -67,7 +67,15 @@
 </li>
                                     
 <li>
+    <a href="../event_handler_component/" class="dropdown-item">EventHandlerComponent</a>
+</li>
+                                    
+<li>
     <a href="../health_component/" class="dropdown-item">HealthComponent</a>
+</li>
+                                    
+<li>
+    <a href="../hover_component/" class="dropdown-item">HoverComponent</a>
 </li>
                                     
 <li>
@@ -79,7 +87,15 @@
 </li>
                                     
 <li>
+    <a href="../parallax_component/" class="dropdown-item">ParallaxComponent</a>
+</li>
+                                    
+<li>
     <a href="../position_component/" class="dropdown-item">PositionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../rectangle_shape_component.md" class="dropdown-item">RectangleShapeComponent</a>
 </li>
                                     
 <li>
@@ -87,7 +103,19 @@
 </li>
                                     
 <li>
+    <a href="../selection_component/" class="dropdown-item">SelectionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../sound_component/" class="dropdown-item">SoundComponent</a>
+</li>
+                                    
+<li>
     <a href="../sprite_component/" class="dropdown-item">SpriteComponent</a>
+</li>
+                                    
+<li>
+    <a href="../text_component/" class="dropdown-item">TextComponent</a>
 </li>
                                     
 <li>
@@ -100,23 +128,72 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Entities</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../entities/ally_entity/" class="dropdown-item">AllyEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/button_entity/" class="dropdown-item">ButtonEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/bydos_entity/" class="dropdown-item">BydosEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/menu_entity/" class="dropdown-item">MenuEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/player_entity/" class="dropdown-item">PlayerEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/text_field_entity/" class="dropdown-item">TextFieldEntity</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Systems</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../systems/input_system.md" class="dropdown-item">InputSystem</a>
+    <a href="../../systems/event_handling_system/" class="dropdown-item">EventHandlingSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/message_system.md" class="dropdown-item">MessageSystem</a>
+    <a href="../../systems/hover_system/" class="dropdown-item">HoverSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/movement_system.md" class="dropdown-item">MovementSystem</a>
+    <a href="../../systems/input_system/" class="dropdown-item">InputSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/render_system.md" class="dropdown-item">RenderSystem</a>
+    <a href="../../systems/message_system/" class="dropdown-item">MessageSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/movement_system/" class="dropdown-item">MovementSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/parallax_system/" class="dropdown-item">ParallaxSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/render_system/" class="dropdown-item">RenderSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/selection_system/" class="dropdown-item">SelectionSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/sound_system/" class="dropdown-item">SoundSystem</a>
 </li>
                                 </ul>
                             </li>
@@ -125,11 +202,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../managers/entity_manager.md" class="dropdown-item">EntityManager</a>
+    <a href="../../managers/entity_manager/" class="dropdown-item">EntityManager</a>
 </li>
                                     
 <li>
-    <a href="../../managers/network_manager.md" class="dropdown-item">NetworkManager</a>
+    <a href="../../managers/network_manager/" class="dropdown-item">NetworkManager</a>
 </li>
                                 </ul>
                             </li>
@@ -147,7 +224,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a rel="next" class="nav-link disabled">
+                                <a rel="next" href="../../entities/ally_entity/" class="nav-link">
                                     Next <i class="fa fa-arrow-right"></i>
                                 </a>
                             </li>
@@ -168,12 +245,101 @@
     
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#velocitycomponent" class="nav-link">VelocityComponent</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#attributs" class="nav-link">Attributs</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#role-dans-lecs" class="nav-link">Rôle dans l'ECS</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#exemples-dutilisation" class="nav-link">Exemples d'Utilisation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#interactions" class="nav-link">Interactions</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
         </ul>
     </div>
 </div></div>
                     <div class="col-md-9" role="main">
 
-</div>
+<h1 id="velocitycomponent">VelocityComponent</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Le composant <code>VelocityComponent</code> est utilisé pour représenter la vitesse et la direction d'une entité dans le jeu. Il permet de gérer les déplacements en combinant les informations de position et de vitesse.</p>
+<h2 id="attributs">Attributs</h2>
+<ul>
+<li><strong>velocity</strong> : Un vecteur 2D (souvent <code>sf::Vector2f</code>) représentant la vitesse sur les axes X et Y.</li>
+</ul>
+<h3 id="exemple-dattributs-dans-le-fichier-velocitycomponenthpp">Exemple d'attributs dans le fichier <code>VelocityComponent.hpp</code> :</h3>
+<pre><code class="language-cpp">#include &lt;SFML/System/Vector2.hpp&gt;
+
+class VelocityComponent : public AComponent {
+public:
+    sf::Vector2f velocity;
+
+    VelocityComponent(float x, float y) : velocity(x, y) {}
+};
+</code></pre>
+<h2 id="role-dans-lecs">Rôle dans l'ECS</h2>
+<p><code>VelocityComponent</code> est utilisé pour :</p>
+<ul>
+<li>Définir la vitesse et la direction des entités en mouvement.</li>
+<li>Permettre aux systèmes comme <code>MovementSystem</code> d'effectuer des mises à jour précises de la position des entités.</li>
+<li>Implémenter des mécaniques de jeu telles que des projectiles, des ennemis en mouvement ou des véhicules.</li>
+</ul>
+<h2 id="exemples-dutilisation">Exemples d'Utilisation</h2>
+<ol>
+<li>
+<p><strong>Ajout à une entité</strong> :
+   <code>cpp
+   Entity &amp;entity = entityManager.createEntity();
+   entity.addComponent&lt;VelocityComponent&gt;(100.0f, 0.0f);</code></p>
+</li>
+<li>
+<p><strong>Mise à jour de la vitesse</strong> :
+   <code>cpp
+   auto *velocity = entity-&gt;getComponent&lt;VelocityComponent&gt;();
+   if (velocity) {
+       velocity-&gt;velocity.x += 10.0f;
+       velocity-&gt;velocity.y -= 5.0f;
+   }</code></p>
+</li>
+<li>
+<p><strong>Utilisation dans un système</strong> :
+   Dans un système comme <code>MovementSystem</code>, la vitesse est utilisée pour mettre à jour la position :
+   <code>cpp
+   void MovementSystem::update(EntityManager &amp;entityManager, float deltaTime) {
+       for (auto &amp;entity : entityManager.entities) {
+           auto *velocity = entity-&gt;getComponent&lt;VelocityComponent&gt;();
+           auto *position = entity-&gt;getComponent&lt;PositionComponent&gt;();
+           if (velocity &amp;&amp; position) {
+               position-&gt;position.x += velocity-&gt;velocity.x * deltaTime;
+               position-&gt;position.y += velocity-&gt;velocity.y * deltaTime;
+           }
+       }
+   }</code></p>
+</li>
+</ol>
+<h2 id="interactions">Interactions</h2>
+<ul>
+<li><strong>Avec PositionComponent</strong> : Combine les informations de vitesse pour mettre à jour la position des entités.</li>
+<li><strong>Avec InputComponent</strong> : Modifie la direction et la vitesse en fonction des commandes utilisateur.</li>
+<li><strong>Avec CollisionSystem</strong> : Peut inverser ou ajuster la vitesse lors de collisions.</li>
+</ul>
+<hr />
+<p>Le composant <code>VelocityComponent</code> est essentiel pour implémenter des mécaniques de mouvement réalistes et dynamiques dans le jeu.</p></div>
             </div>
         </div>
 

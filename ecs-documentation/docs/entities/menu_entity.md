@@ -2,33 +2,31 @@
 
 ## Introduction
 
-`MenuEntity` représente les interfaces utilisateur du jeu, telles que les menus principaux ou les écrans de paramètres. Elle fournit des boutons interactifs et des champs de texte permettant aux joueurs d'interagir avec le jeu.
+`MenuEntity` est une entité dédiée à la gestion des interfaces utilisateur, telles que le menu principal et les lobbys. Elle combine plusieurs composants pour créer une expérience interactive fluide.
 
 ## Rôle dans l'ECS
 
 `MenuEntity` est utilisé pour :
 
-- Construire et gérer les menus interactifs.
-- Fournir des interfaces conviviales avec des boutons et des champs de texte.
-- Connecter les interactions utilisateur avec les fonctionnalités du jeu.
+- Gérer les menus interactifs et les lobbys.
+- Fournir des boutons et champs de texte pour des interactions utilisateur dynamiques.
+- Synchroniser l'état du jeu entre le client et le serveur via des callbacks réseau.
 
 ## Attributs
 
-Les entités `MenuEntity` sont composées des éléments suivants :
-
-- **Boutons** : Des instances de `ButtonEntity` pour gérer les actions interactives.
-- **Champs de texte** : Des instances de `TextFieldEntity` pour saisir ou afficher des informations.
-- **EventHandlerComponent** : Pour gérer les événements utilisateur (par exemple, appuyer sur des touches ou cliquer sur un bouton).
+- **Boutons** : Une liste de `ButtonEntity` pour les actions interactives (ex. : "Jouer", "Quitter").
+- **Champs de texte** : Des instances de `TextFieldEntity` pour saisir des informations (ex. : nom d'utilisateur, adresse IP).
+- **Callbacks réseau** : Gestion dynamique des messages réseau via `NetworkCallbackComponent`.
 
 ### Exemple de création
 
-#### Code extrait de `MenuEntity.cpp` :
+#### Code extrait de `MenuEntity.cpp`
 
 ```cpp
 MenuEntity::MenuEntity(EntityManager &entityManager, sf::RenderWindow &window, const sf::Font &font,
     std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
     : entity_(entityManager.createEntity()), entityManager_(entityManager), networkManager_(networkManager),
-      window_(window), font_(font), player_(player)
+      window_(window), font_(font), player_(player), entityText_(entityManager.createEntity())
 {
     open();
     entity_.addComponent<EventHandlerComponent>(sf::Event::KeyReleased, [this, &window](const sf::Event &event) {
@@ -37,52 +35,49 @@ MenuEntity::MenuEntity(EntityManager &entityManager, sf::RenderWindow &window, c
 }
 ```
 
-## Interactions
-
-- **Avec ButtonEntity** : Les boutons sont des éléments clés des menus et déclenchent des actions spécifiques (comme "Jouer" ou "Quitter").
-- **Avec TextFieldEntity** : Permet d'entrer des informations utilisateur, telles que l'adresse IP ou le nom d'utilisateur.
-- **Avec RenderSystem** : Affiche les menus et leurs éléments visuels à l'écran.
-
 ## Fonctionnalités principales
 
-### Gestion des boutons et des champs de texte
+### Gestion des lobbys
 
-Les boutons et champs de texte sont ajoutés dynamiquement au menu. Par exemple :
+Permet d'ouvrir ou fermer un lobby en ajoutant des boutons et des textes dynamiques :
 
 ```cpp
-void MenuEntity::open()
-{
-    sf::Vector2f size(150, 50);
+void MenuEntity::openLobby() {
+    sf::Vector2f size(275, 50);
     sf::Vector2f position(window_.getSize().x / 2.0f - 300, 500);
-    buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "Play", font_));
-    buttons_[0]->setCallback(sf::Event::MouseButtonReleased, [this](const sf::Event &event) {
-        EventCallbacks::ButtonHandlePlay(
-            *this, buttons_[0]->getEntity(), window_, event, entityManager_, player_, networkManager_);
+    entityText_.addComponent<TextComponent>("?/4 players", font_, position, sf::Color::White);
+    auto &comp = entityText_.addComponent<NetworkCallbackComponent>();
+    comp.setCallback(MessageType::WAIT, [this](const char *&packet) {
+        NetworkCallbacks::onWaitUpdateClientNbr(packet, entityText_);
     });
 }
 ```
+
+## Interactions
+
+- **Avec ButtonEntity** : Gère les boutons interactifs dans les menus.
+- **Avec TextFieldEntity** : Capture les entrées utilisateur pour des champs de texte.
+- **Avec NetworkManager** : Synchronise les états des lobbys avec le serveur.
+- **Avec RenderSystem** : Affiche les menus et leurs éléments visuels.
 
 ## Exemples d'Utilisation
 
 1. **Création d'un menu** :
    ```cpp
-   sf::Font font;
-   font.loadFromFile("assets/fonts/arial.ttf");
    MenuEntity menu(entityManager, window, font, playerEntity, networkManager);
    ```
 
-2. **Ajout d'un champ de texte** :
+2. **Ajout de boutons** :
    ```cpp
-   position.x = 400;
-   position.y = 300;
-   auto textField = std::make_unique<TextFieldEntity>(entityManager, window, sf::Vector2f(200, 50), position, font, "Enter Name:");
+   menu.open();
    ```
 
-## Gestion dynamique
-
-Le menu peut être ouvert et fermé dynamiquement, en créant ou supprimant ses éléments selon les besoins.
+3. **Synchronisation réseau** :
+   ```cpp
+   menu.openLobby();
+   ```
 
 ---
 
-`MenuEntity` fournit une infrastructure robuste pour créer des menus interactifs dans le jeu, facilitant les interactions utilisateur avec des éléments intuitifs et personnalisables.
+`MenuEntity` est une solution complète pour gérer les interfaces utilisateur dans le jeu, offrant des interactions dynamiques et une synchronisation fluide avec le serveur.
 

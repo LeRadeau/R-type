@@ -67,7 +67,15 @@
 </li>
                                     
 <li>
+    <a href="../../components/event_handler_component/" class="dropdown-item">EventHandlerComponent</a>
+</li>
+                                    
+<li>
     <a href="../../components/health_component/" class="dropdown-item">HealthComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/hover_component/" class="dropdown-item">HoverComponent</a>
 </li>
                                     
 <li>
@@ -79,7 +87,15 @@
 </li>
                                     
 <li>
+    <a href="../../components/parallax_component/" class="dropdown-item">ParallaxComponent</a>
+</li>
+                                    
+<li>
     <a href="../../components/position_component/" class="dropdown-item">PositionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/rectangle_shape_component.md" class="dropdown-item">RectangleShapeComponent</a>
 </li>
                                     
 <li>
@@ -87,7 +103,19 @@
 </li>
                                     
 <li>
+    <a href="../../components/selection_component/" class="dropdown-item">SelectionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/sound_component/" class="dropdown-item">SoundComponent</a>
+</li>
+                                    
+<li>
     <a href="../../components/sprite_component/" class="dropdown-item">SpriteComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/text_component/" class="dropdown-item">TextComponent</a>
 </li>
                                     
 <li>
@@ -100,23 +128,72 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Entities</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../entities/ally_entity/" class="dropdown-item">AllyEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/button_entity/" class="dropdown-item">ButtonEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/bydos_entity/" class="dropdown-item">BydosEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/menu_entity/" class="dropdown-item">MenuEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/player_entity/" class="dropdown-item">PlayerEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/text_field_entity/" class="dropdown-item">TextFieldEntity</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Systems</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../systems/input_system.md" class="dropdown-item">InputSystem</a>
+    <a href="../../systems/event_handling_system/" class="dropdown-item">EventHandlingSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/message_system.md" class="dropdown-item">MessageSystem</a>
+    <a href="../../systems/hover_system/" class="dropdown-item">HoverSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/movement_system.md" class="dropdown-item">MovementSystem</a>
+    <a href="../../systems/input_system/" class="dropdown-item">InputSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/render_system.md" class="dropdown-item">RenderSystem</a>
+    <a href="../../systems/message_system/" class="dropdown-item">MessageSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/movement_system/" class="dropdown-item">MovementSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/parallax_system/" class="dropdown-item">ParallaxSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/render_system/" class="dropdown-item">RenderSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/selection_system/" class="dropdown-item">SelectionSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/sound_system/" class="dropdown-item">SoundSystem</a>
 </li>
                                 </ul>
                             </li>
@@ -125,11 +202,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../managers/entity_manager.md" class="dropdown-item">EntityManager</a>
+    <a href="../../managers/entity_manager/" class="dropdown-item">EntityManager</a>
 </li>
                                     
 <li>
-    <a href="../../managers/network_manager.md" class="dropdown-item">NetworkManager</a>
+    <a href="../../managers/network_manager/" class="dropdown-item">NetworkManager</a>
 </li>
                                 </ul>
                             </li>
@@ -220,25 +297,66 @@
 │   ├── RenderComponent.hpp
 │   ├── SpriteComponent.hpp
 │   ├── UsernameComponent.hpp
-│   └── VelocityComponent.hpp
+│   ├── VelocityComponent.hpp
+│   ├── EventHandlerComponent.hpp
+│   ├── HoverComponent.hpp
+│   ├── ParallaxComponent.hpp
+│   ├── RectangleShapeComponent.hpp
+│   ├── SelectionComponent.hpp
+│   ├── SoundComponent.hpp
+│   └── TextComponent.hpp
+├── entity
+│   ├── AllyEntity.cpp
+│   ├── AllyEntity.hpp
+│   ├── ButtonEntity.cpp
+│   ├── ButtonEntity.hpp
+│   ├── BydosEntity.cpp
+│   ├── BydosEntity.hpp
+│   ├── MenuEntity.cpp
+│   ├── MenuEntity.hpp
+│   ├── PlayerEntity.cpp
+│   ├── PlayerEntity.hpp
+│   ├── TextFieldEntity.cpp
+│   └── TextFieldEntity.hpp
 └── system
+    ├── EventHandlingSystem.cpp
+    ├── EventHandlingSystem.hpp
+    ├── HoverSystem.cpp
+    ├── HoverSystem.hpp
     ├── InputSystem.cpp
     ├── InputSystem.hpp
     ├── MessageSystem.cpp
     ├── MessageSystem.hpp
     ├── MovementSystem.cpp
     ├── MovementSystem.hpp
+    ├── ParallaxSystem.cpp
+    ├── ParallaxSystem.hpp
     ├── RenderSystem.cpp
-    └── RenderSystem.hpp
+    ├── RenderSystem.hpp
+    ├── SelectionSystem.cpp
+    ├── SelectionSystem.hpp
+    ├── SoundSystem.cpp
+    └── SoundSystem.hpp
 </code></pre>
 <h3 id="entites-et-gestion">Entités et gestion</h3>
-<p>Les entités sont gérées par la classe <strong>EntityManager</strong>. Chaque entité possède un identifiant unique (ID) qui permet de les suivre et de les manipuler dans les différents systèmes.</p>
+<p>Les entités sont gérées par la classe <strong>EntityManager</strong>. Chaque entité possède un identifiant unique (ID) qui permet de les suivre et de les manipuler dans les différents systèmes. Parmi les entités notables :</p>
+<ul>
+<li><strong>AllyEntity</strong> : Représente les alliés du joueur.</li>
+<li><strong>ButtonEntity</strong> : Gère les boutons interactifs des interfaces utilisateur.</li>
+<li><strong>BydosEntity</strong> : Représente les ennemis principaux.</li>
+<li><strong>MenuEntity</strong> : Construit et gère les menus du jeu.</li>
+<li><strong>PlayerEntity</strong> : Représente le joueur.</li>
+<li><strong>TextFieldEntity</strong> : Gère les champs de texte interactifs.</li>
+</ul>
 <h3 id="composants">Composants</h3>
 <p>Les composants sont des structures de données pures, sans logique, qui décrivent les caractéristiques des entités. Ils sont organisés dans le dossier <code>component</code> et incluent des éléments tels que :</p>
 <ul>
 <li><strong>PositionComponent</strong> : Gère la position spatiale d'une entité.</li>
 <li><strong>HealthComponent</strong> : Suivi des points de vie.</li>
 <li><strong>RenderComponent</strong> : Gestion de l'affichage.</li>
+<li><strong>HoverComponent</strong> : Change l'apparence d'une entité lorsqu'elle est survolée.</li>
+<li><strong>SelectionComponent</strong> : Indique si une entité est sélectionnée.</li>
+<li><strong>SoundComponent</strong> : Gère les effets sonores associés à une entité.</li>
 </ul>
 <h3 id="systemes">Systèmes</h3>
 <p>Les systèmes implémentent la logique du jeu en interagissant avec les composants. Ils incluent des systèmes tels que :</p>
@@ -246,15 +364,14 @@
 <li><strong>InputSystem</strong> : Gère les entrées utilisateur.</li>
 <li><strong>MovementSystem</strong> : Met à jour les positions des entités en fonction des vitesses.</li>
 <li><strong>RenderSystem</strong> : Dessine les entités à l'écran.</li>
+<li><strong>HoverSystem</strong> : Modifie l'apparence des entités survolées.</li>
+<li><strong>SelectionSystem</strong> : Gère la sélection des entités interactives.</li>
+<li><strong>SoundSystem</strong> : Gère les effets sonores des entités.</li>
+<li><strong>ParallaxSystem</strong> : Crée des effets de défilement parallaxe.</li>
+<li><strong>EventHandlingSystem</strong> : Gère les interactions basées sur des événements utilisateur.</li>
 </ul>
 <h3 id="gestion-reseau">Gestion réseau</h3>
 <p>La classe <strong>NetworkManager</strong> gère les communications entre le client et le serveur, permettant de synchroniser l'état des entités à travers le réseau.</p>
-<!-- ## Diagramme de l'architecture ECS
-
-![Diagramme ECS](../assets/ecs_diagram.png)
-
-Le diagramme ci-dessus illustre les interactions entre les entités, composants, et systèmes, ainsi que le rôle du gestionnaire d'entités. -->
-
 <h2 id="points-forts-de-larchitecture">Points forts de l'architecture</h2>
 <ul>
 <li><strong>Flexibilité</strong> : Facile à étendre avec de nouveaux composants ou systèmes.</li>

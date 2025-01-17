@@ -67,7 +67,15 @@
 </li>
                                     
 <li>
+    <a href="../event_handler_component/" class="dropdown-item">EventHandlerComponent</a>
+</li>
+                                    
+<li>
     <a href="../health_component/" class="dropdown-item">HealthComponent</a>
+</li>
+                                    
+<li>
+    <a href="../hover_component/" class="dropdown-item">HoverComponent</a>
 </li>
                                     
 <li>
@@ -79,7 +87,15 @@
 </li>
                                     
 <li>
+    <a href="../parallax_component/" class="dropdown-item">ParallaxComponent</a>
+</li>
+                                    
+<li>
     <a href="../position_component/" class="dropdown-item">PositionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../rectangle_shape_component.md" class="dropdown-item">RectangleShapeComponent</a>
 </li>
                                     
 <li>
@@ -87,7 +103,19 @@
 </li>
                                     
 <li>
+    <a href="../selection_component/" class="dropdown-item">SelectionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../sound_component/" class="dropdown-item">SoundComponent</a>
+</li>
+                                    
+<li>
     <a href="../sprite_component/" class="dropdown-item">SpriteComponent</a>
+</li>
+                                    
+<li>
+    <a href="../text_component/" class="dropdown-item">TextComponent</a>
 </li>
                                     
 <li>
@@ -100,23 +128,72 @@
                                 </ul>
                             </li>
                             <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Entities</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../entities/ally_entity/" class="dropdown-item">AllyEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/button_entity/" class="dropdown-item">ButtonEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/bydos_entity/" class="dropdown-item">BydosEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/menu_entity/" class="dropdown-item">MenuEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/player_entity/" class="dropdown-item">PlayerEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/text_field_entity/" class="dropdown-item">TextFieldEntity</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Systems</a>
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../systems/input_system.md" class="dropdown-item">InputSystem</a>
+    <a href="../../systems/event_handling_system/" class="dropdown-item">EventHandlingSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/message_system.md" class="dropdown-item">MessageSystem</a>
+    <a href="../../systems/hover_system/" class="dropdown-item">HoverSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/movement_system.md" class="dropdown-item">MovementSystem</a>
+    <a href="../../systems/input_system/" class="dropdown-item">InputSystem</a>
 </li>
                                     
 <li>
-    <a href="../../systems/render_system.md" class="dropdown-item">RenderSystem</a>
+    <a href="../../systems/message_system/" class="dropdown-item">MessageSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/movement_system/" class="dropdown-item">MovementSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/parallax_system/" class="dropdown-item">ParallaxSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/render_system/" class="dropdown-item">RenderSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/selection_system/" class="dropdown-item">SelectionSystem</a>
+</li>
+                                    
+<li>
+    <a href="../../systems/sound_system/" class="dropdown-item">SoundSystem</a>
 </li>
                                 </ul>
                             </li>
@@ -125,11 +202,11 @@
                                 <ul class="dropdown-menu">
                                     
 <li>
-    <a href="../../managers/entity_manager.md" class="dropdown-item">EntityManager</a>
+    <a href="../../managers/entity_manager/" class="dropdown-item">EntityManager</a>
 </li>
                                     
 <li>
-    <a href="../../managers/network_manager.md" class="dropdown-item">NetworkManager</a>
+    <a href="../../managers/network_manager/" class="dropdown-item">NetworkManager</a>
 </li>
                                 </ul>
                             </li>
@@ -142,7 +219,7 @@
                             </a>
                         </li>
                             <li class="nav-item">
-                                <a rel="prev" href="../health_component/" class="nav-link">
+                                <a rel="prev" href="../hover_component/" class="nav-link">
                                     <i class="fa fa-arrow-left"></i> Previous
                                 </a>
                             </li>
@@ -168,12 +245,96 @@
     
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#inputcomponent" class="nav-link">InputComponent</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#attributs" class="nav-link">Attributs</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#role-dans-lecs" class="nav-link">Rôle dans l'ECS</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#exemples-dutilisation" class="nav-link">Exemples d'Utilisation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#interactions" class="nav-link">Interactions</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
         </ul>
     </div>
 </div></div>
                     <div class="col-md-9" role="main">
 
-</div>
+<h1 id="inputcomponent">InputComponent</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Le composant <code>InputComponent</code> gère les entrées utilisateur associées à une entité spécifique. Il permet de capturer et de traiter les actions comme le déplacement, les tirs ou d'autres commandes.</p>
+<h2 id="attributs">Attributs</h2>
+<ul>
+<li><strong>moveLeft</strong> : Booléen indiquant si l'utilisateur presse la touche de déplacement à gauche.</li>
+<li><strong>moveRight</strong> : Booléen indiquant si l'utilisateur presse la touche de déplacement à droite.</li>
+<li><strong>moveUp</strong> : Booléen indiquant si l'utilisateur presse la touche de déplacement vers le haut.</li>
+<li><strong>moveDown</strong> : Booléen indiquant si l'utilisateur presse la touche de déplacement vers le bas.</li>
+<li><strong>spaceBar</strong> : Booléen indiquant si l'utilisateur presse la barre d'espace.</li>
+</ul>
+<h3 id="exemple-dattributs-dans-le-fichier-inputcomponenthpp">Exemple d'attributs dans le fichier <code>InputComponent.hpp</code> :</h3>
+<pre><code class="language-cpp">class InputComponent : public AComponent {
+public:
+    bool moveLeft = false;
+    bool moveRight = false;
+    bool moveUp = false;
+    bool moveDown = false;
+    bool spaceBar = false;
+};
+</code></pre>
+<h2 id="role-dans-lecs">Rôle dans l'ECS</h2>
+<p><code>InputComponent</code> est utilisé pour :</p>
+<ul>
+<li>Capturer les entrées utilisateur et les associer à une entité donnée.</li>
+<li>Permettre aux systèmes (comme <code>InputSystem</code>) de traduire ces entrées en actions concrètes dans le jeu.</li>
+</ul>
+<h2 id="exemples-dutilisation">Exemples d'Utilisation</h2>
+<ol>
+<li>
+<p><strong>Ajout à une entité</strong> :
+   <code>cpp
+   Entity &amp;player = entityManager.createEntity();
+   player.addComponent&lt;InputComponent&gt;();</code></p>
+</li>
+<li>
+<p><strong>Traitement des entrées</strong> :
+   Utilisé dans <code>InputSystem</code> pour mettre à jour les états des composants :
+   <code>cpp
+   void InputSystem::update(EntityManager &amp;entityManager) {
+       for (auto &amp;entity : entityManager.entities) {
+           auto *input = entity-&gt;getComponent&lt;InputComponent&gt;();
+           if (input) {
+               input-&gt;moveLeft = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+               input-&gt;moveRight = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+               input-&gt;moveUp = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+               input-&gt;moveDown = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+               input-&gt;spaceBar = sf::Keyboard::isKeyPressed(sf::Keyboard::Space);
+           }
+       }
+   }</code></p>
+</li>
+</ol>
+<h2 id="interactions">Interactions</h2>
+<ul>
+<li><strong>Avec MovementSystem</strong> : Traduit les entrées utilisateur en déplacements d'entités.</li>
+<li><strong>Avec NetworkManager</strong> : Synchronise les commandes utilisateur avec le serveur pour un jeu en réseau.</li>
+</ul>
+<hr />
+<p>Le composant <code>InputComponent</code> est crucial pour connecter les actions des joueurs aux entités dans le jeu, en traduisant les entrées utilisateur en modifications d'état concrètes.</p></div>
             </div>
         </div>
 
