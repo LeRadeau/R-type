@@ -1,0 +1,21 @@
+site_name: R-Type Communication Protocol
+nav:
+  - Home: index.md
+  - Overview:
+      - Introduction: overview/introduction.md
+      - Protocol Overview: overview/protocol_overview.md
+  - Core Components:
+      - Network Types: components/network_types.md
+      - Serializer: components/serializer.md
+      - TSQueue: components/tsqueue.md
+  - Server:
+      - Architecture: server/architecture.md
+      - Game Loop: server/game_loop.md
+      - Message Handling: server/message_handling.md
+      - Broadcasting: server/broadcasting.md
+  - Client:
+      - MessageSystem: client/message_system.md
+      - NetworkManager: client/network_manager.md
+  - Examples:
+      - Message Flow: examples/message_flow.md
+      - Error Handling: examples/error_handling.md
