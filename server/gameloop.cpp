@@ -1,14 +1,13 @@
 #include <chrono>
+#include <iostream>
 #include <thread>
 #include "Serializer.hpp"
 #include "Server.hpp"
-#include <iostream>
 #include "network_types.hpp"
-
 
 void Server::run()
 {
-    std::thread networkThread(&Server::readSocket, this);
+    networkThread_ = std::thread(&Server::readSocket, this);
 
     auto previousSpawnTime = previousTime;
     int level = 1;
@@ -33,29 +32,37 @@ void Server::run()
 
         updateBullets(deltaTimeSeconds);
         updateEnnemies(deltaTimeSeconds);
-        CheckEnnemyCollision();
+        CheckBulletCollisions();
 
         if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousSpawnTime).count() >= 10000) {
-            level++;
+            if (level < 10)
+                level++;
             spawnEnnemies(level);
             previousSpawnTime = currentTime;
+            std::cout << "spawning: " << level << " ennemies!" << std::endl;
         }
-        std::cout << "spawning: " << level << " ennemies!"<< std::endl;
 
         if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousClientBroadcastTime).count()
-            >= 50) {
-
+            >= 16) {
             broadcastClients();
             broadcastEnnemies();
             previousClientBroadcastTime = currentTime;
         }
 
         if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousBulletBroadcastTime).count()
-            >= 50) {
+            >= 16) {
             broadcastBullet();
             previousBulletBroadcastTime = currentTime;
         }
 
+        int isAlive = 0;
+        for (auto &client : clients_) {
+            isAlive += client.second.isAlive;
+        }
+        if (!isAlive) {
+            broadcastGameOver();
+            break;
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 }

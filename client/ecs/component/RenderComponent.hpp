@@ -11,5 +11,7 @@ struct RenderComponent : public AComponent {
     RenderComponent(float radius, sf::Color color) : shape(radius), color(color)
     {
         shape.setFillColor(color);
+        sf::Vector2f origin(shape.getLocalBounds().width / 2.0f, shape.getLocalBounds().height / 2.0f);
+        shape.setOrigin(origin);
     }
 };

@@ -25,6 +25,8 @@ void Server::broadcastClients()
             Serializer::serialize(tempBuffer, client.username);
             Serializer::serialize(tempBuffer, client.position.x);
             Serializer::serialize(tempBuffer, client.position.y);
+            Serializer::serialize(tempBuffer, client.health);
+            Serializer::serialize(tempBuffer, client.score);
 
             if (buffer.size() + tempBuffer.size() > MAX_PACKET_SIZE) {
                 break;
@@ -130,5 +132,44 @@ void Server::broadcastEnnemies()
         }
 
         enemiesSerialized += packetEnemiesCount;
+    }
+}
+
+void Server::broadcastBulletHit(const std::string &bulletId)
+{
+    std::string data;
+    Serializer::serialize(data, MessageType::BULLET_HIT);
+    Serializer::serialize(data, bulletId);
+    for (const auto &client : clients_) {
+        socket_.send(data.data(), data.size(), client.second.ip, client.second.port);
+    }
+}
+
+void Server::broadcastEnemyDeath(const Ennemy &enemy)
+{
+    std::string data;
+    Serializer::serialize(data, MessageType::ENEMY_DEATH);
+    Serializer::serialize(data, enemy.id);
+    for (const auto &client : clients_) {
+        socket_.send(data.data(), data.size(), client.second.ip, client.second.port);
+    }
+}
+
+void Server::broadcastPlayerDeath(const std::string &username)
+{
+    std::string data;
+    Serializer::serialize(data, MessageType::PLAYER_DEATH);
+    Serializer::serialize(data, username);
+    for (const auto &client : clients_) {
+        socket_.send(data.data(), data.size(), client.second.ip, client.second.port);
+    }
+}
+
+void Server::broadcastGameOver()
+{
+    std::string data;
+    Serializer::serialize(data, MessageType::GAME_OVER);
+    for (const auto &client : clients_) {
+        socket_.send(data.data(), data.size(), client.second.ip, client.second.port);
     }
 }

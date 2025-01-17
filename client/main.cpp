@@ -55,7 +55,7 @@ int main(int argc, char *const *argv)
     SoundSystem soundSystem;
     ParallaxSystem parallaxSystem;
 
-    renderSystem.update(entityManager);
+    renderSystem.update(entityManager, "undefined");
     window.display();
     sf::Clock deltaClock;
 
@@ -104,7 +104,7 @@ int main(int argc, char *const *argv)
 
         window.clear();
         parallaxSystem.render(window, entityManager);
-        renderSystem.update(entityManager);
+        renderSystem.update(entityManager, menu.getUsername());
         window.display();
     }
     networkManager.send(MessageType::GOODBYE, menu.getUsername());
