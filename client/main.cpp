@@ -14,20 +14,22 @@
 #include "ecs/system/InputSystem.hpp"
 #include "ecs/system/MessageSystem.hpp"
 #include "ecs/system/MovementSystem.hpp"
+#include "ecs/system/ParallaxSystem.hpp"
 #include "ecs/system/RenderSystem.hpp"
 #include "ecs/system/SelectionSystem.hpp"
 #include "ecs/system/SoundSystem.hpp"
-#include "ecs/system/ParallaxSystem.hpp"
 
 #include "network_types.hpp"
 
 static void loadParallax(EntityManager &entityManager)
 {
     auto &background = entityManager.createEntity();
-    background.addComponent<ParallaxComponent>("assets/back.png", sf::Vector2f(-500.0f, 0.0f), sf::Vector2f(0, 0), sf::Vector2u(7, 7));
+    background.addComponent<ParallaxComponent>(
+        "assets/back.png", sf::Vector2f(-500.0f, 0.0f), sf::Vector2f(0, 0), sf::Vector2u(7, 7));
 
     auto &midground = entityManager.createEntity();
-    midground.addComponent<ParallaxComponent>("assets/starBack.png", sf::Vector2f(-600.0f, 0.0f), sf::Vector2f(0, 0), sf::Vector2u(7, 7));
+    midground.addComponent<ParallaxComponent>(
+        "assets/starBack.png", sf::Vector2f(-600.0f, 0.0f), sf::Vector2f(0, 0), sf::Vector2u(7, 7));
 }
 
 int main(int argc, char *const *argv)
@@ -53,8 +55,7 @@ int main(int argc, char *const *argv)
     SoundSystem soundSystem;
     ParallaxSystem parallaxSystem;
 
-
-    renderSystem.update(entityManager);
+    renderSystem.update(entityManager, "undefined");
     window.display();
     sf::Clock deltaClock;
 
@@ -97,13 +98,13 @@ int main(int argc, char *const *argv)
 
         movementSystem.update(entityManager, networkManager, deltaTime, window.hasFocus());
         inputSystem.update(entityManager);
-        messageSystem.update(entityManager, networkManager, menu.getUsername());
+        messageSystem.update(entityManager, networkManager, menu.getUsername(), player);
         soundSystem.update(entityManager, volume);
         parallaxSystem.update(entityManager, deltaTime);
 
         window.clear();
         parallaxSystem.render(window, entityManager);
-        renderSystem.update(entityManager);
+        renderSystem.update(entityManager, menu.getUsername());
         window.display();
     }
     networkManager.send(MessageType::GOODBYE, menu.getUsername());

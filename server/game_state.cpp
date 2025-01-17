@@ -1,5 +1,5 @@
+#include <math.h>
 #include "Server.hpp"
-#include <math.h> 
 
 void Server::updateBullets(float deltaTime)
 {
@@ -32,21 +32,19 @@ void Server::enemyShoot(Ennemy &ennemy)
 
 void Server::updateEnnemies(float deltaTime)
 {
-    for (auto &ennemy : ennemies_) {
-        if (ennemy.isAlive) {
-            //ennemy.position.x -= (ennemy.velocity.x) * deltaTime;
-
-            ennemy.position.y = ennemy.startingY + ennemy.amplitude * std::sin(ennemy.cosinus * ennemy.frequency);
-            ennemy.cosinus += deltaTime;
-            if (ennemy.shootingCooldown <= 0) {
-                enemyShoot(ennemy);
+    auto enemy = ennemies_.begin();
+    while (enemy != ennemies_.end()) {
+        if (enemy->isAlive) {
+            enemy->position.x -= (enemy->velocity.x) * deltaTime;
+            enemy->position.y = enemy->startingY + enemy->amplitude * std::sin(enemy->cosinus * enemy->frequency);
+            enemy->cosinus += deltaTime;
+            enemy->shootingCooldown -= deltaTime;
+            if (enemy->shootingCooldown <= 0) {
+                enemyShoot(*enemy);
             }
+            enemy++;
         } else {
-            ennemy.respawnCooldown -= deltaTime;
-            if (ennemy.respawnCooldown <= 0) {
-                ennemy.isAlive = true;
-                ennemy.health = 100;
-            }
+            enemy = ennemies_.erase(enemy);
         }
     }
 }
@@ -70,26 +68,99 @@ void Server::loadEnnemies()
     }
 }
 
-void Server::CheckEnnemyCollision()
+void Server::spawnEnnemies(int count)
 {
-    for (auto &ennemy : ennemies_) {
-        for (auto &bullet : bullets_) {
-            if (bullet.shooter == "enemy") {
-                continue;
-            }
-            if (ennemy.isAlive && 
-                bullet.position.x > ennemy.position.x - 20 &&
-                bullet.position.x < ennemy.position.x + 20 &&
-                bullet.position.y > ennemy.position.y - 20 &&
-                bullet.position.y < ennemy.position.y + 20) {
+    static int enemyCounter = 0;
+    float lastSpawnX = 1920.0f;
+    const float minSpacingX = 150.0f;
 
-                ennemy.health -= 10;
-                if (ennemy.health <= 0) {
-                    ennemy.isAlive = false;
-                    ennemy.respawnCooldown = 5.0f;
+    for (int i = 0; i < count; ++i) {
+        Ennemy newEnnemy;
+        float screenHeight = 1080.0f;
+        newEnnemy.position.x = lastSpawnX + minSpacingX;
+        newEnnemy.position.y = static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f;
+        lastSpawnX = newEnnemy.position.x;
+        newEnnemy.id = "ennemy_" + std::to_string(enemyCounter++);
+        newEnnemy.velocity = {50, 15};
+        newEnnemy.health = 100;
+        newEnnemy.shootingCooldown = static_cast<float>((rand() % 3) + 1);
+        newEnnemy.respawnCooldown = 5.0f;
+        newEnnemy.isAlive = true;
+        newEnnemy.amplitude = 70.0f;
+        newEnnemy.frequency = 1.0f;
+        newEnnemy.cosinus = 1;
+        newEnnemy.startingY = newEnnemy.position.y;
+        ennemies_.push_back(newEnnemy);
+    }
+}
+
+static bool checkCircleCollision(float x1, float y1, float r1, float x2, float y2, float r2)
+{
+    float dx = x1 - x2;
+    float dy = y1 - y2;
+    float distanceSquared = dx * dx + dy * dy;
+    float radiiSum = r1 + r2;
+    float radiiDiff = fabs(r1 - r2);
+
+    return distanceSquared <= (radiiSum * radiiSum) && distanceSquared >= (radiiDiff * radiiDiff);
+}
+
+void Server::CheckBulletCollisions()
+{
+    auto bullet = bullets_.begin();
+    while (bullet != bullets_.end()) {
+        float bulletX = bullet->position.x;
+        float bulletY = bullet->position.y;
+        float bulletRadius = 5;
+        bool incrementTheBullet = true;
+        if (bullet->shooter == "enemy") {
+            for (auto &client : clients_) {
+                float clientX = client.second.position.x;
+                float clientY = client.second.position.y;
+                float clientRadius = 32;
+
+                if (!client.second.isAlive)
+                    continue;
+                if (checkCircleCollision(bulletX, bulletY, bulletRadius, clientX, clientY, clientRadius)) {
+                    broadcastBulletHit(bullet->id);
+                    client.second.health -= 10;
+                    if (client.second.health <= 0) {
+                        client.second.isAlive = false;
+                        broadcastPlayerDeath(client.second.username);
+                    }
+                    bullet = bullets_.erase(bullet);
+                    incrementTheBullet = false;
+                    break;
                 }
-                bullet.position = {2000, 2000};
+            }
+        } else {
+            for (auto &enemy : ennemies_) {
+                float enemyX = enemy.position.x;
+                float enemyY = enemy.position.y;
+                float enemyRadius = 32;
+
+                if (!enemy.isAlive)
+                    continue;
+                if (checkCircleCollision(bulletX, bulletY, bulletRadius, enemyX, enemyY, enemyRadius)) {
+                    broadcastBulletHit(bullet->id);
+                    enemy.health -= 10;
+                    if (enemy.health <= 0) {
+                        enemy.isAlive = false;
+                        broadcastEnemyDeath(enemy);
+                        for (auto &i : clients_) {
+                            if (i.second.username == bullet->shooter) {
+                                i.second.score += 10;
+                                break;
+                            }
+                        }
+                    }
+                    bullet = bullets_.erase(bullet);
+                    incrementTheBullet = false;
+                    break;
+                }
             }
         }
+        if (incrementTheBullet)
+            bullet++;
     }
 }

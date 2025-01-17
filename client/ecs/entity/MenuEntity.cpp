@@ -4,11 +4,14 @@
 #include <SFML/Window/Event.hpp>
 #include "ecs/EntityManager.hpp"
 #include "ecs/callback/EventCallbacks.hpp"
+#include "ecs/callback/NetworkCallbacks.hpp"
+#include "ecs/component/NetworkCallbackComponent.hpp"
+#include "ecs/component/TextComponent.hpp"
 
 MenuEntity::MenuEntity(EntityManager &entityManager, sf::RenderWindow &window, const sf::Font &font,
     std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
     : entity_(entityManager.createEntity()), entityManager_(entityManager), networkManager_(networkManager),
-      window_(window), font_(font), player_(player)
+      window_(window), font_(font), player_(player), entityText_(entityManager.createEntity())
 {
     open();
     entity_.addComponent<EventHandlerComponent>(sf::Event::KeyReleased, [this, &window](const sf::Event &event) {
@@ -29,6 +32,34 @@ void MenuEntity::toggle()
         close();
     }
 }
+void MenuEntity::openLobby()
+{
+    sf::Vector2f size(275, 50);
+    sf::Vector2f position(window_.getSize().x / 2.0f - 300, 500);
+    sf::Vector2f positionText(position.x, position.y - 100);
+
+    entityText_.addComponent<TextComponent>("?/4 players", font_, positionText, sf::Color::White);
+    auto &comp = entityText_.addComponent<NetworkCallbackComponent>();
+    comp.setCallback(MessageType::WAIT, [this](const char *&packet) {
+        NetworkCallbacks::onWaitUpdateClientNbr(packet, entityText_);
+    });
+    comp.setCallback(MessageType::START_GAME, [this](const char *&) {
+        closeLobby();
+    });
+    buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "LANCER LA PARTIE", font_));
+    buttons_[0]->setCallback(sf::Event::MouseButtonReleased, [this](const sf::Event &event) {
+        EventCallbacks::ButtonLaunchGame(*this, buttons_[0]->getEntity(), window_, event, player_, networkManager_);
+    });
+}
+
+void MenuEntity::closeLobby()
+{
+    for (auto &i : buttons_) {
+        entityManager_.markForDeletion(i->getEntity().getId());
+    }
+    buttons_.clear();
+    entityManager_.markForDeletion(entityText_.getId());
+}
 
 void MenuEntity::open()
 {
@@ -36,8 +67,7 @@ void MenuEntity::open()
     sf::Vector2f position(window_.getSize().x / 2.0f - 300, 500);
     buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "Play", font_));
     buttons_[0]->setCallback(sf::Event::MouseButtonReleased, [this](const sf::Event &event) {
-        EventCallbacks::ButtonHandlePlay(
-            *this, buttons_[0]->getEntity(), window_, event, entityManager_, player_, networkManager_);
+        EventCallbacks::ButtonHandlePlay(*this, buttons_[0]->getEntity(), window_, event, player_, networkManager_);
     });
     position.x += 160;
     buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "Quit", font_));

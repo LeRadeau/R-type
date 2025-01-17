@@ -19,7 +19,7 @@ void MovementSystem::update(EntityManager &entityManager, NetworkManager &networ
     for (auto &entity : entityManager.entities) {
         auto *input = entity->getComponent<InputComponent>();
         auto *position = entity->getComponent<PositionComponent>();
-        auto *username = entity->getComponent<usernameComponent>();
+        auto *username = entity->getComponent<UsernameComponent>();
         auto *velocity = entity->getComponent<VelocityComponent>();
         auto *bulletId = entity->getComponent<BulletIdComponent>();
         auto *sound = entity->getComponent<SoundComponent>();

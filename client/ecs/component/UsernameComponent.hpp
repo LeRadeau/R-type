@@ -2,9 +2,9 @@
 #include <string>
 #include "AComponent.hpp"
 
-struct usernameComponent : public AComponent {
+struct UsernameComponent : public AComponent {
     std::string username;
-    usernameComponent(const std::string &name) : username(name)
+    UsernameComponent(const std::string &name) : username(name)
     {
     }
 };

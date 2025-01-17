@@ -3,6 +3,7 @@
 #include "ecs/component/PositionComponent.hpp"
 #include "ecs/component/RectangleShapeComponent.hpp"
 #include "ecs/component/RenderComponent.hpp"
+#include "ecs/component/ScoreComponent.hpp"
 #include "ecs/component/SpriteComponent.hpp"
 #include "ecs/component/TextComponent.hpp"
 #include "ecs/component/UsernameComponent.hpp"
@@ -12,17 +13,29 @@ RenderSystem::RenderSystem(sf::RenderWindow &window, const std::string &fontName
     font.loadFromFile(fontName);
 }
 
-void RenderSystem::update(EntityManager &entityManager)
+void RenderSystem::update(EntityManager &entityManager, const std::string &playerUsername)
 {
     for (auto &entity : entityManager.entities) {
         auto *position = entity->getComponent<PositionComponent>();
         auto *render = entity->getComponent<RenderComponent>();
-        auto *username = entity->getComponent<usernameComponent>();
+        auto *username = entity->getComponent<UsernameComponent>();
         auto *health = entity->getComponent<HealthComponent>();
         auto *rectangleShape = entity->getComponent<RectangleShapeComponent>();
         auto *textComponent = entity->getComponent<TextComponent>();
         auto *sprite = entity->getComponent<SpriteComponent>();
+        auto *scoreComponent = entity->getComponent<ScoreComponent>();
 
+        if (scoreComponent && username && username->username == playerUsername) {
+            sf::Text text;
+            text.setFont(font);
+            text.setString("SCORE: " + std::to_string(scoreComponent->score));
+            text.setCharacterSize(30);
+            text.setFillColor(sf::Color::White);
+            text.setPosition(window.getSize().x / 2.0f, 10);
+            window.draw(text);
+        }
+        if (health && health->health <= 0) // Gros Hack de merde car flemme de voir le code coté serveur.
+            continue;
         if (rectangleShape)
             window.draw(rectangleShape->shape);
         if (textComponent)
