@@ -1,13 +1,13 @@
 #include "NetworkManager.hpp"
+#include <SFML/Network/SocketSelector.hpp>
+#include <SFML/System/Time.hpp>
 #include <cstdlib>
 #include "Serializer.hpp"
-
 // Public
 
 NetworkManager::NetworkManager(const std::string &serverIp, uint16_t port)
     : serverIp(serverIp), serverPort(port), isRunning(true)
 {
-    socket.setBlocking(false);
     if (socket.bind(sf::Socket::AnyPort) != sf::Socket::Done) {
         throw std::runtime_error("Failed to bind socket");
     }
@@ -34,9 +34,8 @@ void NetworkManager::send(MessageType type, const std::string &data)
     send(buffer);
 }
 
-std::queue<std::string> &NetworkManager::getReceivedMessages()
+TSQueue<std::string> &NetworkManager::getReceivedMessages()
 {
-    std::lock_guard<std::mutex> lock(queueMutex);
     return receivedMessages;
 }
 
@@ -58,13 +57,13 @@ void NetworkManager::receiveMessages()
     std::size_t received;
     sf::IpAddress sender;
     unsigned short senderPort;
+    sf::SocketSelector selector;
 
+    selector.add(socket);
     while (isRunning) {
-        if (socket.receive(data, sizeof(data), received, sender, senderPort) == sf::Socket::Done) {
-            std::lock_guard<std::mutex> lock(queueMutex);
-            receivedMessages.push(std::string(data, received));
-            if (receivedMessages.size() > 10) {
-                receivedMessages = std::queue<std::string>();
+        if (selector.wait(sf::seconds(1.0f)) && selector.isReady(socket)) {
+            if (socket.receive(data, sizeof(data), received, sender, senderPort) == sf::Socket::Done) {
+                receivedMessages.push(std::string(data, received));
             }
         }
     }

@@ -14,5 +14,7 @@ struct SpriteComponent : public AComponent {
         texture.loadFromFile(assetPath);
         sprite.setTexture(texture);
         sprite.setScale(scale);
+        sf::Vector2f origin(sprite.getLocalBounds().width / 2.0f, sprite.getLocalBounds().height / 2.0f);
+        sprite.setOrigin(origin);
     }
 };

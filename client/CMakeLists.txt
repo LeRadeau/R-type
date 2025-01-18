@@ -4,7 +4,7 @@ file(GLOB_RECURSE SOURCES "./*.cpp")
 
 add_executable(r-type_client ${SOURCES})
 
-target_compile_options(r-type_client PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(r-type_client PRIVATE -Wall -Wextra -Wpedantic -g3)
 
 # Link common library
 target_link_libraries(r-type_client PRIVATE common)
