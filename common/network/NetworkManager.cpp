@@ -68,35 +68,29 @@ namespace Network
         return m_running;
     }
 
-    bool NetworkManager::hasNotification()
+    std::optional<NetworkManager::NetworkPacketInfo> NetworkManager::getNextPacket()
     {
-        return !m_notifications.empty();
-    }
-
-    bool NetworkManager::hasIncomingPackets()
-    {
-        return !m_incomingPackets.empty();
-    }
-
-    NetworkManager::NetworkPacketInfo NetworkManager::getNextPacket()
-    {
+        if (m_incomingPackets.empty())
+            return std::nullopt;
         return m_incomingPackets.pop();
     }
 
-    NetworkManager::Notification NetworkManager::getNextNotification()
+    std::optional<NetworkManager::Notification> NetworkManager::getNextNotification()
     {
+        if (m_notifications.empty())
+            return std::nullopt;
         return m_notifications.pop();
     }
 
-    void NetworkManager::listen(unsigned short udpPort, unsigned short tcpPort)
+    void NetworkManager::listen(const sf::IpAddress &ip, unsigned short udpPort, unsigned short tcpPort)
     {
         if (m_mode != Mode::SERVER)
             throw std::logic_error("Listen can only be called in server mode");
 
-        if (m_udpSocket.bind(udpPort) != sf::Socket::Done)
+        if (m_udpSocket.bind(udpPort, ip) != sf::Socket::Done)
             throw SocketBindingException("Failed to bind UDP socket to port " + std::to_string(udpPort));
 
-        if (m_tcpListener.listen(tcpPort) != sf::Socket::Done)
+        if (m_tcpListener.listen(tcpPort, ip) != sf::Socket::Done)
             throw SocketListeningException("Failed to listen on TCP port " + std::to_string(tcpPort));
     }
 

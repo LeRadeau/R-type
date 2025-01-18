@@ -58,17 +58,15 @@ namespace Network
         void start();
         void stop();
         bool isRunning() const;
-        bool hasNotification();
-        bool hasIncomingPackets();
 
-        NetworkPacketInfo getNextPacket();
-        Notification getNextNotification();
+        std::optional<NetworkPacketInfo> getNextPacket();
+        std::optional<Notification> getNextNotification();
 
         void sendPacket(const std::shared_ptr<Packet> &packet, const sf::IpAddress &address, unsigned short port);
 
         // Server specific
         void sendPacket(const std::shared_ptr<Packet> &packet, std::shared_ptr<sf::TcpSocket> socket);
-        void listen(unsigned short udpPort, unsigned short tcpPort);
+        void listen(const sf::IpAddress &ip, unsigned short udpPort, unsigned short tcpPort);
 
         // Client specific
         void sendPacket(const std::shared_ptr<Packet> &packet); // For TCP only
