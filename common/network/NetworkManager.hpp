@@ -83,7 +83,7 @@ namespace Network
 
         Mode m_mode;
         sf::UdpSocket m_udpSocket;
-        sf::TcpSocket m_tcpSocket;
+        std::shared_ptr<sf::TcpSocket> m_tcpSocket;
         sf::TcpListener m_tcpListener;
         TSQueue<NetworkPacketInfo> m_incomingPackets;
         TSQueue<NetworkPacketInfo> m_outGoingPackets;

@@ -24,7 +24,7 @@ namespace Network
         if (m_mode == Mode::SERVER) {
             m_networkThread = std::thread(&NetworkManager::tcpListenerThread, this);
         } else {
-            m_networkThread = std::thread(&NetworkManager::tcpReceiveThread, this);
+            m_networkThread = std::thread(&NetworkManager::tcpReceiveThread, this, m_tcpSocket);
         }
         std::thread(&NetworkManager::udpReceiveThread, this).detach();
         std::thread(&NetworkManager::processOutgoingPacketsThread, this).detach();
@@ -38,7 +38,7 @@ namespace Network
         if (m_mode == Mode::SERVER)
             m_tcpListener.close();
         else
-            m_tcpSocket.disconnect();
+            m_tcpSocket->disconnect();
 
         if (m_networkThread.joinable())
             m_networkThread.join();
@@ -59,8 +59,7 @@ namespace Network
     {
         if (m_mode != Mode::CLIENT)
             throw std::logic_error("sendPacket can not be called without destination in server mode");
-        m_outGoingPackets.push(
-            NetworkPacketInfo(packet, NetworkPacketInfo::Protocol::TCP, std::make_shared<sf::TcpSocket>(m_tcpSocket)));
+        m_outGoingPackets.push(NetworkPacketInfo(packet, NetworkPacketInfo::Protocol::TCP, m_tcpSocket));
     }
 
     bool NetworkManager::isRunning() const
@@ -102,7 +101,8 @@ namespace Network
         if (m_udpSocket.bind(udpPort) != sf::Socket::Done)
             throw SocketBindingException("Failed to bind UDP socket to port " + std::to_string(udpPort));
 
-        if (m_tcpSocket.connect(remote, tcpPort) != sf::Socket::Done)
+        m_tcpSocket = std::make_shared<sf::TcpSocket>();
+        if (m_tcpSocket->connect(remote, tcpPort) != sf::Socket::Done)
             throw ConnectionException(
                 "Failed to connect to remote at " + remote.toString() + ":" + std::to_string(tcpPort));
     }
@@ -224,12 +224,12 @@ namespace Network
         std::vector<uint8_t> data = packetInfo.packet->serialize();
         std::size_t dataSize = data.size();
         if (packetInfo.socket->get()->send(&dataSize, sizeof(dataSize)) != sf::Socket::Done)
-            throw TransmissionException("Failed to send packet size to " + m_tcpSocket.getRemoteAddress().toString()
-                + ":" + std::to_string(m_tcpSocket.getRemotePort()));
+            throw TransmissionException("Failed to send packet size to " + m_tcpSocket->getRemoteAddress().toString()
+                + ":" + std::to_string(m_tcpSocket->getRemotePort()));
 
         if (packetInfo.socket->get()->send(data.data(), data.size()) != sf::Socket::Done)
-            throw TransmissionException("Failed to send packet to " + m_tcpSocket.getRemoteAddress().toString() + ":"
-                + std::to_string(m_tcpSocket.getRemotePort()));
+            throw TransmissionException("Failed to send packet to " + m_tcpSocket->getRemoteAddress().toString() + ":"
+                + std::to_string(m_tcpSocket->getRemotePort()));
     }
 
     void NetworkManager::processOutgoingUdpData(NetworkPacketInfo &packetInfo)
