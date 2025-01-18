@@ -1,61 +1,49 @@
 #include "Server.hpp"
 #include <SFML/Network.hpp>
+#include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
 #include <iostream>
-#include "Serializer.hpp"
-#include "network_types.hpp"
-#include <system_error>
 
-void Server::bind(unsigned short port, const sf::IpAddress &addr)
-{
-    if (socket_.bind(SERVER_PORT, addr) != sf::Socket::Done) {
-        throw std::system_error(errno, std::generic_category(), "Failed to bind socket");
-    }
-    std::cout << "Server is running on port " << port << std::endl;
-}
-
-void Server::readSocket()
+void Server::handleIncomingPackets()
 {
     running_ = true;
     while (running_) {
-        char data[1024];
-        std::size_t received;
-        sf::IpAddress sender;
-        unsigned short senderPort;
-        if (socket_.receive(data, sizeof(data), received, sender, senderPort) != sf::Socket::Done) {
-            continue;
+        auto packet = m_networkManager.getNextPacket();
+        while (packet.has_value()) {
+            auto unpackedPacket = packet.value();
+            switch (unpackedPacket.packet->getType()) {
+                case Network::Packet::PacketType::PLAYER_READY: handleReady(unpackedPacket); break;
+                case Network::Packet::PacketType::PLAYER_CONNECT: handleConnect(unpackedPacket); break;
+                case Network::Packet::PacketType::PLAYER_MOVE: handleMove(unpackedPacket); break;
+                case Network::Packet::PacketType::PLAYER_DISCONNECT: handleDisconnect(unpackedPacket); break;
+                case Network::Packet::PacketType::PLAYER_SHOOT: handleShoot(unpackedPacket); break;
+                default: break;
+            }
+            packet = m_networkManager.getNextPacket();
         }
-        const char *ptr = data;
-        auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
-
-        switch (messageType) {
-            case MessageType::READY: handleReady(sender, senderPort, ptr); break;
-            case MessageType::CONNECT: handleConnect(sender, senderPort, ptr); break;
-            case MessageType::MOVE: handleMove(sender, senderPort, ptr); break;
-            case MessageType::GOODBYE: handleGoodbye(sender, senderPort, ptr); break;
-            case MessageType::SHOOT: handleShoot(sender, senderPort, ptr); break;
-            default: break;
-        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+}
+
+Server::Server(unsigned short tcpPort, unsigned short udpPort, const sf::IpAddress &ip)
+    : m_networkManager(Network::NetworkManager::Mode::SERVER), m_tcpPort(tcpPort), m_udpPort(udpPort), m_ip(ip)
+{
 }
 
 Server::~Server()
 {
     running_ = false;
-    if (networkThread_.joinable()) {
-        networkThread_.join();
-    }
+    m_networkManager.stop();
 }
 
 int main()
 {
-    Server server;
+    Server server(SERVER_PORT, SERVER_PORT);
 
     try {
-        server.bind(SERVER_PORT);
+        server.run();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
         return -1;
     }
-    server.run();
 }
