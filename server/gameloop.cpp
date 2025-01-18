@@ -1,26 +1,24 @@
 #include <chrono>
 #include <iostream>
 #include <thread>
-#include "Serializer.hpp"
 #include "Server.hpp"
-#include "network_types.hpp"
+#include "network/packets/WaitingUpdatePacket.hpp"
 
 void Server::run()
 {
-    networkThread_ = std::thread(&Server::readSocket, this);
-
     auto previousSpawnTime = previousTime;
     int level = 1;
 
-    // loadEnnemies();
+    m_networkManager.listen(m_ip, m_udpPort, m_tcpPort);
+
+    std::thread(&Server::handleIncomingPackets, this).detach();
+
     while (true) {
         // Vérifie si le jeu est ready
         if (Ready == false) {
+            auto packet = std::make_shared<Network::WaitingUpdatePacket>(clients_.size());
             for (auto it = clients_.begin(); it != clients_.end(); it++) {
-                std::string buffer;
-                Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::WAIT));
-                Serializer::serialize(buffer, static_cast<std::size_t>(clients_.size()));
-                socket_.send(buffer.data(), buffer.size(), it->second.ip, it->second.port);
+                m_networkManager.sendPacket(packet, it->second.ip, it->second.port);
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Attends 1 seconde avant le prochain check
             continue;
@@ -31,7 +29,7 @@ void Server::run()
         float deltaTimeSeconds = deltaTime.count();
 
         updateBullets(deltaTimeSeconds);
-        updateEnnemies(deltaTimeSeconds);
+        updateEnemies(deltaTimeSeconds);
         CheckBulletCollisions();
 
         if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousSpawnTime).count() >= 10000) {

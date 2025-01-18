@@ -15,25 +15,25 @@ void Server::updateBullets(float deltaTime)
     }
 }
 
-void Server::enemyShoot(Ennemy &ennemy)
+void Server::enemyShoot(Enemy &enemy)
 {
-    if (ennemy.shootingCooldown > 0) {
+    if (enemy.shootingCooldown > 0) {
         return;
     }
     std::string bulletID = generateBulletID("enemy");
     Bullet newBullet;
     newBullet.id = bulletID;
-    newBullet.position = {ennemy.position.x, ennemy.position.y};
+    newBullet.position = {enemy.position.x, enemy.position.y};
     newBullet.velocity = {-500.0f, 0.0f};
     newBullet.shooter = "enemy";
     bullets_.push_back(newBullet);
-    ennemy.shootingCooldown = 2.0f;
+    enemy.shootingCooldown = 2.0f;
 }
 
-void Server::updateEnnemies(float deltaTime)
+void Server::updateEnemies(float deltaTime)
 {
-    auto enemy = ennemies_.begin();
-    while (enemy != ennemies_.end()) {
+    auto enemy = enemies_.begin();
+    while (enemy != enemies_.end()) {
         if (enemy->isAlive) {
             enemy->position.x -= (enemy->velocity.x) * deltaTime;
             enemy->position.y = enemy->startingY + enemy->amplitude * std::sin(enemy->cosinus * enemy->frequency);
@@ -44,27 +44,8 @@ void Server::updateEnnemies(float deltaTime)
             }
             enemy++;
         } else {
-            enemy = ennemies_.erase(enemy);
+            enemy = enemies_.erase(enemy);
         }
-    }
-}
-
-void Server::loadEnnemies()
-{
-    for (int i = 0; i < MAX_ENNEMIES; ++i) {
-        Ennemy newEnnemy;
-        newEnnemy.id = "ennemy_" + std::to_string(i);
-        newEnnemy.position = {float(1000), float(100 * i)};
-        newEnnemy.velocity = {50, 15};
-        newEnnemy.health = 100;
-        newEnnemy.shootingCooldown = 1.0f;
-        newEnnemy.respawnCooldown = 5.0f;
-        newEnnemy.isAlive = true;
-        newEnnemy.amplitude = 70.0f;
-        newEnnemy.frequency = 1.0f;
-        newEnnemy.cosinus = 1;
-        newEnnemy.startingY = newEnnemy.position.y;
-        ennemies_.push_back(newEnnemy);
     }
 }
 
@@ -75,22 +56,22 @@ void Server::spawnEnnemies(int count)
     const float minSpacingX = 150.0f;
 
     for (int i = 0; i < count; ++i) {
-        Ennemy newEnnemy;
+        Enemy newEnemy;
         float screenHeight = 1080.0f;
-        newEnnemy.position.x = lastSpawnX + minSpacingX;
-        newEnnemy.position.y = static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f;
-        lastSpawnX = newEnnemy.position.x;
-        newEnnemy.id = "ennemy_" + std::to_string(enemyCounter++);
-        newEnnemy.velocity = {50, 15};
-        newEnnemy.health = 100;
-        newEnnemy.shootingCooldown = static_cast<float>((rand() % 3) + 1);
-        newEnnemy.respawnCooldown = 5.0f;
-        newEnnemy.isAlive = true;
-        newEnnemy.amplitude = 70.0f;
-        newEnnemy.frequency = 1.0f;
-        newEnnemy.cosinus = 1;
-        newEnnemy.startingY = newEnnemy.position.y;
-        ennemies_.push_back(newEnnemy);
+        newEnemy.position.x = lastSpawnX + minSpacingX;
+        newEnemy.position.y = static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f;
+        lastSpawnX = newEnemy.position.x;
+        newEnemy.id = "enemy_" + std::to_string(enemyCounter++);
+        newEnemy.velocity = {50, 15};
+        newEnemy.health = 100;
+        newEnemy.shootingCooldown = static_cast<float>((rand() % 3) + 1);
+        newEnemy.respawnCooldown = 5.0f;
+        newEnemy.isAlive = true;
+        newEnemy.amplitude = 70.0f;
+        newEnemy.frequency = 1.0f;
+        newEnemy.cosinus = 1;
+        newEnemy.startingY = newEnemy.position.y;
+        enemies_.push_back(newEnemy);
     }
 }
 
@@ -134,7 +115,7 @@ void Server::CheckBulletCollisions()
                 }
             }
         } else {
-            for (auto &enemy : ennemies_) {
+            for (auto &enemy : enemies_) {
                 float enemyX = enemy.position.x;
                 float enemyY = enemy.position.y;
                 float enemyRadius = 32;
