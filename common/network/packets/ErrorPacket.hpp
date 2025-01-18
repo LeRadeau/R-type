@@ -5,7 +5,7 @@ namespace Network
 {
     class ErrorPacket : public Packet {
       public:
-        ErrorPacket(const std::string &errorMessage);
+        explicit ErrorPacket(const std::string &errorMessage);
         PacketType getType() const override;
         std::vector<uint8_t> serialize() const override;
         static std::unique_ptr<ErrorPacket> deserialize(const std::vector<uint8_t> &data);

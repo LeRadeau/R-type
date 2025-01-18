@@ -13,7 +13,7 @@ namespace Network
             float vx;
             float vy;
         };
-        BulletsUpdatePacket(const std::vector<BulletData> &);
+        explicit BulletsUpdatePacket(const std::vector<BulletData> &);
 
         PacketType getType() const override;
         std::vector<uint8_t> serialize() const override;
