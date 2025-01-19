@@ -1,0 +1,49 @@
+site_name: R-Type ECS Documentation
+nav:
+  - Home: index.md
+  - Overview:
+      - Introduction: overview/introduction.md
+      - Architecture: overview/architecture.md
+  - Components:
+      - AComponent: components/a_component.md
+      - BulletIdComponent: components/bullet_id_component.md
+      - EnnemyIdComponent: components/ennemy_id_component.md
+      - EventHandlerComponent: components/event_handler_component.md
+      - HealthComponent: components/health_component.md
+      - HoverComponent: components/hover_component.md
+      - InputComponent: components/input_component.md
+      - NetworkCallbackComponent: components/network_callback_component.md
+      - ParallaxComponent: components/parallax_component.md
+      - PositionComponent: components/position_component.md
+      - RectangleShapeComponent: components/rectangle_shape_component.md
+      - RenderComponent: components/render_component.md
+      - ScoreComponent: components/score_component.md
+      - SelectionComponent: components/selection_component.md
+      - SoundComponent: components/sound_component.md
+      - SpriteComponent: components/sprite_component.md
+      - TextComponent: components/text_component.md
+      - UsernameComponent: components/username_component.md
+      - VelocityComponent: components/velocity_component.md
+  - Entities:
+      - AllyEntity: entities/ally_entity.md
+      - ButtonEntity: entities/button_entity.md
+      - BydosEntity: entities/bydos_entity.md
+      - MenuEntity: entities/menu_entity.md
+      - PlayerEntity: entities/player_entity.md
+      - TextFieldEntity: entities/text_field_entity.md
+  - Systems:
+      - EventHandlingSystem: systems/event_handling_system.md
+      - HoverSystem: systems/hover_system.md
+      - InputSystem: systems/input_system.md
+      - MessageSystem: systems/message_system.md
+      - MovementSystem: systems/movement_system.md
+      - ParallaxSystem: systems/parallax_system.md
+      - RenderSystem: systems/render_system.md
+      - SelectionSystem: systems/selection_system.md
+      - SoundSystem: systems/sound_system.md
+  - Callbacks:
+      - EventCallbacks: callbacks/event_callbacks.md
+      - NetworkCallbacks: callbacks/network_callbacks.md
+  - Managers:
+      - EntityManager: managers/entity_manager.md
+      - NetworkManager: managers/network_manager.md
