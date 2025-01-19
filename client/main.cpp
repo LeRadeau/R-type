@@ -9,7 +9,6 @@
 #include "ecs/NetworkManager.hpp"
 #include "ecs/entity/MenuEntity.hpp"
 #include "ecs/entity/PlayerEntity.hpp"
-#include "ecs/entity/HudEntity.hpp"
 #include "ecs/system/EventHandlingSystem.hpp"
 #include "ecs/system/HoverSystem.hpp"
 #include "ecs/system/InputSystem.hpp"
@@ -63,7 +62,6 @@ int main(int argc, char *const *argv)
     std::string serverIp = argc == 2 ? argv[1] : "localhost";
 
     std::unique_ptr<PlayerEntity> player;
-    HudEntity::createHudEntity(entityManager);
     loadParallax(entityManager);
 
     NetworkManager networkManager(serverIp, 54000);

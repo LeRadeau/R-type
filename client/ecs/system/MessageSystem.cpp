@@ -15,6 +15,7 @@
 #include "ecs/entity/AllyEntity.hpp"
 #include "ecs/entity/BydosEntity.hpp"
 #include "ecs/entity/PlayerEntity.hpp"
+#include "ecs/entity/HudEntity.hpp"
 #include "network_types.hpp"
 
 MessageSystem::MessageSystem(sf::Font &font) : font_(font)
@@ -61,6 +62,7 @@ void MessageSystem::handleLaunchGame(
     std::cout << "\033[1;32mGame has started\033[0m" << std::endl;
     if (player == nullptr)
         player = std::make_unique<PlayerEntity>(entityManager, username);
+    HudEntity::createHudEntity(entityManager, "assets/arial.ttf");
 }
 
 void MessageSystem::handleUpdateClients(

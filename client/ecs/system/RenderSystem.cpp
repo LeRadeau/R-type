@@ -15,6 +15,9 @@ RenderSystem::RenderSystem(sf::RenderWindow &window, const std::string &fontName
 
 void RenderSystem::update(EntityManager &entityManager, const std::string &playerUsername)
 {
+    bool draw = false;
+    float hudOffset = 10;
+
     for (auto &entity : entityManager.entities) {
         auto *position = entity->getComponent<PositionComponent>();
         auto *render = entity->getComponent<RenderComponent>();
@@ -74,6 +77,29 @@ void RenderSystem::update(EntityManager &entityManager, const std::string &playe
         } else if (position && sprite) {
             sprite->sprite.setPosition(position->position);
             window.draw(sprite->sprite);
+        }
+
+        // HUD
+        if (username) {
+            sf::Text text;
+            text.setFont(font);
+            if (!draw) {
+                text.setFillColor(sf::Color::Red);
+                text.setString("GAME INFOS");
+                text.setCharacterSize(50);
+                text.setPosition(10, hudOffset);
+                window.draw(text);
+                hudOffset += text.getCharacterSize();
+                draw = true;
+            }
+            if (username->username != playerUsername && scoreComponent && health) {
+                text.setString(username->username + " - SCORE: " + std::to_string(scoreComponent->score) + " - HP: " + std::to_string(health->health));
+                text.setCharacterSize(24);
+                text.setFillColor(sf::Color::White);
+                text.setPosition(10, hudOffset);
+                window.draw(text);
+                hudOffset += text.getCharacterSize();
+            }  
         }
     }
 }
