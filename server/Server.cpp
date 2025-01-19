@@ -29,6 +29,7 @@ void Server::init()
     m_coordinator.init();
     m_networkManager.listen(m_ip, m_udpPort, m_tcpPort);
     m_networkManager.start();
+    m_packetHandler.addObserver(this);
     std::thread(&PacketHandler::handleIncomingPackets, &m_packetHandler, std::ref(m_running)).detach();
 }
 
