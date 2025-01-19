@@ -1,6 +1,7 @@
 #include "PlayerDeathPacket.hpp"
 #include <cstring>
 #include <memory>
+#include "network/Serializer.hpp"
 #include "network/exceptions/NetworkExceptions.hpp"
 
 namespace Network
@@ -18,37 +19,25 @@ namespace Network
         PacketType type = getType();
         std::vector<uint8_t> buffer;
         size_t length = m_username.size();
-        size_t dataIndex = sizeof(type);
 
         if (length == 0)
             throw InvalidPacketFormatException("PlayerDeathPacket should have a username");
-
-        buffer.resize(sizeof(type) + sizeof(length) + length);
-        std::memcpy(buffer.data(), &type, sizeof(type));
-        std::memcpy(buffer.data() + dataIndex, &length, sizeof(length));
-        dataIndex += sizeof(length);
-        std::memcpy(buffer.data() + dataIndex, m_username.data(), length);
+        Serializer::serialize(buffer, type);
+        Serializer::serialize(buffer, m_username);
         return buffer;
     }
 
     std::unique_ptr<PlayerDeathPacket> PlayerDeathPacket::deserialize(const std::vector<uint8_t> &data)
     {
-        size_t length;
         std::string username;
-        size_t dataIndex = sizeof(PacketType);
+        size_t size = data.size();
+        const uint8_t *indexPtr = data.data();
+        PacketType type;
 
-        if (data.size() <= dataIndex)
-            throw IncompletePacketException("PlayerDeathPacket contains no data");
-        std::memcpy(&length, data.data() + dataIndex, sizeof(size_t));
-
-        dataIndex += sizeof(size_t);
-
-        if (data.size() != length + dataIndex)
-            throw IncompletePacketException("PlayerDeathPacket username is wrongly sized");
-
-        username.resize(length);
-        std::memcpy(username.data(), data.data() + dataIndex, length);
-
+        type = Serializer::deserialize<PacketType>(indexPtr, size);
+        if (type != PacketType::PLAYER_DEATH)
+            throw InvalidPacketFormatException("PlayerDeathPacket should be of type PacketType::PLAYER_DEATH");
+        username = Serializer::deserializeString(indexPtr, size);
         return std::make_unique<PlayerDeathPacket>(username);
     }
 

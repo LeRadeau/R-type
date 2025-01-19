@@ -1,5 +1,6 @@
 #include "GameStartPacket.hpp"
-#include <cstring>
+#include "network/Serializer.hpp"
+
 namespace Network
 {
 
@@ -13,8 +14,7 @@ namespace Network
         PacketType type = getType();
         std::vector<uint8_t> buffer;
 
-        buffer.resize(sizeof(type));
-        std::memcpy(buffer.data(), &type, sizeof(type));
+        Serializer::serialize(buffer, type);
         return buffer;
     }
 

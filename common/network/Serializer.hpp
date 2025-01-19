@@ -16,7 +16,7 @@ class Serializer {
     template <typename T> static void serialize(std::vector<uint8_t> &buffer, const T &data)
     {
         const uint8_t *rawData = reinterpret_cast<const uint8_t *>(&data);
-        buffer.insert(buffer.end(), rawData, rawData + sizeof(T));
+        buffer.insert(buffer.end(), rawData, rawData + getSize<T>());
     }
 
     // Append string (variable length)

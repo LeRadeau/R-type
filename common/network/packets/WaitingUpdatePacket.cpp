@@ -1,5 +1,6 @@
 #include "WaitingUpdatePacket.hpp"
 #include <cstring>
+#include "network/Serializer.hpp"
 #include "network/exceptions/NetworkExceptions.hpp"
 
 namespace Network
@@ -18,27 +19,23 @@ namespace Network
     {
         PacketType type = getType();
         std::vector<uint8_t> buffer;
-        size_t dataIndex = sizeof(type);
 
-        buffer.resize(sizeof(type) + sizeof(m_clientTotal));
-        std::memcpy(buffer.data(), &type, sizeof(type));
-        std::memcpy(buffer.data() + dataIndex, &m_clientTotal, sizeof(m_clientTotal));
+        Serializer::serialize<PacketType>(buffer, type);
+        Serializer::serialize<size_t>(buffer, m_clientTotal);
         return buffer;
     }
 
     std::unique_ptr<WaitingUpdatePacket> WaitingUpdatePacket::deserialize(const std::vector<uint8_t> &data)
     {
+        const uint8_t *indexPtr = data.data();
+        size_t length = data.size();
         PacketType type;
         size_t clientTotal;
-        size_t dataIndex = sizeof(type);
 
-        if (data.size() < sizeof(type))
-            throw InvalidPacketFormatException("WaitingUpdatePacket contains no data");
-        std::memcpy(&type, data.data(), sizeof(type));
-
-        if (data.size() < dataIndex + sizeof(clientTotal))
-            throw InvalidPacketFormatException("WaitingUpdatePacket is missing clientTotal");
-        std::memcpy(&clientTotal, data.data() + dataIndex, sizeof(clientTotal));
+        type = Serializer::deserialize<PacketType>(indexPtr, length);
+        if (type != PacketType::WAITING_UPDATE)
+            throw InvalidPacketFormatException("WaitingUpdatePacket should be of type PacketType::WAITING_UPDATE");
+        clientTotal = Serializer::deserialize<size_t>(indexPtr, length);
 
         return std::make_unique<WaitingUpdatePacket>(clientTotal);
     }

@@ -1,5 +1,6 @@
 #include "BulletHitPacket.hpp"
 #include <cstring>
+#include "network/Serializer.hpp"
 #include "network/exceptions/NetworkExceptions.hpp"
 
 namespace Network
@@ -18,37 +19,26 @@ namespace Network
         PacketType type = getType();
         std::vector<uint8_t> buffer;
         size_t length = m_bulletId.size();
-        size_t dataIndex = sizeof(type);
 
         if (length == 0)
             throw InvalidPacketFormatException("BulletHitPacket should have a bulletId");
 
-        buffer.resize(sizeof(type) + sizeof(length) + length);
-        std::memcpy(buffer.data(), &type, sizeof(type));
-        std::memcpy(buffer.data() + dataIndex, &length, sizeof(length));
-        dataIndex += sizeof(length);
-        std::memcpy(buffer.data() + dataIndex, m_bulletId.data(), length);
+        Serializer::serialize(buffer, type);
+        Serializer::serialize(buffer, m_bulletId);
         return buffer;
     }
 
     std::unique_ptr<BulletHitPacket> BulletHitPacket::deserialize(const std::vector<uint8_t> &data)
     {
-        size_t length;
         std::string bulletId;
-        size_t dataIndex = sizeof(PacketType);
+        PacketType type;
+        size_t size = data.size();
+        const uint8_t *indexPtr = data.data();
 
-        if (data.size() <= dataIndex)
-            throw IncompletePacketException("BulletHitPacket contains no data");
-        std::memcpy(&length, data.data() + dataIndex, sizeof(size_t));
-
-        dataIndex += sizeof(size_t);
-
-        if (data.size() != length + dataIndex)
-            throw IncompletePacketException("BulletHitPacket bulletId is wrongly sized");
-
-        bulletId.resize(length);
-        std::memcpy(bulletId.data(), data.data() + dataIndex, length);
-
+        type = Serializer::deserialize<PacketType>(indexPtr, size);
+        if (type != PacketType::BULLET_HIT)
+            throw InvalidPacketFormatException("BulletHitPacket should be of type PacketType::BULLET_HIT");
+        bulletId = Serializer::deserializeString(indexPtr, size);
         return std::make_unique<BulletHitPacket>(bulletId);
     }
 

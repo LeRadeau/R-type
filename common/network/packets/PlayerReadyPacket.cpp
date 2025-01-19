@@ -1,6 +1,7 @@
 #include "PlayerReadyPacket.hpp"
 #include <cstring>
 #include <memory>
+#include "network/Serializer.hpp"
 #include "network/exceptions/NetworkExceptions.hpp"
 
 namespace Network
@@ -13,41 +14,33 @@ namespace Network
     {
         return PacketType::PLAYER_READY;
     }
+
     std::vector<uint8_t> PlayerReadyPacket::serialize() const
     {
-        PacketType type = getType();
         std::vector<uint8_t> buffer;
+        PacketType type = getType();
         size_t length = m_username.size();
-        size_t dataIndex = sizeof(type);
 
         if (length == 0)
             throw InvalidPacketFormatException("PlayerReadyPacket should have a username");
-        buffer.resize(sizeof(type) + sizeof(length) + length);
-        std::memcpy(buffer.data(), &type, sizeof(type));
-        std::memcpy(buffer.data() + dataIndex, &length, sizeof(length));
-        dataIndex += sizeof(length);
-        std::memcpy(buffer.data() + dataIndex, m_username.data(), length);
+
+        Serializer::serialize(buffer, type);
+        Serializer::serialize(buffer, length);
+        Serializer::serialize(buffer, m_username);
         return buffer;
     }
 
     std::unique_ptr<PlayerReadyPacket> PlayerReadyPacket::deserialize(const std::vector<uint8_t> &data)
     {
-        size_t length;
+        size_t length = data.size();
+        const uint8_t *indexPtr = data.data();
         std::string username;
-        size_t dataIndex = sizeof(PacketType);
+        PacketType type;
 
-        if (data.size() <= dataIndex)
-            throw IncompletePacketException("PlayerReadyPacket contains no data");
-        std::memcpy(&length, data.data() + dataIndex, sizeof(size_t));
-
-        dataIndex += sizeof(size_t);
-
-        if (data.size() != length + dataIndex)
-            throw IncompletePacketException("PlayerReadyPacket username is wrongly sized");
-
-        username.resize(length);
-        std::memcpy(username.data(), data.data() + dataIndex, length);
-
+        type = Serializer::deserialize<PacketType>(indexPtr, length);
+        if (type != PacketType::PLAYER_READY)
+            throw InvalidPacketFormatException("PlayerReadyPacket should be of type PacketType::PLAYER_READY");
+        username = Serializer::deserializeString(indexPtr, length);
         return std::make_unique<PlayerReadyPacket>(username);
     }
 

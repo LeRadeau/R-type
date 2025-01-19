@@ -1,5 +1,6 @@
 #include "EnemyDeathPacket.hpp"
 #include <cstring>
+#include "network/Serializer.hpp"
 #include "network/exceptions/NetworkExceptions.hpp"
 
 namespace Network
@@ -19,36 +20,26 @@ namespace Network
         PacketType type = getType();
         std::vector<uint8_t> buffer;
         size_t length = m_enemyId.size();
-        size_t dataIndex = sizeof(type);
 
         if (length == 0)
             throw InvalidPacketFormatException("EnemyDeathPacket should have an enemyId");
 
-        buffer.resize(sizeof(type) + sizeof(length) + length);
-        std::memcpy(buffer.data(), &type, sizeof(type));
-        std::memcpy(buffer.data() + dataIndex, &length, sizeof(length));
-        dataIndex += sizeof(length);
-        std::memcpy(buffer.data() + dataIndex, m_enemyId.data(), length);
+        Serializer::serialize(buffer, type);
+        Serializer::serialize(buffer, m_enemyId);
         return buffer;
     }
 
     std::unique_ptr<EnemyDeathPacket> EnemyDeathPacket::deserialize(const std::vector<uint8_t> &data)
     {
-        size_t length;
         std::string enemyId;
-        size_t dataIndex = sizeof(PacketType);
+        PacketType type;
+        size_t size = data.size();
+        const uint8_t *indexPtr = data.data();
 
-        if (data.size() <= dataIndex)
-            throw IncompletePacketException("EnemyDeathPacket contains no data");
-        std::memcpy(&length, data.data() + dataIndex, sizeof(size_t));
-
-        dataIndex += sizeof(size_t);
-
-        if (data.size() != length + dataIndex)
-            throw IncompletePacketException("EnemyDeathPacket enemyId is wrongly sized");
-
-        enemyId.resize(length);
-        std::memcpy(enemyId.data(), data.data() + dataIndex, length);
+        type = Serializer::deserialize<PacketType>(indexPtr, size);
+        if (type != PacketType::ENEMY_DEATH)
+            throw InvalidPacketFormatException("EnemyDeathPacket should be of type PacketType::ENEMY_DEATH");
+        enemyId = Serializer::deserializeString(indexPtr, size);
 
         return std::make_unique<EnemyDeathPacket>(enemyId);
     }
