@@ -161,7 +161,7 @@ void PacketHandler::broadcastGameOver()
 
 void PacketHandler::broadcastWait()
 {
-    auto packet = std::make_shared<Network::WaitingUpdatePacket>();
+    auto packet = std::make_shared<Network::WaitingUpdatePacket>(m_clients.size());
     for (const auto &i : m_clients) {
         const auto &client = i.second;
         m_networkManager.sendPacket(packet, client.socket);
@@ -206,7 +206,7 @@ void PacketHandler::handleConnect(const Network::NetworkManager::NetworkPacketIn
         auto errorPacket = std::make_shared<Network::ErrorPacket>("PacketHandler is full");
         m_networkManager.sendPacket(errorPacket, packet.socket.value());
     }
-    m_clients[newUsername] = ClientNetworking(packet.socket.value(), connectPacket->getPort());
+    m_clients.emplace(newUsername, ClientNetworking(packet.socket.value(), connectPacket->getPort()));
     notify(PlayerCreationNotification(newUsername));
 }
 

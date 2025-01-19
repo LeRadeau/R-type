@@ -29,7 +29,7 @@ void Server::run()
 
     m_networkManager.listen(m_ip, m_udpPort, m_tcpPort);
 
-    std::thread(&PacketHandler::handleIncomingPackets, this, running_).detach();
+    std::thread(&PacketHandler::handleIncomingPackets, &m_packetHandler, std::ref(running_)).detach();
 
     while (running_) {
         if (m_launchGame == false) {

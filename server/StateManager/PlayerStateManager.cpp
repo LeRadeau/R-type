@@ -7,7 +7,7 @@ void PlayerStateManager::addPlayer(const PlayerState &player)
 {
     if (m_players.find(player.getUsername()) != m_players.end())
         return;
-    m_players[player.getUsername()] = player;
+    m_players.emplace(player.getUsername(), player);
 }
 void PlayerStateManager::removePlayer(const std::string &playerId)
 {

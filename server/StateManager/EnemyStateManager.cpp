@@ -14,7 +14,7 @@ void EnemyStateManager::addEnemy(const EnemyState &enemy)
 {
     if (m_enemies.find(enemy.getId()) != m_enemies.end())
         return;
-    m_enemies[enemy.getId()] = enemy;
+    m_enemies.emplace(enemy.getId(), enemy);
 }
 
 void EnemyStateManager::removeEnemy(const std::string &enemyId)

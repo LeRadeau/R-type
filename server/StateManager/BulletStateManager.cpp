@@ -7,7 +7,7 @@ void BulletStateManager::addBullet(const BulletState &bullet)
 {
     if (m_bullets.find(bullet.getId()) != m_bullets.end())
         return;
-    m_bullets[bullet.getId()] = bullet;
+    m_bullets.emplace(bullet.getId(), bullet);
 }
 
 void BulletStateManager::removeBullet(const std::string &bulletId)

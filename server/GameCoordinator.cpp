@@ -66,7 +66,8 @@ void GameCoordinator::handleBulletCollisions()
                 if (!player.getIsAlive())
                     continue;
                 if (checkCircleCollision(bulletX, bulletY, bulletRadius, playerX, playerY, clientRadius)) {
-                    batch.addNotification(std::make_shared<BroadcastBulletHitNotification>(bullet.getId()));
+                    batch.addNotification(
+                        std::make_shared<BroadcastBulletHitNotification>(bullet.getId(), player.getUsername()));
                     PlayerStateUpdate update;
                     update.health = player.getHealth() - 10;
                     batch.addNotification(std::make_shared<PlayerStateNotification>(player.getUsername(), update));
@@ -83,7 +84,8 @@ void GameCoordinator::handleBulletCollisions()
                 if (!enemy.isAlive())
                     continue;
                 if (checkCircleCollision(bulletX, bulletY, bulletRadius, enemyX, enemyY, enemyRadius)) {
-                    batch.addNotification(std::make_shared<BroadcastBulletHitNotification>(bullet.getId()));
+                    batch.addNotification(
+                        std::make_shared<BroadcastBulletHitNotification>(bullet.getId(), enemy.getId()));
                     EnemyStateUpdate update;
                     update.health = enemy.getHealth() - 10;
                     batch.addNotification(std::make_shared<EnemyStateNotification>(enemy.getId(), update));
