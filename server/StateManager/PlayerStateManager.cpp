@@ -1,5 +1,6 @@
 #include "PlayerStateManager.hpp"
 #include "Notification/BroadcastBulletHitNotification.hpp"
+#include "Notification/PlayerCreationNotification.hpp"
 #include "Notification/PlayerDeathNotification.hpp"
 #include "Notification/PlayerStateNotification.hpp"
 
@@ -19,6 +20,11 @@ void PlayerStateManager::removePlayer(const std::string &playerId)
 
 void PlayerStateManager::onNotify(const Notification &notification)
 {
+    if (const auto *playerCreation = dynamic_cast<const PlayerCreationNotification *>(&notification)) {
+        const auto &id = playerCreation->getUsername();
+        if (m_players.find(id) == m_players.end())
+            m_players.emplace(id, id);
+    }
     if (const auto *stateUpdate = dynamic_cast<const PlayerStateNotification *>(&notification)) {
         auto player = m_players.find(stateUpdate->getPlayerId());
         if (player != m_players.end()) {
