@@ -62,6 +62,7 @@ void MessageSystem::update(EntityManager &entityManager, Network::NetworkManager
             case Network::Packet::PacketType::GAME_OVER: handleGameOver(entityManager); break;
             default: break;
         }
+        packet = networkManager.getNextPacket();
     }
 }
 
