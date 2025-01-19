@@ -8,9 +8,9 @@
 namespace EventCallbacks
 {
     void ButtonHandlePlay(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event,
-        std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager);
+        std::unique_ptr<PlayerEntity> &player, Network::NetworkManager &networkManager);
     void ButtonLaunchGame(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event,
-        std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager);
+        std::unique_ptr<PlayerEntity> &player, Network::NetworkManager &networkManager);
     void ButtonHandleQuit(
         EntityManager &entityManager, Entity &entity, sf::RenderWindow &window, const sf::Event &event);
 

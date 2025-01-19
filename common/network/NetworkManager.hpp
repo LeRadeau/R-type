@@ -61,6 +61,7 @@ namespace Network
 
         std::optional<NetworkPacketInfo> getNextPacket();
         std::optional<Notification> getNextNotification();
+        unsigned short getUdpPort() const;
 
         void sendPacket(const std::shared_ptr<Packet> &packet, const sf::IpAddress &address, unsigned short port);
 
@@ -83,7 +84,7 @@ namespace Network
 
         Mode m_mode;
         sf::UdpSocket m_udpSocket;
-        sf::TcpSocket m_tcpSocket;
+        std::shared_ptr<sf::TcpSocket> m_tcpSocket;
         sf::TcpListener m_tcpListener;
         TSQueue<NetworkPacketInfo> m_incomingPackets;
         TSQueue<NetworkPacketInfo> m_outGoingPackets;

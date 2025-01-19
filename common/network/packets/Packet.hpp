@@ -31,4 +31,5 @@ namespace Network
         virtual std::vector<uint8_t> serialize() const = 0;
         static std::unique_ptr<Packet> deserialize(const std::vector<uint8_t> &);
     };
+    std::ostream &operator<<(std::ostream &os, Packet::PacketType type);
 } // namespace Network

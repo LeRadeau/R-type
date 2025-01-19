@@ -1,8 +1,8 @@
 #pragma once
 #include "ecs/EntityManager.hpp"
-#include "ecs/NetworkManager.hpp"
+#include "network//NetworkManager.hpp"
 
 class MovementSystem {
   public:
-    void update(EntityManager &entityManager, NetworkManager &networkManager, float deltaTime, bool focus);
+    void update(EntityManager &entityManager, Network::NetworkManager &networkManager, float deltaTime, bool focus);
 };

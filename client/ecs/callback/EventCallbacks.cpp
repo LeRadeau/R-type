@@ -6,11 +6,13 @@
 #include "ecs/entity/MenuEntity.hpp"
 #include "ecs/entity/PlayerEntity.hpp"
 #include "ecs/entity/TextFieldEntity.hpp"
+#include "network/packets/PlayerConnectPacket.hpp"
+#include "network/packets/PlayerReadyPacket.hpp"
 
 namespace EventCallbacks
 {
     void ButtonLaunchGame(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event,
-        std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
+        std::unique_ptr<PlayerEntity> &player, Network::NetworkManager &networkManager)
     {
         if (!window.hasFocus())
             return;
@@ -23,12 +25,11 @@ namespace EventCallbacks
         menu.closeLobby();
         std::string username = menu.getUsername();
         if (username != "" && !player) {
-            networkManager.send(MessageType::READY, username);
-            std::cout << "Client: Send MessageType::READY to server " << std::endl;
+            networkManager.sendPacket(std::make_shared<Network::PlayerReadyPacket>(username));
         }
     }
     void ButtonHandlePlay(MenuEntity &menu, Entity &entity, sf::RenderWindow &window, const sf::Event &event,
-        std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
+        std::unique_ptr<PlayerEntity> &player, Network::NetworkManager &networkManager)
     {
         if (!window.hasFocus())
             return;
@@ -43,12 +44,17 @@ namespace EventCallbacks
         std::string ipAddress = menu.getIpAdress();
         if (ipAddress == "")
             return;
-        networkManager.setRemoteIp(ipAddress);
+        try {
+            networkManager.connect(ipAddress, 54000, 0);
+            networkManager.start();
 
-        if (username != "" && !player) {
-            networkManager.send(MessageType::CONNECT, username);
-            std::cout << "Client: Send MessageType::CONNECT to server " << std::endl;
-            menu.openLobby();
+            if (username != "" && !player) {
+                networkManager.sendPacket(
+                    std::make_shared<Network::PlayerConnectPacket>(username, networkManager.getUdpPort()));
+                menu.openLobby();
+            }
+        } catch (std::exception &e) {
+            std::cerr << e.what() << std::endl;
         }
     }
 

@@ -1,6 +1,8 @@
 #include "ParallaxSystem.hpp"
+#include "ecs/component/ParallaxComponent.hpp"
 
-void ParallaxSystem::update(EntityManager &entityManager, float deltaTime) {
+void ParallaxSystem::update(EntityManager &entityManager, float deltaTime)
+{
     for (auto &entity : entityManager.entities) {
         auto *parallax = entity->getComponent<ParallaxComponent>();
 
@@ -22,7 +24,8 @@ void ParallaxSystem::update(EntityManager &entityManager, float deltaTime) {
     }
 }
 
-void ParallaxSystem::render(sf::RenderWindow &window, EntityManager &entityManager) {
+void ParallaxSystem::render(sf::RenderWindow &window, EntityManager &entityManager)
+{
     for (auto &entity : entityManager.entities) {
         auto *parallax = entity->getComponent<ParallaxComponent>();
 
@@ -30,8 +33,10 @@ void ParallaxSystem::render(sf::RenderWindow &window, EntityManager &entityManag
             const auto textureSize = parallax->texture.getSize();
 
             // Render multiple tiles to fill the screen
-            for (float x = parallax->position.x; x < static_cast<float>(window.getSize().x); x += textureSize.x * parallax->scale.x) {
-                for (float y = parallax->position.y; y < static_cast<float>(window.getSize().y); y += textureSize.y * parallax->scale.y) {
+            for (float x = parallax->position.x; x < static_cast<float>(window.getSize().x);
+                 x += textureSize.x * parallax->scale.x) {
+                for (float y = parallax->position.y; y < static_cast<float>(window.getSize().y);
+                     y += textureSize.y * parallax->scale.y) {
                     parallax->sprite.setPosition(x, y);
                     window.draw(parallax->sprite);
                 }

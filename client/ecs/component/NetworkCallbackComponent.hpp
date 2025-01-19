@@ -2,18 +2,18 @@
 
 #include <functional>
 #include "ecs/component/AComponent.hpp"
-#include "network_types.hpp"
+#include "network/packets/Packet.hpp"
 
 struct NetworkCallbackComponent : public AComponent {
-    using networkCallback = std::function<void(const char *&)>;
-    std::unordered_map<MessageType, networkCallback> callbacks;
+    using networkCallback = std::function<void(const std::shared_ptr<Network::Packet> &)>;
+    std::unordered_map<Network::Packet::PacketType, networkCallback> callbacks;
 
     NetworkCallbackComponent()
     {
     }
 
-    void setCallback(MessageType type, networkCallback fun)
+    void setCallback(Network::Packet::PacketType type, networkCallback fun)
     {
-        callbacks[type] = fun;
+        callbacks.emplace(type, fun);
     }
 };
