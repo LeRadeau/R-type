@@ -52,8 +52,10 @@ namespace Network
         m_outGoingPackets.push(NetworkPacketInfo(packet, NetworkPacketInfo::Protocol::UDP, remote, udpPort));
     }
 
-    void NetworkManager::sendPacket(const std::shared_ptr<Packet> &packet, std::shared_ptr<sf::TcpSocket> socket)
+    void NetworkManager::sendPacket(const std::shared_ptr<Packet> &packet, const std::shared_ptr<sf::TcpSocket> &socket)
     {
+        if (!socket || socket->getRemotePort() == 0)
+            throw NetworkManagerException("TCP socket is gone: Mode::SERVER");
         std::cout << "Sending TCP packet " << packet->getType() << " to " << socket->getRemoteAddress() << ":"
                   << socket->getRemotePort() << std::endl;
         m_outGoingPackets.push(NetworkPacketInfo(packet, NetworkPacketInfo::Protocol::TCP, socket));
@@ -61,6 +63,8 @@ namespace Network
 
     void NetworkManager::sendPacket(const std::shared_ptr<Packet> &packet)
     {
+        if (!m_tcpSocket || m_tcpSocket->getRemotePort() == 0)
+            throw NetworkManagerException("TCP socket is gone: Mode::CLIENT");
         std::cout << "Sending TCP packet " << packet->getType() << " to " << m_tcpSocket->getRemoteAddress() << ":"
                   << m_tcpSocket->getRemotePort() << std::endl;
         if (m_mode != Mode::CLIENT)
@@ -127,6 +131,8 @@ namespace Network
             auto clientSocket = std::make_shared<sf::TcpSocket>();
             if (selector.wait(sf::seconds(1)) && selector.isReady(m_tcpListener)
                 && m_tcpListener.accept(*clientSocket) == sf::Socket::Done) {
+                std::cout << "Got new connection: " << clientSocket->getRemoteAddress() << ":"
+                          << clientSocket->getRemotePort() << std::endl;
                 std::thread(&NetworkManager::tcpReceiveThread, this, clientSocket).detach();
             }
         }

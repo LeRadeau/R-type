@@ -66,7 +66,7 @@ namespace Network
         void sendPacket(const std::shared_ptr<Packet> &packet, const sf::IpAddress &address, unsigned short port);
 
         // Server specific
-        void sendPacket(const std::shared_ptr<Packet> &packet, std::shared_ptr<sf::TcpSocket> socket);
+        void sendPacket(const std::shared_ptr<Packet> &packet, const std::shared_ptr<sf::TcpSocket> &socket);
         void listen(const sf::IpAddress &ip, unsigned short udpPort, unsigned short tcpPort);
 
         // Client specific
