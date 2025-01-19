@@ -1,0 +1,35 @@
+site_name: R-Type Communication Protocol
+nav:
+  - Home: index.md
+  - Overview:
+      - Introduction: overview/introduction.md
+      - Protocol Overview: overview/protocol_overview.md
+  - Core Components:
+      - TSQueue: components/tsqueue.md
+      - NetworkManager: components/network_manager.md
+      - Packet: components/packet.md
+      - Network Exceptions: components/network_exceptions.md
+  - Network Packets:
+      - BulletHitPacket: packets/bullet_hit_packet.md
+      - BulletsUpdatePacket: packets/bullets_update_packet.md
+      - EnemiesUpdatePacket: packets/enemies_update_packet.md
+      - EnemyDeathPacket: packets/enemy_death_packet.md
+      - ErrorPacket: packets/error_packet.md
+      - GameOverPacket: packets/game_over_packet.md
+      - GameStartPacket: packets/game_start_packet.md
+      - PlayerConnectPacket: packets/player_connect_packet.md
+      - PlayerDeathPacket: packets/player_death_packet.md
+      - PlayerDisconnectPacket: packets/player_disconnect_packet.md
+      - PlayerMovePacket: packets/player_move_packet.md
+      - PlayerReadyPacket: packets/player_ready_packet.md
+      - PlayerShootPacket: packets/player_shoot_packet.md
+      - PlayersUpdatePacket: packets/players_update_packet.md
+      - WaitingUpdatePacket: packets/waiting_update_packet.md
+  - Server:
+      - Architecture: server/architecture.md
+      - Game Loop: server/game_loop.md
+      - Message Handling: server/message_handling.md
+      - Broadcasting: server/broadcasting.md
+  - Examples:
+      - Message Flow: examples/message_flow.md
+      - Error Handling: examples/error_handling.md
