@@ -4,14 +4,14 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <vector>
 #include "ButtonEntity.hpp"
-#include "ecs/NetworkManager.hpp"
 #include "ecs/entity/PlayerEntity.hpp"
 #include "ecs/entity/TextFieldEntity.hpp"
+#include "network/NetworkManager.hpp"
 
 class MenuEntity {
   public:
     MenuEntity(EntityManager &entityManager, sf::RenderWindow &window, const sf::Font &font,
-        std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager);
+        std::unique_ptr<PlayerEntity> &player, Network::NetworkManager &networkManager);
 
     Entity &getEntity();
     void toggle();
@@ -26,7 +26,7 @@ class MenuEntity {
   private:
     Entity &entity_;
     EntityManager &entityManager_;
-    NetworkManager &networkManager_;
+    Network::NetworkManager &networkManager_;
     sf::RenderWindow &window_;
     const sf::Font &font_;
     std::vector<std::unique_ptr<ButtonEntity>> buttons_;

@@ -7,9 +7,10 @@
 #include "ecs/callback/NetworkCallbacks.hpp"
 #include "ecs/component/NetworkCallbackComponent.hpp"
 #include "ecs/component/TextComponent.hpp"
+#include "network/packets/Packet.hpp"
 
 MenuEntity::MenuEntity(EntityManager &entityManager, sf::RenderWindow &window, const sf::Font &font,
-    std::unique_ptr<PlayerEntity> &player, NetworkManager &networkManager)
+    std::unique_ptr<PlayerEntity> &player, Network::NetworkManager &networkManager)
     : entity_(entityManager.createEntity()), entityManager_(entityManager), networkManager_(networkManager),
       window_(window), font_(font), player_(player), entityText_(entityManager.createEntity())
 {
@@ -40,10 +41,11 @@ void MenuEntity::openLobby()
 
     entityText_.addComponent<TextComponent>("?/4 players", font_, positionText, sf::Color::White);
     auto &comp = entityText_.addComponent<NetworkCallbackComponent>();
-    comp.setCallback(MessageType::WAIT, [this](const char *&packet) {
-        NetworkCallbacks::onWaitUpdateClientNbr(packet, entityText_);
-    });
-    comp.setCallback(MessageType::START_GAME, [this](const char *&) {
+    comp.setCallback(
+        Network::Packet::PacketType::WAITING_UPDATE, [this](const std::shared_ptr<Network::Packet> &packet) {
+            NetworkCallbacks::onWaitUpdateClientNbr(packet, entityText_);
+        });
+    comp.setCallback(Network::Packet::PacketType::GAME_START, [this](const std::shared_ptr<Network::Packet> &) {
         closeLobby();
     });
     buttons_.push_back(std::make_unique<ButtonEntity>(entityManager_, size, position, "LANCER LA PARTIE", font_));

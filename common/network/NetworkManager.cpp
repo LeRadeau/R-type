@@ -81,6 +81,11 @@ namespace Network
         return m_notifications.pop();
     }
 
+    unsigned short NetworkManager::getUdpPort() const
+    {
+        return m_udpSocket.getLocalPort();
+    }
+
     void NetworkManager::listen(const sf::IpAddress &ip, unsigned short udpPort, unsigned short tcpPort)
     {
         if (m_mode != Mode::SERVER)

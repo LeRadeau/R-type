@@ -6,7 +6,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 #include "ecs/EntityManager.hpp"
-#include "ecs/NetworkManager.hpp"
+#include "ecs/component/ParallaxComponent.hpp"
 #include "ecs/entity/MenuEntity.hpp"
 #include "ecs/entity/PlayerEntity.hpp"
 #include "ecs/system/EventHandlingSystem.hpp"
@@ -18,8 +18,7 @@
 #include "ecs/system/RenderSystem.hpp"
 #include "ecs/system/SelectionSystem.hpp"
 #include "ecs/system/SoundSystem.hpp"
-
-#include "network_types.hpp"
+#include "network/packets/PlayerDisconnectPacket.hpp"
 
 static void loadParallax(EntityManager &entityManager)
 {
@@ -64,7 +63,7 @@ int main(int argc, char *const *argv)
     std::unique_ptr<PlayerEntity> player;
     loadParallax(entityManager);
 
-    NetworkManager networkManager(serverIp, 54000);
+    Network::NetworkManager networkManager(Network::NetworkManager::Mode::CLIENT);
     MenuEntity menu(entityManager, window, font, player, networkManager);
     sf::Music backgroundMusic;
 
@@ -107,6 +106,6 @@ int main(int argc, char *const *argv)
         renderSystem.update(entityManager, menu.getUsername());
         window.display();
     }
-    networkManager.send(MessageType::GOODBYE, menu.getUsername());
+    networkManager.sendPacket(std::make_shared<Network::PlayerDisconnectPacket>(menu.getUsername()));
     return 0;
 }

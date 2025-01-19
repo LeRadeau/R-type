@@ -1,14 +1,15 @@
 #include "MovementSystem.hpp"
-#include "Serializer.hpp"
 #include "ecs/component/BulletIdComponent.hpp"
 #include "ecs/component/InputComponent.hpp"
 #include "ecs/component/PositionComponent.hpp"
 #include "ecs/component/SoundComponent.hpp"
 #include "ecs/component/UsernameComponent.hpp"
 #include "ecs/component/VelocityComponent.hpp"
-#include "network_types.hpp"
+#include "network/packets/PlayerMovePacket.hpp"
+#include "network/packets/PlayerShootPacket.hpp"
 
-void MovementSystem::update(EntityManager &entityManager, NetworkManager &networkManager, float deltaTime, bool focus)
+void MovementSystem::update(
+    EntityManager &entityManager, Network::NetworkManager &networkManager, float deltaTime, bool focus)
 {
     static float timer = 0.0f;
     static float bulletTimer = 0.0f;
@@ -38,12 +39,9 @@ void MovementSystem::update(EntityManager &entityManager, NetworkManager &networ
 
             // Send position update to server
             if (timer > 0.1f) {
-                std::string buffer;
-                Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::MOVE));
-                Serializer::serialize(buffer, username->username);
-                Serializer::serialize(buffer, position->position.x);
-                Serializer::serialize(buffer, position->position.y);
-                networkManager.send(buffer);
+                if (networkManager.isRunning())
+                    networkManager.sendPacket(std::make_shared<Network::PlayerMovePacket>(
+                        username->username, position->position.x, position->position.y));
                 timer = 0.0f;
             }
             sound->sound.setPitch(1);
@@ -54,12 +52,9 @@ void MovementSystem::update(EntityManager &entityManager, NetworkManager &networ
 
         // Shooting logic
         if (input && position && input->spaceBar && bulletTimer > 0.3f && focus) {
-            std::string buffer;
-            Serializer::serialize(buffer, static_cast<uint8_t>(MessageType::SHOOT));
-            Serializer::serialize(buffer, username->username);
-            Serializer::serialize(buffer, position->position.x);
-            Serializer::serialize(buffer, position->position.y);
-            networkManager.send(buffer);
+            if (networkManager.isRunning())
+                networkManager.sendPacket(std::make_shared<Network::PlayerShootPacket>(
+                    username->username, position->position.x, position->position.y));
             bulletTimer = 0.0f;
         }
 

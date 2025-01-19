@@ -1,6 +1,6 @@
 #include "MessageSystem.hpp"
 #include <iostream>
-#include "Serializer.hpp"
+#include <memory>
 #include "ecs/component/BulletIdComponent.hpp"
 #include "ecs/component/EnnemyIdComponent.hpp"
 #include "ecs/component/HealthComponent.hpp"
@@ -15,21 +15,29 @@
 #include "ecs/entity/AllyEntity.hpp"
 #include "ecs/entity/BydosEntity.hpp"
 #include "ecs/entity/PlayerEntity.hpp"
-#include "network_types.hpp"
+#include "network/NetworkManager.hpp"
+#include "network/packets/BulletHitPacket.hpp"
+#include "network/packets/BulletsUpdatePacket.hpp"
+#include "network/packets/EnemiesUpdatePacket.hpp"
+#include "network/packets/EnemyDeathPacket.hpp"
+#include "network/packets/ErrorPacket.hpp"
+#include "network/packets/PlayerDeathPacket.hpp"
+#include "network/packets/PlayersUpdatePacket.hpp"
 
 MessageSystem::MessageSystem(sf::Font &font) : font_(font)
 {
 }
 
-void MessageSystem::update(EntityManager &entityManager, NetworkManager &networkManager, std::string localUsername,
-    std::unique_ptr<PlayerEntity> &player)
+void MessageSystem::update(EntityManager &entityManager, Network::NetworkManager &networkManager,
+    std::string localUsername, std::unique_ptr<PlayerEntity> &player)
 {
-    auto &receivedMessages = networkManager.getReceivedMessages();
+    if (!networkManager.isRunning())
+        return;
+    auto packet = networkManager.getNextPacket();
 
-    while (!receivedMessages.empty()) {
-        auto message = receivedMessages.pop();
-        const char *ptr = message.data();
-        auto messageType = static_cast<MessageType>(Serializer::deserialize<uint8_t>(ptr));
+    while (packet.has_value()) {
+        auto message = packet.value();
+        auto messageType = message.packet->getType();
         // Check for callbacks loop
         for (size_t i = 0; i < entityManager.entities.size(); i++) {
             auto &currentEntity = entityManager.entities[i];
@@ -38,18 +46,20 @@ void MessageSystem::update(EntityManager &entityManager, NetworkManager &network
                 || networkCallbackComponent->callbacks.find(messageType) == networkCallbackComponent->callbacks.end()) {
                 continue;
             }
-            networkCallbackComponent->callbacks.at(messageType)(ptr);
+            networkCallbackComponent->callbacks.at(messageType)(message.packet);
         }
         switch (messageType) {
-            case MessageType::START_GAME: handleLaunchGame(entityManager, player, localUsername); break;
-            case MessageType::UPDATE_CLIENTS: handleUpdateClients(entityManager, ptr, localUsername); break;
-            case MessageType::UPDATE_BULLETS: handleUpdateBullets(entityManager, ptr); break;
-            case MessageType::ERROR: handleError(ptr); break;
-            case MessageType::UPDATE_ENEMIES: handleUpdateEnemies(entityManager, ptr); break;
-            case MessageType::BULLET_HIT: handleBulletHit(entityManager, ptr); break;
-            case MessageType::ENEMY_DEATH: handleEnemyDeath(entityManager, ptr); break;
-            case MessageType::PLAYER_DEATH: handlePlayerDeath(entityManager, ptr); break;
-            case MessageType::GAME_OVER: handleGameOver(entityManager); break;
+            case Network::Packet::PacketType::GAME_START: handleLaunchGame(entityManager, player, localUsername); break;
+            case Network::Packet::PacketType::PLAYERS_UPDATE:
+                handleUpdateClients(entityManager, packet->packet, localUsername);
+                break;
+            case Network::Packet::PacketType::BULLETS_UPDATE: handleUpdateBullets(entityManager, packet->packet); break;
+            case Network::Packet::PacketType::ERROR: handleError(packet->packet); break;
+            case Network::Packet::PacketType::ENEMIES_UPDATE: handleUpdateEnemies(entityManager, packet->packet); break;
+            case Network::Packet::PacketType::BULLET_HIT: handleBulletHit(entityManager, packet->packet); break;
+            case Network::Packet::PacketType::ENEMY_DEATH: handleEnemyDeath(entityManager, packet->packet); break;
+            case Network::Packet::PacketType::PLAYER_DEATH: handlePlayerDeath(entityManager, packet->packet); break;
+            case Network::Packet::PacketType::GAME_OVER: handleGameOver(entityManager); break;
             default: break;
         }
     }
@@ -64,15 +74,20 @@ void MessageSystem::handleLaunchGame(
 }
 
 void MessageSystem::handleUpdateClients(
-    EntityManager &entityManager, const char *&ptr, const std::string &localUsername)
+    EntityManager &entityManager, const std::shared_ptr<Network::Packet> &packet, const std::string &localUsername)
 {
-    auto numClients = Serializer::deserialize<uint32_t>(ptr);
-    for (uint32_t i = 0; i < numClients; ++i) {
-        auto username = Serializer::deserializeString(ptr);
-        auto x = Serializer::deserialize<float>(ptr);
-        auto y = Serializer::deserialize<float>(ptr);
-        auto health = Serializer::deserialize<int>(ptr);
-        auto score = Serializer::deserialize<int>(ptr);
+    auto updatePacket = std::dynamic_pointer_cast<Network::PlayersUpdatePacket>(packet);
+
+    if (!updatePacket)
+        return;
+    const auto &data = updatePacket->getData();
+    for (uint32_t i = 0; i < data.size(); ++i) {
+        auto username = data[i].username;
+        auto x = data[i].x;
+        auto y = data[i].y;
+        auto health = data[i].health;
+        auto score = data[i].score;
+
         Entity *clientEntity = nullptr;
 
         for (auto &entity : entityManager.entities) {
@@ -100,15 +115,19 @@ void MessageSystem::handleUpdateClients(
     }
 }
 
-void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char *&ptr)
+void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const std::shared_ptr<Network::Packet> &packet)
 {
-    auto numBullets = Serializer::deserialize<uint32_t>(ptr);
-    for (uint32_t i = 0; i < numBullets; ++i) {
-        auto id = Serializer::deserializeString(ptr);
-        float x = Serializer::deserialize<float>(ptr);
-        float y = Serializer::deserialize<float>(ptr);
-        float vx = Serializer::deserialize<float>(ptr);
-        float vy = Serializer::deserialize<float>(ptr);
+    auto updatePacket = std::dynamic_pointer_cast<Network::BulletsUpdatePacket>(packet);
+
+    if (!updatePacket)
+        return;
+    const auto &data = updatePacket->getData();
+    for (uint32_t i = 0; i < data.size(); ++i) {
+        auto id = data[i].id;
+        float x = data[i].x;
+        float y = data[i].y;
+        float vx = data[i].vx;
+        float vy = data[i].vy;
 
         Entity *bulletEntity = nullptr;
 
@@ -131,20 +150,27 @@ void MessageSystem::handleUpdateBullets(EntityManager &entityManager, const char
     }
 }
 
-void MessageSystem::handleError(const char *&ptr)
+void MessageSystem::handleError(const std::shared_ptr<Network::Packet> &packet)
 {
-    // Segfault problem
-    std::cerr << "Received error message from server: " << Serializer::deserializeString(ptr) << std::endl;
+    auto errorPacket = std::dynamic_pointer_cast<Network::ErrorPacket>(packet);
+    if (!errorPacket)
+        return;
+    const auto &data = errorPacket->getErrorMessage();
+    std::cerr << "Received error message from server: " << data << std::endl;
 }
 
-void MessageSystem::handleUpdateEnemies(EntityManager &entityManager, const char *&ptr)
+void MessageSystem::handleUpdateEnemies(EntityManager &entityManager, const std::shared_ptr<Network::Packet> &packet)
 {
-    auto numEnemies = Serializer::deserialize<uint32_t>(ptr);
-    for (uint32_t i = 0; i < numEnemies; ++i) {
-        auto id = Serializer::deserializeString(ptr);
-        float x = Serializer::deserialize<float>(ptr);
-        float y = Serializer::deserialize<float>(ptr);
-        int health = Serializer::deserialize<int>(ptr);
+    auto updatePacket = std::dynamic_pointer_cast<Network::EnemiesUpdatePacket>(packet);
+
+    if (!updatePacket)
+        return;
+    const auto &data = updatePacket->getData();
+    for (uint32_t i = 0; i < data.size(); ++i) {
+        auto id = data[i].id;
+        float x = data[i].x;
+        float y = data[i].y;
+        int health = data[i].health;
 
         Entity *enemyEntity = nullptr;
 
@@ -174,11 +200,15 @@ void MessageSystem::handleUpdateEnemies(EntityManager &entityManager, const char
     }
 }
 
-void MessageSystem::handleEnemyDeath(EntityManager &entityManager, const char *&ptr)
+void MessageSystem::handleEnemyDeath(EntityManager &entityManager, const std::shared_ptr<Network::Packet> &packet)
 {
-    auto entity = entityManager.entities.begin();
-    std::string enemyId = Serializer::deserializeString(ptr);
+    auto enemyDeathPacket = std::dynamic_pointer_cast<Network::EnemyDeathPacket>(packet);
 
+    if (!enemyDeathPacket)
+        return;
+
+    auto enemyId = enemyDeathPacket->getEnemyId();
+    auto entity = entityManager.entities.begin();
     while (entity != entityManager.entities.end()) {
         auto *enemyIdComponent = entity->get()->getComponent<EnnemyIdComponent>();
 
@@ -190,11 +220,14 @@ void MessageSystem::handleEnemyDeath(EntityManager &entityManager, const char *&
     entityManager.destroyMarkedEntities();
 }
 
-void MessageSystem::handlePlayerDeath(EntityManager &entityManager, const char *&ptr)
+void MessageSystem::handlePlayerDeath(EntityManager &entityManager, const std::shared_ptr<Network::Packet> &packet)
 {
-    auto entity = entityManager.entities.begin();
-    std::string username = Serializer::deserializeString(ptr);
+    auto playerDeathPacket = std::dynamic_pointer_cast<Network::PlayerDeathPacket>(packet);
+    if (!playerDeathPacket)
+        return;
 
+    const std::string &username = playerDeathPacket->getUsername();
+    auto entity = entityManager.entities.begin();
     while (entity != entityManager.entities.end()) {
         auto *usernameComponent = entity->get()->getComponent<UsernameComponent>();
 
@@ -214,11 +247,14 @@ void MessageSystem::handleGameOver(EntityManager &entityManager)
         .data.setCharacterSize(40);
 }
 
-void MessageSystem::handleBulletHit(EntityManager &entityManager, const char *&ptr)
+void MessageSystem::handleBulletHit(EntityManager &entityManager, const std::shared_ptr<Network::Packet> &packet)
 {
-    auto entity = entityManager.entities.begin();
-    std::string bulletId = Serializer::deserializeString(ptr);
+    auto bulletHitPacket = std::dynamic_pointer_cast<Network::BulletHitPacket>(packet);
+    if (!bulletHitPacket)
+        return;
 
+    const std::string &bulletId = bulletHitPacket->getBulletId();
+    auto entity = entityManager.entities.begin();
     while (entity != entityManager.entities.end()) {
         auto *bulletIdComponent = entity->get()->getComponent<BulletIdComponent>();
         if (bulletIdComponent && bulletIdComponent->id == bulletId) {
