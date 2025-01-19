@@ -1,6 +1,7 @@
 #include "NetworkManager.hpp"
 #include <SFML/Network/SocketSelector.hpp>
 #include <chrono>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include "network/exceptions/NetworkExceptions.hpp"
@@ -47,16 +48,21 @@ namespace Network
     void NetworkManager::sendPacket(
         const std::shared_ptr<Packet> &packet, const sf::IpAddress &remote, unsigned short udpPort)
     {
+        std::cout << "Sending UDP packet " << packet->getType() << " to " << remote << ":" << udpPort;
         m_outGoingPackets.push(NetworkPacketInfo(packet, NetworkPacketInfo::Protocol::UDP, remote, udpPort));
     }
 
     void NetworkManager::sendPacket(const std::shared_ptr<Packet> &packet, std::shared_ptr<sf::TcpSocket> socket)
     {
+        std::cout << "Sending TCP packet " << packet->getType() << " to " << socket->getRemoteAddress() << ":"
+                  << socket->getRemotePort() << std::endl;
         m_outGoingPackets.push(NetworkPacketInfo(packet, NetworkPacketInfo::Protocol::TCP, socket));
     }
 
     void NetworkManager::sendPacket(const std::shared_ptr<Packet> &packet)
     {
+        std::cout << "Sending TCP packet " << packet->getType() << " to " << m_tcpSocket->getRemoteAddress() << ":"
+                  << m_tcpSocket->getRemotePort() << std::endl;
         if (m_mode != Mode::CLIENT)
             throw std::logic_error("sendPacket can not be called without destination in server mode");
         m_outGoingPackets.push(NetworkPacketInfo(packet, NetworkPacketInfo::Protocol::TCP, m_tcpSocket));

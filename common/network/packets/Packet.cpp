@@ -53,6 +53,29 @@ namespace Network
                 break;
         }
     }
+
+    std::ostream &operator<<(std::ostream &os, Packet::PacketType type)
+    {
+        switch (type) {
+            case Packet::PacketType::ERROR: os << "ERROR"; break;
+            case Packet::PacketType::NONE: os << "NONE"; break;
+            case Packet::PacketType::GAME_START: os << "GAME_START"; break;
+            case Packet::PacketType::GAME_OVER: os << "GAME_OVER"; break;
+            case Packet::PacketType::PLAYER_CONNECT: os << "PLAYER_CONNECT"; break;
+            case Packet::PacketType::PLAYER_DISCONNECT: os << "PLAYER_DISCONNECT"; break;
+            case Packet::PacketType::PLAYER_READY: os << "PLAYER_READY"; break;
+            case Packet::PacketType::PLAYER_MOVE: os << "PLAYER_MOVE"; break;
+            case Packet::PacketType::PLAYER_SHOOT: os << "PLAYER_SHOOT"; break;
+            case Packet::PacketType::PLAYER_DEATH: os << "PLAYER_DEATH"; break;
+            case Packet::PacketType::PLAYERS_UPDATE: os << "PLAYERS_UPDATE"; break;
+            case Packet::PacketType::ENEMIES_UPDATE: os << "ENEMIES_UPDATE"; break;
+            case Packet::PacketType::BULLETS_UPDATE: os << "BULLETS_UPDATE"; break;
+            case Packet::PacketType::BULLET_HIT: os << "BULLET_HIT"; break;
+            case Packet::PacketType::ENEMY_DEATH: os << "ENEMY_DEATH"; break;
+            case Packet::PacketType::WAITING_UPDATE: break;
+        }
+        return os;
+    }
 } // namespace Network
 
 // TODO:
