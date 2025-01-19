@@ -14,7 +14,7 @@ Cette architecture permet une forte découplage entre les données et la logique
 
 ## Organisation du projet
 
-Voici la structure du dossier ECS mise à jour :
+Voici la structure du dossier ECS:
 
 ```
 client/ecs/
