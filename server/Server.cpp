@@ -31,6 +31,7 @@ void Server::init()
     m_networkManager.start();
     m_packetHandler.addObserver(this);
     std::thread(&PacketHandler::handleIncomingPackets, &m_packetHandler, std::ref(m_running)).detach();
+    /* std::thread(&PacketHandler::handleNetworkErrors, &m_packetHandler, std::ref(m_running)).detach(); */
 }
 
 void Server::run()

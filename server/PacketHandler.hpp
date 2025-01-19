@@ -15,6 +15,7 @@ class PacketHandler : public Subject, public Observer {
   public:
     explicit PacketHandler(Network::NetworkManager &networkManager);
     void handleIncomingPackets(const std::atomic<bool> &running_);
+    void handleNetworkErrors(const std::atomic<bool> &running);
 
     void onNotify(const Notification &notification) override;
     void broadcastClients(const PlayerStateManager &playerStateManager);

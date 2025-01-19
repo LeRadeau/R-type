@@ -1,4 +1,5 @@
 #include "PacketHandler.hpp"
+#include <iostream>
 #include "Notification/BroadcastBulletHitNotification.hpp"
 #include "Notification/BulletCreationNotification.hpp"
 #include "Notification/EnemyDeathNotification.hpp"
@@ -8,6 +9,7 @@
 #include "Notification/PlayerStateNotification.hpp"
 #include "State/PlayerState.hpp"
 #include "StateManager/PlayerStateManager.hpp"
+#include "network/exceptions/NetworkExceptions.hpp"
 #include "network/packets/BulletHitPacket.hpp"
 #include "network/packets/BulletsUpdatePacket.hpp"
 #include "network/packets/EnemiesUpdatePacket.hpp"
@@ -45,6 +47,30 @@ void PacketHandler::handleIncomingPackets(const std::atomic<bool> &running_)
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+}
+
+void PacketHandler::handleNetworkErrors(const std::atomic<bool> &running)
+{
+    while (running) {
+        auto notif = m_networkManager.getNextNotification();
+        while (notif.has_value()) {
+            auto unpackedNotif = notif.value();
+            if (dynamic_cast<const Network::ConnectionException *>(&unpackedNotif.message.value())) {
+                for (auto i = m_clients.begin(); i != m_clients.end();) {
+                    if (!i->second.socket || i->second.socket->getRemotePort() == 0) {
+                        std::cerr << "Error: " << i->first << " has closed the connection." << std::endl;
+                        i = m_clients.erase(i);
+                    } else {
+                        i++;
+                    }
+                }
+            }
+            if (dynamic_cast<const Network::TransmissionException *>(&unpackedNotif.message.value())) {
+                std::cerr << "Error: " << unpackedNotif.message->what() << std::endl;
+            }
+        }
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 void PacketHandler::onNotify(const Notification &notification)
