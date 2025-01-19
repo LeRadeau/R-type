@@ -21,6 +21,31 @@
 #include "network/packets/PlayerMovePacket.hpp"
 #include "network/packets/PlayerShootPacket.hpp"
 #include "network/packets/PlayersUpdatePacket.hpp"
+#include "network/packets/WaitingUpdatePacket.hpp"
+
+PacketHandler::PacketHandler(Network::NetworkManager &networkManager) : m_networkManager(networkManager)
+{
+}
+
+void PacketHandler::handleIncomingPackets(const std::atomic<bool> &running_)
+{
+    while (running_) {
+        auto packet = m_networkManager.getNextPacket();
+        while (packet.has_value()) {
+            auto unpackedPacket = packet.value();
+            switch (unpackedPacket.packet->getType()) {
+                case Network::Packet::PacketType::PLAYER_READY: handleReady(unpackedPacket); break;
+                case Network::Packet::PacketType::PLAYER_CONNECT: handleConnect(unpackedPacket); break;
+                case Network::Packet::PacketType::PLAYER_MOVE: handleMove(unpackedPacket); break;
+                case Network::Packet::PacketType::PLAYER_DISCONNECT: handleDisconnect(unpackedPacket); break;
+                case Network::Packet::PacketType::PLAYER_SHOOT: handleShoot(unpackedPacket); break;
+                default: break;
+            }
+            packet = m_networkManager.getNextPacket();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+}
 
 void PacketHandler::onNotify(const Notification &notification)
 {
@@ -128,6 +153,15 @@ void PacketHandler::broadcastEnnemies(const EnemyStateManager &enemyStateManager
 void PacketHandler::broadcastGameOver()
 {
     auto packet = std::make_shared<Network::GameOverPacket>();
+    for (const auto &i : m_clients) {
+        const auto &client = i.second;
+        m_networkManager.sendPacket(packet, client.socket);
+    }
+}
+
+void PacketHandler::broadcastWait()
+{
+    auto packet = std::make_shared<Network::WaitingUpdatePacket>();
     for (const auto &i : m_clients) {
         const auto &client = i.second;
         m_networkManager.sendPacket(packet, client.socket);

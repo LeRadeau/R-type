@@ -14,13 +14,14 @@
 class PacketHandler : public Subject, public Observer {
   public:
     explicit PacketHandler(Network::NetworkManager &networkManager);
-    void handleIncomingPackets();
+    void handleIncomingPackets(const std::atomic<bool> &running_);
 
     void onNotify(const Notification &notification) override;
     void broadcastClients(const PlayerStateManager &playerStateManager);
     void broadcastBullets(const BulletStateManager &bulletStateManager);
     void broadcastEnnemies(const EnemyStateManager &enemyStateManager);
     void broadcastGameOver();
+    void broadcastWait();
 
   private:
     void handleReady(const Network::NetworkManager::NetworkPacketInfo &packet);
