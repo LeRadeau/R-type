@@ -47,7 +47,8 @@ void Server::run()
         m_previousTime = currentTime;
         float deltaTimeSeconds = deltaTime.count();
 
-        m_coordinator.update(deltaTimeSeconds);
+        if (deltaTimeSeconds >= 16)
+            m_coordinator.update(deltaTimeSeconds);
 
         if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousClientBroadcastTime).count()
             >= 16) {

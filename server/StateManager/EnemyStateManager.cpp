@@ -55,7 +55,8 @@ void EnemyStateManager::update(float deltaTime)
             update.shootingCooldown = shootingCooldown;
 
             if (shootingCooldown <= 0) {
-                batch.addNotification(std::make_shared<BulletCreationNotification>("enemy", enemy.getPosition()));
+                batch.addNotification(
+                    std::make_shared<BulletCreationNotification>("enemy", enemy.getPosition(), sf::Vector2f(-500, 0)));
                 update.shootingCooldown = 2.0f;
             }
             enemy.applyUpdate(update);

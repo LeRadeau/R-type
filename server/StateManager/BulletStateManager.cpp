@@ -43,7 +43,7 @@ void BulletStateManager::onNotify(const Notification &notification)
         BulletState newBullet(bulletCreation->getBulletId(), bulletCreation->getShooterId());
         BulletStateUpdate update;
         update.position = bulletCreation->getPosition();
-        update.velocity = {-500.0f, 0.0f};
+        update.velocity = bulletCreation->getVelocity();
         newBullet.applyUpdate(update);
         addBullet(newBullet);
     }

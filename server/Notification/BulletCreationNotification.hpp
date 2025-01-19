@@ -5,8 +5,9 @@
 
 class BulletCreationNotification : public Notification {
   public:
-    explicit BulletCreationNotification(const std::string &shooterId, const sf::Vector2f &position)
-        : m_bulletId(generateBulletId(shooterId)), m_shooterId(shooterId), m_position(position)
+    explicit BulletCreationNotification(
+        const std::string &shooterId, const sf::Vector2f &position, const sf::Vector2f velocity)
+        : m_bulletId(generateBulletId(shooterId)), m_shooterId(shooterId), m_position(position), m_velocity(velocity)
     {
     }
 
@@ -25,6 +26,11 @@ class BulletCreationNotification : public Notification {
         return m_position;
     }
 
+    const sf::Vector2f &getVelocity() const
+    {
+        return m_velocity;
+    }
+
   private:
     static std::string generateBulletId(const std::string &username)
     {
@@ -38,4 +44,5 @@ class BulletCreationNotification : public Notification {
     std::string m_bulletId;
     std::string m_shooterId;
     sf::Vector2f m_position;
+    sf::Vector2f m_velocity;
 };

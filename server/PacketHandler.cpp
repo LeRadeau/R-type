@@ -257,5 +257,6 @@ void PacketHandler::handleShoot(const Network::NetworkManager::NetworkPacketInfo
     if (!playerShootPacket)
         return;
     sf::Vector2f position(playerShootPacket->getX(), playerShootPacket->getY());
-    notify(BulletCreationNotification(playerShootPacket->getUsername(), position));
+    sf::Vector2f velocity(500, 0);
+    notify(BulletCreationNotification(playerShootPacket->getUsername(), position, velocity));
 }
