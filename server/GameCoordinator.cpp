@@ -2,6 +2,7 @@
 #include <cmath>
 #include "Notification/BroadcastBulletHitNotification.hpp"
 #include "Notification/EnemyStateNotification.hpp"
+#include "Notification/Notification.hpp"
 #include "Notification/PlayerStateNotification.hpp"
 #include "State/EnemyState.hpp"
 
@@ -21,17 +22,15 @@ GameCoordinator::GameCoordinator(PacketHandler &packetHandler, PlayerStateManage
 
 void GameCoordinator::update(float deltaTime)
 {
-    m_packetHandler.handleIncomingPackets();
-
     m_playerStateManager.update(deltaTime);
     m_enemyStateManager.update(deltaTime);
     m_bulletStateManager.update(deltaTime);
 
     handleBulletCollisions();
+}
 
-    m_packetHandler.broadcastClients(m_playerStateManager);
-    m_packetHandler.broadcastEnnemies(m_enemyStateManager);
-    m_packetHandler.broadcastBullets(m_bulletStateManager);
+void GameCoordinator::onNotify(const Notification &notification)
+{
 }
 
 static bool checkCircleCollision(float x1, float y1, float r1, float x2, float y2, float r2)

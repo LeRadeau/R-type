@@ -10,6 +10,8 @@ class GameCoordinator : public Subject, public Observer {
     GameCoordinator(PacketHandler &, PlayerStateManager &, EnemyStateManager &, BulletStateManager &);
     void update(float deltaTime);
 
+    void onNotify(const Notification &notification) override;
+
   private:
     void handleBulletCollisions();
 
