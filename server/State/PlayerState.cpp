@@ -5,7 +5,7 @@ PlayerState::PlayerState(const std::string &name)
 {
 }
 
-PlayerState::PlayerState(const std::string &name, const PlayerStateUpdate &update)
+PlayerState::PlayerState(const std::string &name, const PlayerStateUpdate &update) : m_username(name)
 {
     applyUpdate(update);
 }

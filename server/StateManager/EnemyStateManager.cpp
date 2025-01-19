@@ -97,6 +97,7 @@ void EnemyStateManager::spawnEnemies(int level)
         position.y = static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f;
         lastSpawnX = position.x;
         sf::Vector2f velocity = {50, 15};
+        update.velocity = velocity;
         update.health = 100;
         update.shootingCooldown = static_cast<float>((rand() % 3) + 1);
         update.isAlive = true;

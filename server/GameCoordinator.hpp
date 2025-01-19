@@ -5,12 +5,10 @@
 #include "StateManager/EnemyStateManager.hpp"
 #include "StateManager/PlayerStateManager.hpp"
 
-class GameCoordinator : public Subject, public Observer {
+class GameCoordinator : public Subject {
   public:
     GameCoordinator(PacketHandler &, PlayerStateManager &, EnemyStateManager &, BulletStateManager &);
     void update(float deltaTime);
-
-    void onNotify(const Notification &notification) override;
 
   private:
     void handleBulletCollisions();

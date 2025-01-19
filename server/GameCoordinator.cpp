@@ -8,8 +8,8 @@
 
 GameCoordinator::GameCoordinator(PacketHandler &packetHandler, PlayerStateManager &playerStateManager,
     EnemyStateManager &enemyStateManager, BulletStateManager &bulletStateManager)
-    : m_packetHandler(packetHandler), m_playerStateManager(playerStateManager), m_enemyStateManager(enemyStateManager),
-      m_bulletStateManager(bulletStateManager)
+    : m_playerStateManager(playerStateManager), m_enemyStateManager(enemyStateManager),
+      m_bulletStateManager(bulletStateManager), m_packetHandler(packetHandler)
 {
     m_enemyStateManager.addObserver(&m_bulletStateManager);
     m_enemyStateManager.addObserver(&m_packetHandler);
@@ -27,10 +27,6 @@ void GameCoordinator::update(float deltaTime)
     m_bulletStateManager.update(deltaTime);
 
     handleBulletCollisions();
-}
-
-void GameCoordinator::onNotify(const Notification &notification)
-{
 }
 
 static bool checkCircleCollision(float x1, float y1, float r1, float x2, float y2, float r2)

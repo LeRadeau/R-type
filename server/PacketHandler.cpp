@@ -70,10 +70,6 @@ void PacketHandler::broadcastClients(const PlayerStateManager &playerStateManage
 {
     auto players = playerStateManager.getAllPlayers();
 
-    size_t totalClients = players.size();
-    size_t totalPacketSize = sizeof(Network::Packet::PacketType) + sizeof(totalClients)
-        + totalClients * sizeof(Network::PlayersUpdatePacket::ClientData);
-
     std::vector<Network::PlayersUpdatePacket::ClientData> data;
 
     for (auto &i : players) {
@@ -92,9 +88,6 @@ void PacketHandler::broadcastClients(const PlayerStateManager &playerStateManage
 void PacketHandler::broadcastBullets(const BulletStateManager &bulletStateManager)
 {
     auto bullets_ = bulletStateManager.getAllBullets();
-    size_t totalBullets = bullets_.size();
-    size_t totalPacketSize = sizeof(Network::Packet::PacketType) + sizeof(totalBullets)
-        + totalBullets * sizeof(Network::BulletsUpdatePacket::BulletData);
     std::vector<Network::BulletsUpdatePacket::BulletData> data;
     size_t packetSize = sizeof(size_t) + sizeof(Network::Packet::PacketType) + sizeof(size_t);
 
@@ -125,7 +118,6 @@ void PacketHandler::broadcastEnnemies(const EnemyStateManager &enemyStateManager
 {
     auto enemies_ = enemyStateManager.getAllEnemies();
 
-    size_t totalEnemies = enemies_.size();
     size_t packetSize = sizeof(size_t) + sizeof(Network::Packet::PacketType) + sizeof(size_t);
     std::vector<Network::EnemiesUpdatePacket::EnemyData> data;
 

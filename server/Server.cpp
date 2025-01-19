@@ -4,9 +4,9 @@
 #include "Notification/GameStartNotification.hpp"
 
 Server::Server(unsigned short tcpPort, unsigned short udpPort, const sf::IpAddress &ip)
-    : m_networkManager(Network::NetworkManager::Mode::SERVER), m_tcpPort(tcpPort), m_udpPort(udpPort), m_ip(ip),
-      m_packetHandler(m_networkManager),
-      m_coordinator(m_packetHandler, m_playerStateManager, m_enemyStateManager, m_bulletStateManager)
+    : m_networkManager(Network::NetworkManager::Mode::SERVER),
+      m_coordinator(m_packetHandler, m_playerStateManager, m_enemyStateManager, m_bulletStateManager),
+      m_packetHandler(m_networkManager), m_ip(ip), m_tcpPort(tcpPort), m_udpPort(udpPort)
 {
 }
 
@@ -18,16 +18,15 @@ Server::~Server()
 
 void Server::onNotify(const Notification &notification)
 {
-    if (const auto *gameStart = dynamic_cast<const GameStartNotification *>(&notification)) {
+    if (dynamic_cast<const GameStartNotification *>(&notification)) {
         m_launchGame = true;
     }
 }
 
 void Server::run()
 {
-    auto previousSpawnTime = m_previousTime;
-
     m_networkManager.listen(m_ip, m_udpPort, m_tcpPort);
+    m_networkManager.start();
 
     std::thread(&PacketHandler::handleIncomingPackets, &m_packetHandler, std::ref(running_)).detach();
 
