@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>MovementSystem - R-Type ECS Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">R-Type ECS Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Overview</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../overview/introduction/" class="dropdown-item">Introduction</a>
+</li>
+                                    
+<li>
+    <a href="../../overview/architecture/" class="dropdown-item">Architecture</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Components</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../components/a_component/" class="dropdown-item">AComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/bullet_id_component/" class="dropdown-item">BulletIdComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/ennemy_id_component/" class="dropdown-item">EnnemyIdComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/event_handler_component/" class="dropdown-item">EventHandlerComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/health_component/" class="dropdown-item">HealthComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/hover_component/" class="dropdown-item">HoverComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/input_component/" class="dropdown-item">InputComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/network_component/" class="dropdown-item">NetworkComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/parallax_component/" class="dropdown-item">ParallaxComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/position_component/" class="dropdown-item">PositionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/rectangle_shape_component.md" class="dropdown-item">RectangleShapeComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/render_component/" class="dropdown-item">RenderComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/selection_component/" class="dropdown-item">SelectionComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/sound_component/" class="dropdown-item">SoundComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/sprite_component/" class="dropdown-item">SpriteComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/text_component/" class="dropdown-item">TextComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/username_component/" class="dropdown-item">UsernameComponent</a>
+</li>
+                                    
+<li>
+    <a href="../../components/velocity_component/" class="dropdown-item">VelocityComponent</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Entities</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../entities/ally_entity/" class="dropdown-item">AllyEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/button_entity/" class="dropdown-item">ButtonEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/bydos_entity/" class="dropdown-item">BydosEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/menu_entity/" class="dropdown-item">MenuEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/player_entity/" class="dropdown-item">PlayerEntity</a>
+</li>
+                                    
+<li>
+    <a href="../../entities/text_field_entity/" class="dropdown-item">TextFieldEntity</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Systems</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../event_handling_system/" class="dropdown-item">EventHandlingSystem</a>
+</li>
+                                    
+<li>
+    <a href="../hover_system/" class="dropdown-item">HoverSystem</a>
+</li>
+                                    
+<li>
+    <a href="../input_system/" class="dropdown-item">InputSystem</a>
+</li>
+                                    
+<li>
+    <a href="../message_system/" class="dropdown-item">MessageSystem</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">MovementSystem</a>
+</li>
+                                    
+<li>
+    <a href="../parallax_system/" class="dropdown-item">ParallaxSystem</a>
+</li>
+                                    
+<li>
+    <a href="../render_system/" class="dropdown-item">RenderSystem</a>
+</li>
+                                    
+<li>
+    <a href="../selection_system/" class="dropdown-item">SelectionSystem</a>
+</li>
+                                    
+<li>
+    <a href="../sound_system/" class="dropdown-item">SoundSystem</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">Managers</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../managers/entity_manager/" class="dropdown-item">EntityManager</a>
+</li>
+                                    
+<li>
+    <a href="../../managers/network_manager/" class="dropdown-item">NetworkManager</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../message_system/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../parallax_system/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#movementsystem" class="nav-link">MovementSystem</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#introduction" class="nav-link">Introduction</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#role-dans-lecs" class="nav-link">Rôle dans l'ECS</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#fonctionnalites-principales" class="nav-link">Fonctionnalités principales</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#exemples-dutilisation" class="nav-link">Exemples d'Utilisation</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#interactions" class="nav-link">Interactions</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="movementsystem">MovementSystem</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Le système <code>MovementSystem</code> est responsable de la mise à jour des positions des entités en fonction de leur vitesse et des entrées utilisateur. Il joue un rôle clé dans le déplacement des entités dans le jeu.</p>
+<h2 id="role-dans-lecs">Rôle dans l'ECS</h2>
+<p><code>MovementSystem</code> a pour rôle de :</p>
+<ul>
+<li>Calculer les nouvelles positions des entités en fonction de leur <code>VelocityComponent</code>.</li>
+<li>Traiter les entrées utilisateur pour influencer le mouvement des entités.</li>
+<li>Supprimer ou réinitialiser les entités en dehors des limites du jeu.</li>
+</ul>
+<h2 id="fonctionnalites-principales">Fonctionnalités principales</h2>
+<h3 id="methode-update">Méthode <code>update</code></h3>
+<p>Cette méthode parcourt toutes les entités ayant des composants pertinents (comme <code>VelocityComponent</code> et <code>PositionComponent</code>) et met à jour leurs positions.</p>
+<h4 id="exemple-de-code">Exemple de code</h4>
+<pre><code class="language-cpp">void MovementSystem::update(EntityManager &amp;entityManager, NetworkManager &amp;networkManager, float deltaTime, bool focus) {
+    static float timer = 0.0f;
+    timer += deltaTime;
+
+    for (auto &amp;entity : entityManager.entities) {
+        auto *velocity = entity-&gt;getComponent&lt;VelocityComponent&gt;();
+        auto *position = entity-&gt;getComponent&lt;PositionComponent&gt;();
+
+        if (velocity &amp;&amp; position) {
+            position-&gt;position.x += velocity-&gt;velocity.x * deltaTime;
+            position-&gt;position.y += velocity-&gt;velocity.y * deltaTime;
+
+            // Gestion des entités en dehors des limites du jeu
+            if (position-&gt;position.x &lt; 0 || position-&gt;position.x &gt; 1920 ||
+                position-&gt;position.y &lt; 0 || position-&gt;position.y &gt; 1080) {
+                entityManager.markForDeletion(entity-&gt;getId());
+            }
+        }
+    }
+    entityManager.destroyMarkedEntities();
+}
+</code></pre>
+<h3 id="gestion-des-entrees-utilisateur">Gestion des entrées utilisateur</h3>
+<p>Le système traite également les entrées utilisateur pour influencer la vitesse ou la direction :</p>
+<pre><code class="language-cpp">if (input &amp;&amp; position &amp;&amp; input-&gt;moveLeft) {
+    position-&gt;position.x -= 200.0f * deltaTime;
+}
+</code></pre>
+<h2 id="exemples-dutilisation">Exemples d'Utilisation</h2>
+<ol>
+<li>
+<p><strong>Initialisation et appel</strong> :
+   <code>cpp
+   MovementSystem movementSystem;
+   movementSystem.update(entityManager, networkManager, 0.016f, true);</code></p>
+</li>
+<li>
+<p><strong>Suppression des entités hors limites</strong> :
+   <code>cpp
+   if (position-&gt;position.x &lt; 0 || position-&gt;position.x &gt; 1920) {
+       entityManager.markForDeletion(entity-&gt;getId());
+   }</code></p>
+</li>
+</ol>
+<h2 id="interactions">Interactions</h2>
+<ul>
+<li><strong>Avec PositionComponent</strong> : Met à jour la position en fonction des calculs du système.</li>
+<li><strong>Avec VelocityComponent</strong> : Utilise la vitesse pour déterminer les déplacements.</li>
+<li><strong>Avec InputComponent</strong> : Permet aux utilisateurs d'influencer les mouvements des entités.</li>
+<li><strong>Avec NetworkManager</strong> : Synchronise les mouvements des entités dans un environnement multijoueur.</li>
+</ul>
+<hr />
+<p>Le système <code>MovementSystem</code> est essentiel pour gérer les déplacements des entités, en combinant la logique des composants de position, de vitesse et des entrées utilisateur.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
