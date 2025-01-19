@@ -72,7 +72,7 @@ namespace Network
             case Packet::PacketType::BULLETS_UPDATE: os << "BULLETS_UPDATE"; break;
             case Packet::PacketType::BULLET_HIT: os << "BULLET_HIT"; break;
             case Packet::PacketType::ENEMY_DEATH: os << "ENEMY_DEATH"; break;
-            case Packet::PacketType::WAITING_UPDATE: break;
+            case Packet::PacketType::WAITING_UPDATE: os << "WAITING_UPDATE"; break;
         }
         return os;
     }
