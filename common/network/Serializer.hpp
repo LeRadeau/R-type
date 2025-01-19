@@ -3,9 +3,15 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include "network/exceptions/NetworkExceptions.hpp"
 
 class Serializer {
   public:
+    // Get the size of the type
+    template <typename T> static constexpr size_t getSize()
+    {
+        return sizeof(T);
+    }
     // Append data (int, float, etc.)
     template <typename T> static void serialize(std::vector<uint8_t> &buffer, const T &data)
     {
@@ -25,24 +31,30 @@ class Serializer {
     }
 
     // Deserialize data
-    template <typename T> static T deserialize(const uint8_t *&data)
+    template <typename T> static T deserialize(const uint8_t *&data, size_t &remainingSize)
     {
+        if (remainingSize < getSize<T>())
+            throw Network::IncompletePacketException("deserialize: remaining size of the buffer is too small");
+
         T value;
-        std::memcpy(&value, data, sizeof(T));
-        data += sizeof(T);
+        std::memcpy(&value, data, getSize<T>());
+        data += getSize<T>();
+        remainingSize -= getSize<T>();
         return value;
     }
 
     // Deserialize string (variable length)
-    static std::string deserializeString(const uint8_t *&data)
+    static std::string deserializeString(const uint8_t *&data, size_t &remainingSize)
     {
         // Read string size
-        uint32_t size = deserialize<uint32_t>(data);
+        uint32_t size = deserialize<uint32_t>(data, remainingSize);
+        if (remainingSize < size)
+            throw Network::IncompletePacketException("deserializeString: remaining size of the buffer is too small");
 
         // Extract string content
         std::string str(reinterpret_cast<const char *>(data), size);
         data += size;
-
+        remainingSize -= size;
         return str;
     }
 };
