@@ -48,7 +48,7 @@ namespace Network
     void NetworkManager::sendPacket(
         const std::shared_ptr<Packet> &packet, const sf::IpAddress &remote, unsigned short udpPort)
     {
-        std::cout << "Sending UDP packet " << packet->getType() << " to " << remote << ":" << udpPort;
+        std::cout << "Sending UDP packet " << packet->getType() << " to " << remote << ":" << udpPort << std::endl;
         m_outGoingPackets.push(NetworkPacketInfo(packet, NetworkPacketInfo::Protocol::UDP, remote, udpPort));
     }
 
