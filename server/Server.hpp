@@ -15,6 +15,7 @@ class Server : public Observer {
     Server(unsigned short tcpPort, unsigned short udpPort, const sf::IpAddress &ip = sf::IpAddress::Any);
     ~Server();
 
+    void init();
     void run();
     void onNotify(const Notification &notification) override;
 
@@ -25,7 +26,7 @@ class Server : public Observer {
     std::chrono::_V2::system_clock::time_point previousClientBroadcastTime;
 
     Network::NetworkManager m_networkManager;
-    std::atomic<bool> running_;
+    std::atomic<bool> m_running;
     GameCoordinator m_coordinator;
     PlayerStateManager m_playerStateManager;
     PacketHandler m_packetHandler;

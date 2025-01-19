@@ -8,6 +8,7 @@
 class GameCoordinator : public Subject {
   public:
     GameCoordinator(PacketHandler &, PlayerStateManager &, EnemyStateManager &, BulletStateManager &);
+    void init();
     void update(float deltaTime);
 
   private:

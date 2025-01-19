@@ -11,6 +11,10 @@ GameCoordinator::GameCoordinator(PacketHandler &packetHandler, PlayerStateManage
     : m_playerStateManager(playerStateManager), m_enemyStateManager(enemyStateManager),
       m_bulletStateManager(bulletStateManager), m_packetHandler(packetHandler)
 {
+}
+
+void GameCoordinator::init()
+{
     m_enemyStateManager.addObserver(&m_bulletStateManager);
     m_enemyStateManager.addObserver(&m_packetHandler);
     m_packetHandler.addObserver(&m_bulletStateManager);

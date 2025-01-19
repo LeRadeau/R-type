@@ -12,7 +12,7 @@ Server::Server(unsigned short tcpPort, unsigned short udpPort, const sf::IpAddre
 
 Server::~Server()
 {
-    running_ = false;
+    m_running = false;
     m_networkManager.stop();
 }
 
@@ -23,14 +23,18 @@ void Server::onNotify(const Notification &notification)
     }
 }
 
-void Server::run()
+void Server::init()
 {
+    m_running = true;
+    m_coordinator.init();
     m_networkManager.listen(m_ip, m_udpPort, m_tcpPort);
     m_networkManager.start();
+    std::thread(&PacketHandler::handleIncomingPackets, &m_packetHandler, std::ref(m_running)).detach();
+}
 
-    std::thread(&PacketHandler::handleIncomingPackets, &m_packetHandler, std::ref(running_)).detach();
-
-    while (running_) {
+void Server::run()
+{
+    while (m_running) {
         if (m_launchGame == false) {
             m_packetHandler.broadcastWait();
             std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Attends 1 seconde avant le prochain check
@@ -62,7 +66,7 @@ void Server::run()
         }
         if (!isAlive) {
             m_packetHandler.broadcastGameOver();
-            running_ = false;
+            m_running = false;
             break;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(16));
