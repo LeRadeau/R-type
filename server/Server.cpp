@@ -37,7 +37,6 @@ void Server::init()
 void Server::run()
 {
     auto previousTime = std::chrono::high_resolution_clock::now();
-    auto previousBulletBroadcastTime = previousTime;
     auto previousClientBroadcastTime = previousTime;
 
     constexpr std::chrono::milliseconds updateIntervals(16); // 16ms for ~60 updates per second
@@ -60,12 +59,8 @@ void Server::run()
         if (currentTime - previousClientBroadcastTime >= updateIntervals) {
             m_packetHandler.broadcastClients(m_playerStateManager);
             m_packetHandler.broadcastEnnemies(m_enemyStateManager);
-            previousClientBroadcastTime = currentTime;
-        }
-
-        if (currentTime - previousBulletBroadcastTime >= updateIntervals) {
             m_packetHandler.broadcastBullets(m_bulletStateManager);
-            previousBulletBroadcastTime = currentTime;
+            previousClientBroadcastTime = currentTime;
         }
 
         int isAlive = 0;
