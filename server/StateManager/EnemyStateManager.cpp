@@ -6,7 +6,7 @@
 #include "Notification/Notification.hpp"
 #include "State/EnemyState.hpp"
 
-EnemyStateManager::EnemyStateManager() : m_level(1)
+EnemyStateManager::EnemyStateManager() : m_level(1), m_spawnCooldown(0)
 {
 }
 
@@ -102,6 +102,7 @@ void EnemyStateManager::spawnEnemies(int level)
         position.y = static_cast<float>(rand() % static_cast<int>(screenHeight - 20)) + 10.0f;
         lastSpawnX = position.x;
         sf::Vector2f velocity = {50, 15};
+        update.position = position;
         update.velocity = velocity;
         update.health = 100;
         update.shootingCooldown = static_cast<float>((rand() % 3) + 1);
