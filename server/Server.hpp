@@ -2,7 +2,6 @@
 
 #include <SFML/Network/UdpSocket.hpp>
 #include <SFML/System/Vector2.hpp>
-#include <chrono>
 #include "GameCoordinator.hpp"
 #include "network/NetworkManager.hpp"
 
@@ -21,9 +20,6 @@ class Server : public Observer {
 
   private:
     bool m_launchGame = false;
-    std::chrono::_V2::system_clock::time_point m_previousTime;
-    std::chrono::_V2::system_clock::time_point previousBulletBroadcastTime;
-    std::chrono::_V2::system_clock::time_point previousClientBroadcastTime;
 
     Network::NetworkManager m_networkManager;
     std::atomic<bool> m_running;

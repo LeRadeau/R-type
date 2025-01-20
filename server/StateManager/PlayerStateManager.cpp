@@ -46,7 +46,7 @@ void PlayerStateManager::update(float)
     NotificationBatch batch;
     for (auto i = m_players.begin(); i != m_players.end();) {
         auto &player = i->second;
-        if (player.getHealth() <= 0 || !player.getIsAlive()) {
+        if (player.getHealth() <= 0) {
             i = m_players.erase(i);
             batch.addNotification(std::make_shared<PlayerDeathNotification>(player.getUsername()));
         } else {

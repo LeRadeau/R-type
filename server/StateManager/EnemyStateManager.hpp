@@ -21,4 +21,5 @@ class EnemyStateManager : public StateManager, public Subject, public Observer {
     void spawnEnemies(int level);
     std::unordered_map<std::string, EnemyState> m_enemies;
     int m_level;
+    float m_spawnCooldown;
 };

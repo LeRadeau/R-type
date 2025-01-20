@@ -203,17 +203,6 @@ namespace Network
             }
         }
     }
-    /* } catch (InvalidPacketFormatException &e) { */
-    /*     std::cerr << e.what() << ". Packet dropped." << std::endl; */
-    /* } catch (UnsupportedPacketVersionException &e) { */
-    /*     std::cerr << e.what() << ". Packet dropped." << std::endl; */
-    /* } catch (IncompletePacketException &e) { */
-    /*     std::cerr << e.what() << ". Malformed packet." << std::endl; */
-    /* } catch (DeserializationException &e) { */
-    /*     std::cerr << "Error while deserialization" << e.what() << std::endl; */
-    /* } catch (std::exception &e) { */
-    /*     std::cerr << "Unknown error: " << e.what() << std::endl; */
-    /* } */
 
     void NetworkManager::processOutgoingPacketsThread()
     {

@@ -28,9 +28,13 @@ void EnemyStateManager::update(float deltaTime)
 {
     NotificationBatch batch;
 
-    spawnEnemies(m_level / 1000);
-    if (m_level / 1000 < 10)
-        m_level += deltaTime;
+    m_spawnCooldown += deltaTime;
+    if (m_spawnCooldown >= 10) {
+        spawnEnemies(m_level);
+        if (m_level < 10)
+            m_level++;
+        m_spawnCooldown = 0;
+    }
     auto it = m_enemies.begin();
     while (it != m_enemies.end()) {
         auto &enemy = it->second;

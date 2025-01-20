@@ -36,29 +36,34 @@ void Server::init()
 
 void Server::run()
 {
+    auto previousTime = std::chrono::high_resolution_clock::now();
+    auto previousBulletBroadcastTime = previousTime;
+    auto previousClientBroadcastTime = previousTime;
+
+    constexpr std::chrono::milliseconds updateIntervals(16); // 16ms for ~60 updates per second
+
     while (m_running) {
         if (m_launchGame == false) {
             m_packetHandler.broadcastWait();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Attends 1 seconde avant le prochain check
+            std::this_thread::sleep_for(std::chrono::seconds(1)); // Check every seconds
             continue;
         }
+
         auto currentTime = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<float> deltaTime = currentTime - m_previousTime;
-        m_previousTime = currentTime;
+        std::chrono::duration<float> deltaTime = currentTime - previousTime;
+        previousTime = currentTime;
+
         float deltaTimeSeconds = deltaTime.count();
 
-        if (deltaTimeSeconds >= 16)
-            m_coordinator.update(deltaTimeSeconds);
+        m_coordinator.update(deltaTimeSeconds);
 
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousClientBroadcastTime).count()
-            >= 16) {
+        if (currentTime - previousClientBroadcastTime >= updateIntervals) {
             m_packetHandler.broadcastClients(m_playerStateManager);
             m_packetHandler.broadcastEnnemies(m_enemyStateManager);
             previousClientBroadcastTime = currentTime;
         }
 
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - previousBulletBroadcastTime).count()
-            >= 16) {
+        if (currentTime - previousBulletBroadcastTime >= updateIntervals) {
             m_packetHandler.broadcastBullets(m_bulletStateManager);
             previousBulletBroadcastTime = currentTime;
         }
@@ -72,6 +77,10 @@ void Server::run()
             m_running = false;
             break;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+
+        auto elapsedTime = std::chrono::high_resolution_clock::now() - currentTime;
+        auto sleepTime = updateIntervals - std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime);
+        if (sleepTime > std::chrono::milliseconds::zero())
+            std::this_thread::sleep_for(sleepTime);
     }
 }
